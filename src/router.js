@@ -1,17 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import MainPage from './pages/MainPage.vue'
+import MainPage from './pages/main-page.vue'
 
 const routes = [
   {
     path: '/signup',
     name: 'SignUpPage',
-    component: () => import('./pages/user/SignUp.vue')
+    component: () => import('./pages/user/sign-up.vue')
   },
   {
     path: '/signin',
     name: 'SigninPage',
-    component: () => import('./pages/user/SignIn.vue')
+    component: () => import('./pages/user/sign-in.vue')
   },
   {
     path: '/',
@@ -22,9 +22,9 @@ const routes = [
       {
         path: 'main',
         components: {
-          header: () => import('./components/Header.vue'),
-          content: () => import('./views/Home.vue'),
-          side: () => import('./components/Side.vue')
+          header: () => import('./components/main-header.vue'),
+          content: () => import('./views/home.vue'),
+          side: () => import('./components/main-side.vue')
         }
       }
     ]
@@ -38,9 +38,9 @@ const routes = [
       {
         path: 'profile',
         components: {
-          header: () => import('./components/Header.vue'),
-          content: () => import('./views/user/UserView.vue'),
-          side: () => import('./components/Side.vue')
+          header: () => import('./components/main-header.vue'),
+          content: () => import('./views/user/user-main.vue'),
+          side: () => import('./components/main-side.vue')
         }
       },
     ]
@@ -69,7 +69,7 @@ router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   if (requiresAuth && !isLogin) {
     sessionStorage.setItem('beforeLoginRoute', JSON.stringify(to.path))
-    next('/sisu/signin')
+    next('/signin')
   } else {
     next()
   }
