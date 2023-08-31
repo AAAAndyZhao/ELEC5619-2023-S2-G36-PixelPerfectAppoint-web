@@ -1,1 +1,0 @@
-<!-- page shown after user clicking link from email -->
