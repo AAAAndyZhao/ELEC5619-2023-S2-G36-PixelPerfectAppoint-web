@@ -5,6 +5,10 @@ All the api calls should be defined here.
 
 import axios from "../utils/axios.js";
 
+const axiosInstance = axios.create({
+    baseURL: 'http://152.67.96.80:9090', // 设置基本的API URL
+  });
+
 const getUserProfile = async () => {
     const userId = localStorage.getItem('userId');
     if (userId === null
@@ -31,6 +35,17 @@ const getUserProfile = async () => {
     }
 }
 
+
+const userRegister = async (userData) => {
+    try {
+      const response = await axiosInstance.post('/user/sign_up', userData);
+      return response.data; // 返回响应数据
+    } catch (error) {
+      throw error; // 抛出错误，由调用方处理
+    }
+  }
+
+
 const userLogin = async (email, password) => {
     return {
         code: 0,
@@ -42,4 +57,6 @@ const userLogin = async (email, password) => {
 export default {
     getUserProfile,
     userLogin,
+    userRegister
+    
 }

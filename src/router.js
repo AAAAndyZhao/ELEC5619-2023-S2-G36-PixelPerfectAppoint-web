@@ -4,7 +4,7 @@ import MainPage from './pages/main-page.vue'
 
 const routes = [
   {
-    path: '/signup',
+    path: '/SignUp',
     name: 'SignUpPage',
     component: () => import('./pages/user/sign-up.vue')
   },
