@@ -263,7 +263,7 @@ new_password:  [
             birthday: "2000-11-01",
             gender: gender_code,
             description: "I am a test user",
-            professional: 1
+            professional: professional_code
         }
         console.log("gender"+gender_code)
         console.log("profe"+professional_code)
