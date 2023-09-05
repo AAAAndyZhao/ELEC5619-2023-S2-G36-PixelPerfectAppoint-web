@@ -34,6 +34,7 @@ axios.interceptors.request.use((request) => {
     return Promise.reject(error);
 });
 
+
 axios.interceptors.response.use((response) => {
     return response.status === 200 ? response.data : Promise.reject(response);
 }, (error) => {
