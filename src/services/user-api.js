@@ -38,25 +38,45 @@ const getUserProfile = async () => {
 
 const userRegister = async (userData) => {
     try {
-      const response = await axiosInstance.post('/user/sign_up', userData);
+      const response = await axiosInstance.post('/user/sign_up', userData,);
       return response.data; // 返回响应数据
     } catch (error) {
       throw error; // 抛出错误，由调用方处理
     }
   }
 
-
-const userLogin = async (email, password) => {
-    return {
-        code: 0,
-        msg: 'success',
+const userLogin = async (signInData) => {
+    try{
+        const response = await axiosInstance.post("/user/sign_in",signInData);
+        return response.data;
+    }catch(error){
+        throw error;
     }
 }
 
+const requestChangePassword = async (email) => {
+    try {
+        const response = await axiosInstance.get(`user/request_change_password?email=${email}`);
+        return response.data; // 返回响应数据
+    } catch (error) {
+      throw error; // 抛出错误，由调用方处理
+    }
+  }
+
+  const changePassword = async (email) => {
+    try {
+        const response = await axiosInstance.get(`user/request_change_password?email=${email}`);
+        return response.data; // 返回响应数据
+    } catch (error) {
+      throw error; // 抛出错误，由调用方处理
+    }
+  }
 
 export default {
     getUserProfile,
     userLogin,
-    userRegister
+    userRegister,
+    requestChangePassword,
+    changePassword
     
 }
