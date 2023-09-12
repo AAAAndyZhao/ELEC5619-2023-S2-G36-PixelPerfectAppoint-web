@@ -29,11 +29,6 @@
     <div class="app-sign-in-form-to-forget-password">
         <p>Forget Password? <router-link to="/forgetpassword">forget</router-link></p>
     </div>
-
-  
-   
-    
-    
 </template>
 
 
@@ -61,7 +56,7 @@ const ruleForm = ref<RuleForm>({
     password: '',
 })
 
-const rules = reactive<FormRules<RuleForm>>({
+const rules = reactive <FormRules<RuleForm>> ({
     email:  [
         { required: true, message: 'Please input user name', trigger: 'blur' },
   ],
@@ -80,14 +75,14 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     }
     await ruleFormRef.value?.validate();
     const userloginStatus: any = await userApi.userLogin(signInData)
-    if (userloginStatus.code === 0 ){
+    if ( userloginStatus.code === 0 ){
         let usertoken = userloginStatus.data[0].token;
         localStorage.setItem('token',usertoken);
         console.log(usertoken)
         router.push('/main')
   }
   
-  }catch(error){
+  } catch ( error ){
 
   }
 }
@@ -110,7 +105,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
 }
 
-.app-sign-in-form-info-input-items{
+.app-sign-in-form-info-input-items {
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -119,11 +114,11 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     
 }
 
-.loginButton{
+.loginButton {
     margin-bottom: 0;
 }
 
-.app-sign-in-form-to-forget-password{
+.app-sign-in-form-to-forget-password {
     position: absolute;
    top:80%;
     left: 50%;
