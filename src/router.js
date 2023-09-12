@@ -14,10 +14,21 @@ const routes = [
     component: () => import('./pages/user/sign-in.vue')
   },
   {
+    path: '/forgetpassword',
+    name: 'ForgetPassword',
+    component: () => import('./pages/user/forgot-password.vue')
+  },
+  {
+    path: '/resetpassword',
+    name: 'resetPassword',
+    component: () => import('./pages/user/reset-password.vue')
+  },
+  {
     path: '/',
     redirect: '/main',
     component: MainPage,
     name: 'MainPage',
+    
     children: [
       {
         path: 'main',
@@ -53,26 +64,13 @@ const router = createRouter({
 })
 
 
-router.beforeEach(async (to, from, next) => {
-  const token = localStorage.getItem('token');
-  let isLogin = false;
-  if (token) {
-    // fake verify token response
-    const verifyTokenRes = {
-      code: 0
-    }
-    isLogin = verifyTokenRes.code === 0;
-    if(isLogin == false) {
-      localStorage.removeItem('token');
-    }
-  }
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  if (requiresAuth && !isLogin) {
-    sessionStorage.setItem('beforeLoginRoute', JSON.stringify(to.path))
-    next('/signin')
-  } else {
-    next()
-  }
-})
+router.beforeEach((to,from,next)=>{
+    const token = localStorage.getItem('token')
+
+
+    if(to.name !== "SigninPage" && !token) next({name:"SigninPage"})
+    else next()
+  
+  });
 
 export default router
