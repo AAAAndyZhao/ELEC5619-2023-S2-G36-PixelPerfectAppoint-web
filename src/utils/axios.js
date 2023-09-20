@@ -1,5 +1,11 @@
 import axios from "axios";
-axios.defaults.baseURL = "http://localhost:3000"; // dev
+axios.defaults.baseURL = "http://152.67.96.80:9090"; // dev
+
+// CORS
+axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+axios.defaults.headers.common["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS";
+axios.defaults.headers.common["Access-Control-Allow-Headers"] = "Origin, Accept, Content-Type, Authorization";
+
 // errorHandle
 const errorHandle = (status, other) => {
     switch (status) {
