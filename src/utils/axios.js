@@ -1,5 +1,11 @@
 import axios from "axios";
-axios.defaults.baseURL = "http://localhost:3000"; // dev
+axios.defaults.baseURL = "http://152.67.96.80:9090"; // dev
+
+// CORS
+axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+axios.defaults.headers.common["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS";
+axios.defaults.headers.common["Access-Control-Allow-Headers"] = "Origin, Accept, Content-Type, Authorization";
+
 // errorHandle
 const errorHandle = (status, other) => {
     switch (status) {
@@ -34,6 +40,7 @@ axios.interceptors.request.use((request) => {
     return Promise.reject(error);
 });
 
+
 axios.interceptors.response.use((response) => {
     return response.status === 200 ? response.data : Promise.reject(response);
 }, (error) => {
@@ -45,5 +52,7 @@ axios.interceptors.response.use((response) => {
         console.log("Network Error");
     }
 });
+
+
 
 export default axios;

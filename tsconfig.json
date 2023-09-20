@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "strict": true,
+        "importHelpers": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "allowJs": true,
+        "paths": {
+          "~/*": ["./*"],
+          "@/*": ["./src/*"]
+        },
+        "lib": ["dom", "esnext"]
+    },
+    "exclude": ["node_modules", "dist"],
+    "include": [
+      "public/**/*.js",
+      "src/**/*.ts",
+      "src/**/*.d.ts",
+      "src/**/*.tsx",
+      "src/**/*.vue",
+      "node_modules/@types/**/*.d.ts"
+    ]
+}
