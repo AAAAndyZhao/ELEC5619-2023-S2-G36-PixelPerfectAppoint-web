@@ -10,5 +10,7 @@
 <style scoped>
 #my-app{
   height: 100%;
+  min-height: 1080px;
+  min-width: 1920px;
 }
 </style>

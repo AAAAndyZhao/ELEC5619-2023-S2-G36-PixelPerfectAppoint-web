@@ -12,9 +12,11 @@
     "@element-plus/icons-vue": "^2.1.0",
     "@icon-park/vue-next": "^1.4.2",
     "axios": "^1.5.0",
+    "country-telephone-data": "^0.6.1",
     "dayjs": "^1.11.9",
     "element-plus": "^2.3.12",
     "flag-icon-css": "^4.1.7",
+    "moment": "^2.29.4",
     "validator": "^13.11.0",
     "vue": "^3.3.4",
     "vue-axios": "^3.5.2",
@@ -22,6 +24,7 @@
     "vuex": "^4.1.0"
   },
   "devDependencies": {
+    "@types/country-telephone-data": "^0.6.1",
     "@vitejs/plugin-vue": "^4.2.3",
     "vite": "^4.4.5",
     "vite-plugin-rewrite-all": "^1.0.1"
