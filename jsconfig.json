@@ -1,19 +1,31 @@
 {
     "compilerOptions": {
-      "target": "esnext",
-      "module": "esnext",
-      "moduleResolution": "node",
-      "strict": true,
-      "esModuleInterop": true,
-      "allowSyntheticDefaultImports": true,
-      "baseUrl": ".",
-      "paths": {
-        "~/*": ["./*"],
-        "@/*": ["./src/*"]
-      },
-      "resolveJsonModule": true,
-      "allowJs": true
+        "target": "esnext",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "strict": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "baseUrl": ".",
+        "paths": {
+            "~/*": [
+                "./*"
+            ],
+            "@/*": [
+                "./src/*"
+            ]
+        },
+        "resolveJsonModule": true
     },
-    "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx", "src/modules/*.js"],
-    "exclude": ["node_modules"]
-  }
+    "include": [
+        "public/**/*.js",
+        "src/**/*.js",
+        "src/**/*.jsx",
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "src/modules/*.js"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
