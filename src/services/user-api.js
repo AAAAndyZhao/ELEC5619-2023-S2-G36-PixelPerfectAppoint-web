@@ -164,6 +164,44 @@ const verifyResetPasswordToken = async (token, userId) => {
     }
 }
 
+const getUserFollowings = async (page, limit, searchText) => {
+    const userId = localStorage.getItem('userId');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    try {
+        return {
+            code: 0,
+            msg: 'OK',
+            data: []
+        }
+    }catch (error) {
+        console.error('Error during requesting user followings: ', error);
+        throw error;
+    }
+}
+
+const getUserFollowers = async (page, limit) => {
+    const userId = localStorage.getItem('userId');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    try {
+        return {
+            code: 0,
+            msg: 'OK',
+            data: []
+        }
+    }catch (error) {
+        console.error('Error during requesting user followers: ', error);
+        throw error;
+    }
+}
+
 export default {
     getUserProfile,
     userLogin,
@@ -174,5 +212,7 @@ export default {
     checkUserEmailExist,
     checkUserNameExist,
     signOut,
-    verifyResetPasswordToken
+    verifyResetPasswordToken,
+    getUserFollowings,
+    getUserFollowers
 }
