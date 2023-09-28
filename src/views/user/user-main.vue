@@ -5,7 +5,9 @@
             <el-tab-pane label="Follower/Following" name="follower">
                 <UserFollowingView/>
             </el-tab-pane>
-            <el-tab-pane label="Posts" name="posts">Posts</el-tab-pane>
+            <el-tab-pane label="Posts" name="posts">
+                <UserPostsView/>
+            </el-tab-pane>
             <el-tab-pane label="Portfolio/Photos" name="portfolio">
                 <PortfolioPhoto/>
             </el-tab-pane>
@@ -17,8 +19,9 @@
 <script setup>
 import { ref } from 'vue';
 import UserFollowingView from '@/views/user/user-following-follower/index.vue';
+import UserPostsView from '@/views/user/user-post/index.vue';
 
-const activeTab = ref('follower');
+const activeTab = ref('posts');
 const handleClick = (tab) => {
     activeTab.value = tab.name;
 };
