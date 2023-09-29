@@ -67,14 +67,6 @@ const rules = reactive<FormRules<RuleForm>>({
     ],
 })
 
-<<<<<<< HEAD
-const submitForm = async (formEl: FormInstance | undefined) => {
-    
-  try{
-    const signInData = {
-        email : ruleForm.value.email,
-        password: ruleForm.value.password,
-=======
 const submitForm = async () => {
     signInButtonLoading.value = true;
     signInButtonDisabled.value = true;
@@ -123,24 +115,15 @@ const submitForm = async () => {
         }, 1000);
     }
 }
->>>>>>> main
 
+const signInByGoogle = async () => {
+    try {
+        
+    } catch (error) {
+        console.error(error);
     }
-    await ruleFormRef.value?.validate();
-    const userloginStatus: any = await userApi.userLogin(signInData)
-    if ( userloginStatus.code === 0 ){
-        let usertoken = userloginStatus.data[0].token;
-        localStorage.setItem('token',usertoken);
-        console.log(usertoken)
-        router.push('/main')
-  }
-  
-  } catch ( error ){
-
-<<<<<<< HEAD
-  }
 }
-=======
+
 const checkRedirect = () => {
     if (!props.redirect) return;
     const regUrlFormat = /^http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?$/;
@@ -178,7 +161,6 @@ onBeforeMount(async () => {
         console.error(error);
     }
 })
->>>>>>> main
 </script>
 
 <style scoped>
