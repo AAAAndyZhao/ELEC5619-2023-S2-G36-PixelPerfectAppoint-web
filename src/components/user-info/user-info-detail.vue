@@ -31,7 +31,6 @@ const props = defineProps({
 .user-info-container{
     display: flex;
     align-items: center; 
-    
     justify-content: space-between;
 }
 
