@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import MainPage from './pages/main-page.vue'
+import PostPage from './pages/post-page.vue'
 
 const routes = [
   {
@@ -22,6 +23,23 @@ const routes = [
     path: '/resetpassword',
     name: 'resetPassword',
     component: () => import('./pages/user/reset-password.vue')
+  },
+  {
+    path: '/post',
+    name: 'post',
+    component: PostPage,
+    children: [
+      {
+        path: 'detail/:id',
+        components: {
+          header: () => import('./components/main-header.vue'),
+          content: () => import('./views/post/post-detail.vue'),
+          info: () => import('./components/user-info/user-info-detail.vue'),
+    
+        }
+      },
+    ]
+    
   },
   {
     path: '/',

@@ -13,7 +13,7 @@
     "@icon-park/vue-next": "^1.4.2",
     "axios": "^1.5.0",
     "dayjs": "^1.11.9",
-    "element-plus": "^2.3.12",
+    "element-plus": "^2.15.14",
     "flag-icon-css": "^4.1.7",
     "moment": "^2.29.4",
     "validator": "^13.11.0",
