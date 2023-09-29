@@ -75,6 +75,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     }
     await ruleFormRef.value?.validate();
     const userloginStatus: any = await userApi.userLogin(signInData)
+    console.log(userloginStatus)
     if ( userloginStatus.code === 0 ){
         let usertoken = userloginStatus.data[0].token;
         localStorage.setItem('token',usertoken);
