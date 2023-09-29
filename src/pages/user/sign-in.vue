@@ -48,6 +48,8 @@ interface RuleForm {
     password: string
 }
 
+let needRedirect: boolean = false;
+let needPush: boolean = false; 
 const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
 const signInButtonLoading = ref(false)
@@ -81,7 +83,19 @@ const submitForm = async () => {
             const userId = userloginStatus.data[0].id;
             localStorage.setItem('token', usertoken);
             localStorage.setItem('userId', userId);
-            router.push('/main');
+            if (needRedirect){
+                setTimeout(() => {
+                    window.location.href = props.redirect;
+                }, 1000);
+            }else if (needPush){
+                setTimeout(() => {
+                    router.push(props.redirect);
+                }, 1000);
+            }else{
+                setTimeout(() => {
+                    router.push('/main');
+                }, 1000);
+            }
         }else{
             ElMessage({
                 message: userloginStatus.msg,
@@ -110,18 +124,21 @@ const signInByGoogle = async () => {
     }
 }
 
-onBeforeMount(async () => {
+const checkRedirect = () => {
     if (!props.redirect) return;
-    if (!localStorage.getItem('token')) return;
     const regUrlFormat = /^http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?$/;
     const regPathFormat = /^\/[\w- .\/?%&=]*$/;
-    let needRedirect: boolean = false;
-    let needPush: boolean = false;
     if (props.redirect && regUrlFormat.test(props.redirect)) {
         needRedirect = true;
     }else if(props.redirect && regPathFormat.test(props.redirect)){
         needPush = true;
     }
+}
+
+onBeforeMount(async () => {
+    checkRedirect()
+    if (!props.redirect) return;
+    if (!localStorage.getItem('token')) return;
     try{
         const verifyTokenRes: any = await userApi.userLoginVerify();
         if (verifyTokenRes.code === 0) {
