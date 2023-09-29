@@ -164,6 +164,117 @@ const verifyResetPasswordToken = async (token, userId) => {
     }
 }
 
+const getUserFollowings = async (userId, page, size, searchText) => {
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    if (isNaN(page) || page === null || page === undefined || page === ''
+    || page < 1) {
+        throw new Error('Page is invalid');
+    }
+    if (isNaN(size) || size === null || size === undefined || size === ''
+    || size < 1) {
+        throw new Error('Size is invalid');
+    }
+
+    try {
+        return await axios.post('/user/get_followings', {
+            uid: userId,
+            page: page,
+            size: size,
+            search_text: searchText
+        });
+    }catch (error) {
+        console.error('Error during requesting user followings: ', error);
+        throw error;
+    }
+}
+
+const getUserFollowers = async (userId, page, size, searchText) => {
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    if (isNaN(page) || page === null || page === undefined || page === ''
+    || page < 1) {
+        throw new Error('Page is invalid');
+    }
+    if (isNaN(size) || size === null || size === undefined || size === ''
+    || size < 1) {
+        throw new Error('Size is invalid');
+    }
+    try {
+        return await axios.post('/user/get_followers', {
+            uid: userId,
+            page: page,
+            size: size,
+            search_text: searchText
+        });
+    }catch (error) {
+        console.error('Error during requesting user followers: ', error);
+        throw error;
+    }
+}
+
+const followUser = async (targetUserId) => {
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    if (token === null
+        || token === undefined
+        || token === '') {
+        throw new Error('User token is invalid');
+    }
+    try {
+        return await axios.post('/user/follow', {
+            uid: userId,
+            target_uid: targetUserId
+        }, {
+            headers: {
+                authorization: token
+            }
+        });
+    }catch (error) {
+        console.error('Error during requesting follow user: ', error.message);
+        throw error;
+    }
+}
+
+const unfollowUser = async (targetUserId) => {
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    if (token === null
+        || token === undefined
+        || token === '') {
+        throw new Error('User token is invalid');
+    }
+    try {
+        return await axios.post('/user/unfollow', {
+            uid: userId,
+            target_uid: targetUserId
+        }, {
+            headers: {
+                authorization: token
+            }
+        });
+    }catch (error) {
+        console.error('Error during requesting unfollow user: ', error.message);
+        throw error;
+    }
+}
+
 export default {
     getUserProfile,
     userLogin,
@@ -174,5 +285,9 @@ export default {
     checkUserEmailExist,
     checkUserNameExist,
     signOut,
-    verifyResetPasswordToken
+    verifyResetPasswordToken,
+    getUserFollowings,
+    getUserFollowers,
+    followUser,
+    unfollowUser
 }
