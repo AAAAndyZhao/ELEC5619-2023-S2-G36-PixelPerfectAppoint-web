@@ -11,7 +11,7 @@
             <div class="app-user-username">@{{ user.userName }}</div>
         </div>
         <div class="app-user-card-introduction">
-            <div class="app-user-introduction">{{ user.introduction ? user.introduction : 'This user is too lazy to leave a introduction.' }}</div>
+            <div class="app-user-introduction">{{ user.description ? user.description : 'This user is too lazy to leave a introduction.' }}</div>
         </div>
         <div class="app-user-card-operation">
             <slot name="default">
@@ -28,10 +28,12 @@ defineProps({
         required: false,
         default: () => {
             return {
+                id: 'unknown',
                 alias: 'unknown',
                 userName: 'unknown',
-                introduction: 'unknown',
+                description: 'unknown',
                 avatar: '',
+                professional: 0
             }
         }
     }
@@ -80,6 +82,7 @@ defineProps({
     color: #999;
 }
 .app-user-card-operation {
+    min-width: 230px;
     width: auto;
     height: 100%;
     box-sizing: border-box;
@@ -87,7 +90,7 @@ defineProps({
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: flex-end;
 }
 .app-user-alias {
     font-size: 20px;

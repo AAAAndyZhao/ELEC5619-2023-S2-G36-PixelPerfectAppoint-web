@@ -2,16 +2,16 @@
     <el-container id="app-user-profile-container">
         <el-tabs v-model="activeTab" class="app-user-profile-tabs" @tab-click="handleClick" stretch>
             <el-tab-pane label="Information" name="information">Information</el-tab-pane>
-            <el-tab-pane label="Follower/Following" name="follower">
+            <el-tab-pane label="Follower/Following" name="follower" lazy>
                 <UserFollowingView/>
             </el-tab-pane>
-            <el-tab-pane label="Posts" name="posts">
+            <el-tab-pane label="Posts" name="posts" lazy>
                 <UserPostsView/>
             </el-tab-pane>
-            <el-tab-pane label="Portfolio/Photos" name="portfolio">
+            <el-tab-pane label="Portfolio/Photos" name="portfolio" lazy>
                 <PortfolioPhoto/>
             </el-tab-pane>
-            <el-tab-pane label="Reviews" name="fifth">Reviews</el-tab-pane>
+            <el-tab-pane label="Reviews" name="fifth" lazy>Reviews</el-tab-pane>
         </el-tabs>
     </el-container>
 </template>
