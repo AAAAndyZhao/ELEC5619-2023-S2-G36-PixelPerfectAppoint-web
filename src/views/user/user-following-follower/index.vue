@@ -1,5 +1,5 @@
 <template>
-    <div class="app-user-following">
+    <div class="app-user-following" v-loading="loading">
         <el-tabs tab-position="left" class="app-follower-following-tabs">
             <el-tab-pane label="Followers">
                 <div class="app-followers-container app-container">
@@ -10,8 +10,8 @@
                         v-model="followerProps.searchText"
                         @keyup.enter.native="fetchFollowerData(true)"></el-input>
                     </div>
-                    <div class="app-container-content" v-loading="followerProps.loading">
-                        <UserFollowersList :data="followerData"/>
+                    <div class="app-container-content">
+                        <UserFollowersList :data="followerData" @follow-user="handleFollowUser" @unfollow-user="handleUnfollowUser"/>
                         <el-pagination layout="prev, pager, next"
                         :total="followerProps.total"
                         :current-page="followerProps.currentPage"
@@ -28,8 +28,8 @@
                         :prefix-icon="Search" placeholder="Search followings"
                         @keyup.enter.native="fetchFollowingData(true)"></el-input>
                     </div>
-                    <div class="app-container-content" v-loading="followingProps.loading">
-                        <UserFollowingsList :data="followingData"/>
+                    <div class="app-container-content">
+                        <UserFollowingsList :data="followingData" @unfollow-user="handleUnfollowUser"/>
                         <el-pagination layout="prev, pager, next"
                         :total="followingProps.total"
                         :current-page="followingProps.currentPage"
@@ -48,13 +48,13 @@ import { Search } from '@icon-park/vue-next';
 import UserFollowingsList from './user-followings-list.vue';
 import UserFollowersList from './user-followers-list.vue';
 import userApi from '@/services/user-api';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
+const loading = ref(false);
 const followerData = ref([]);
 const followingData = ref([]);
 const followerProps = ref({
     searchText: '',
-    loading: false,
     currentPage: 1,
     pageSize: 30,
     total: 0,
@@ -65,7 +65,6 @@ const followerProps = ref({
 });
 const followingProps = ref({
     searchText: '',
-    loading: false,
     currentPage: 1,
     pageSize: 30,
     total: 0,    
@@ -76,18 +75,24 @@ const followingProps = ref({
 });
 
 const fetchFollowerData = async (isReload = false) => {
-    followerProps.value.loading = true;
+    loading.value = true;
+    const userId = localStorage.getItem('userId');
+    if (!userId){
+        ElMessage.error('Please login first');
+        return;
+    }
+    if (isReload){
+        followerProps.currentPage = 1;
+    }
     try{
         const res = await userApi.getUserFollowers(
+            userId,
             followerProps.value.currentPage,
             followerProps.value.pageSize,
-            followingProps.value.searchText
+            followerProps.value.searchText
         );
         if (res.code === 0){
             followerData.value = res.data;
-            if (isReload){
-                followerProps.currentPage = 1;
-            }
             followerProps.total = res.totalCount;
         }else{
             ElMessage.error('Failed to get follower data');
@@ -97,24 +102,30 @@ const fetchFollowerData = async (isReload = false) => {
         ElMessage.error('Failed to get follower data');
     }finally{
         setTimeout(() => {
-            followerProps.value.loading = false;
+            loading.value = false;
         }, 1000);
     }
 };
 
 const fetchFollowingData = async (isReload = false) => {
-    followingProps.value.loading = true;
+    loading.value = true;
+    const userId = localStorage.getItem('userId');
+    if (!userId){
+        ElMessage.error('Please login first');
+        return;
+    }
+    if (isReload){
+        followingProps.currentPage = 1;
+    }
     try{
         const res = await userApi.getUserFollowings(
+            userId,
             followingProps.value.currentPage,
             followingProps.value.pageSize,
             followingProps.value.searchText
         );
         if (res.code === 0){
             followingData.value = res.data;
-            if (isReload){
-                followingProps.currentPage = 1;
-            }
             followingProps.total = res.totalCount;
         }else{
             ElMessage.error('Failed to get following data');
@@ -124,11 +135,63 @@ const fetchFollowingData = async (isReload = false) => {
         ElMessage.error('Failed to get following data');
     }finally{
         setTimeout(() => {
-            followingProps.value.loading = false;
+            loading.value = false;
         }, 1000);
     }
 };
 
+const handleFollowUser = async (targetUser) => {
+    loading.value = true;
+    try{
+        const res = await userApi.followUser(targetUser.id);
+        if (res.code === 0){
+            ElMessage.success('Follow user successfully');
+            fetchFollowingData(true);
+            fetchFollowerData(true);
+        }else{
+            ElMessage.error('Failed to follow user');
+        }
+    }catch(err){
+        ElMessage.error('Failed to follow user');
+    }finally{
+        setTimeout(() => {
+            loading.value = false;
+        }, 1000);
+    }
+}
+
+const handleUnfollowUser = async (targetUser) => {
+    ElMessageBox.confirm(
+        `Are you sure to unfollow ${targetUser.alias}?`,
+        'Warning',
+        {
+            confirmButtonText: 'OK',
+            cancelButtonText: 'Cancel',
+            type: 'warning',
+        }
+    ).then(async () => {
+        loading.value = true;
+        try{
+            const res = await userApi.unfollowUser(targetUser.id);
+            if (res.code === 0){
+                ElMessage.success('You have unfollowed this user');
+                fetchFollowingData(true);
+                fetchFollowerData(true);
+            }else{
+                ElMessage.error('Failed to unfollow user');
+            }
+        }catch(err){
+            console.error(err);
+            ElMessage.error('Failed to unfollow user');
+        }finally{
+            setTimeout(() => {
+                loading.value = false;
+            }, 1000);
+        }
+    }).catch(() => {
+        // do nothing
+    });
+}
 
 onMounted(() => {
     fetchFollowingData(true);

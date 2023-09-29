@@ -134,6 +134,9 @@ const postsPaginationProps = ref({
 
 const fetchPostsData = async (isReload = false) => {
     loading.value = true;
+    if (isReload){
+        postsPaginationProps.currentPage = 1;
+    }
     try{
         const res = await postApi.getUserPosts(
             postsPaginationProps.value.currentPage,
@@ -142,9 +145,6 @@ const fetchPostsData = async (isReload = false) => {
         );
         if (res.code === 0){
             postData.value = res.data;
-            if (isReload){
-                postsPaginationProps.currentPage = 1;
-            }
             postsPaginationProps.total = res.totalCount;
         }else{
             ElMessage.error('Failed to get posts data');
