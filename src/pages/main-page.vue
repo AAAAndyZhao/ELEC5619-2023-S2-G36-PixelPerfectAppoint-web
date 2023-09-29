@@ -14,12 +14,12 @@
     </el-contrainer>
 </template>
 <style scoped>
-.app-container,
-.app-inner-container{
+.app-container {
     display: block;
     height: 100%;
 }
 .app-inner-container{
     display: flex;
+    min-height: calc(100% - 60px);
 }
 </style>
