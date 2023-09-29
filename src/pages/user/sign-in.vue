@@ -48,6 +48,8 @@ interface RuleForm {
     password: string
 }
 
+let needRedirect: boolean = false;
+let needPush: boolean = false; 
 const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
 const signInButtonLoading = ref(false)
@@ -65,12 +67,63 @@ const rules = reactive<FormRules<RuleForm>>({
     ],
 })
 
+<<<<<<< HEAD
 const submitForm = async (formEl: FormInstance | undefined) => {
     
   try{
     const signInData = {
         email : ruleForm.value.email,
         password: ruleForm.value.password,
+=======
+const submitForm = async () => {
+    signInButtonLoading.value = true;
+    signInButtonDisabled.value = true;
+    try {
+        const signInData = {
+            email: ruleForm.value.email,
+            password: ruleForm.value.password,
+        }
+        await ruleFormRef.value?.validate();
+        const userloginStatus: any = await userApi.userLogin(signInData);
+        if (userloginStatus.code === 0) {
+            ElMessage.success('Sign in successfully!');
+            const usertoken = userloginStatus.data[0].token;
+            const userId = userloginStatus.data[0].id;
+            localStorage.setItem('token', usertoken);
+            localStorage.setItem('userId', userId);
+            if (needRedirect){
+                setTimeout(() => {
+                    window.location.href = props.redirect;
+                }, 1000);
+            }else if (needPush){
+                setTimeout(() => {
+                    router.push(props.redirect);
+                }, 1000);
+            }else{
+                setTimeout(() => {
+                    router.push('/main');
+                }, 1000);
+            }
+        }else{
+            ElMessage({
+                message: userloginStatus.msg,
+                type: 'error',
+            })
+        }
+    } catch (error) {
+        console.error(error);
+        ElMessage({
+            message: 'Sign in failed, some error occurred',
+            type: 'error',
+        })
+    }finally{
+        setTimeout(() => {
+            signInButtonLoading.value = false;
+            signInButtonDisabled.value = false;
+        }, 1000);
+    }
+}
+>>>>>>> main
 
     }
     await ruleFormRef.value?.validate();
@@ -84,8 +137,48 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   
   } catch ( error ){
 
+<<<<<<< HEAD
   }
 }
+=======
+const checkRedirect = () => {
+    if (!props.redirect) return;
+    const regUrlFormat = /^http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?$/;
+    const regPathFormat = /^\/[\w- .\/?%&=]*$/;
+    if (props.redirect && regUrlFormat.test(props.redirect)) {
+        needRedirect = true;
+    }else if(props.redirect && regPathFormat.test(props.redirect)){
+        needPush = true;
+    }
+}
+
+onBeforeMount(async () => {
+    checkRedirect()
+    if (!props.redirect) return;
+    if (!localStorage.getItem('token')) return;
+    try{
+        const verifyTokenRes: any = await userApi.userLoginVerify();
+        if (verifyTokenRes.code === 0) {
+            ElMessage.success('You have already logged in!');
+            if (needRedirect){
+                setTimeout(() => {
+                    window.location.href = props.redirect;
+                }, 1000);
+            }else if (needPush){
+                setTimeout(() => {
+                    router.push(props.redirect);
+                }, 1000);
+            }else{
+                setTimeout(() => {
+                    router.push('/main');
+                }, 1000);
+            }
+        }
+    }catch(error){
+        console.error(error);
+    }
+})
+>>>>>>> main
 </script>
 
 <style scoped>
