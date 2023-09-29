@@ -8,7 +8,6 @@
                 <el-button type="primary" class="back" @click="backTo" icon= "DArrowLeft" ></el-button>
             </div>
             <router-view name="content"/>
-            <BigImg :visible="photoVisible" :url="bigImgUrl" @closeClick="closeBigImage"></BigImg>
             <el-card class = "post-detail">
                 <router-view name="info"/>
                 <el-descriptions title="太美啦">
