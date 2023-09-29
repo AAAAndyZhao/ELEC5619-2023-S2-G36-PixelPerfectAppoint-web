@@ -1,68 +1,68 @@
 <template>
-    <div class="app-sign-in-form-container" >
-        <img src="../../assets/images/sign-in.png" alt="sign-in-image">
-        <el-form
-            ref="ruleFormRef"
-            :model="ruleForm"
-            :rules="rules"
-            label-width="100px"
-            class="app-sign-in-form-info-input-items"
-            :size="formSize"
-            status-icon
-            >
-            <el-form-item >
-                <h1>Sign In</h1>
-            </el-form-item>
-            <el-form-item label="Email" prop="email">
-                <el-input v-model="ruleForm.email" placeholder="Please enter email" ></el-input>
-            </el-form-item>
-            <el-form-item label="Password" prop="password">
-                <el-input v-model="ruleForm.password" placeholder="Please enter password" type="password"></el-input>
-            </el-form-item>
-            <el-form-item class="loginButton">
-                <el-button type="primary" @click="submitForm(ruleFormRef)">
-                    Login
-                </el-button>
-            </el-form-item>
-        </el-form>  
-    </div>
-    <div class="app-sign-in-form-to-forget-password">
-        <p>Forget Password? <router-link to="/forgetpassword">forget</router-link></p>
+    <div class="app-sign-in">
+        <img src="../../assets/images/sign-in.png" alt="app-sign-in-image">
+        <div class="app-sign-in-form-container">
+            <h1>Welcome to Pixel Perfect Appoint!</h1>
+            <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="100px"
+            class="app-sign-in-form-info-input-form" :size="formSize">
+                <el-form-item label="Email" prop="email">
+                    <el-input v-model="ruleForm.email" placeholder="Please enter email"
+                    size="large" clearable></el-input>
+                </el-form-item>
+                <el-form-item label="Password" prop="password">
+                    <el-input v-model="ruleForm.password" placeholder="Please enter password" type="password"
+                    size="large" clearable></el-input>
+                </el-form-item>
+                <p class="app-note">Forget Password? <router-link to="/forget-password">Forget</router-link></p>
+                <el-form-item>
+                    <el-button class="app-login-button" type="primary" @click="submitForm"
+                    :disabled="signInButtonDisabled" :loading="signInButtonLoading">
+                        Sign In
+                    </el-button>
+                </el-form-item>
+            </el-form>
+            <el-divider class="app-divider" border-style="dashed"> OR </el-divider>
+            <img class="app-google-login-button" src="/img/google/2x/btn_google_signin_dark_normal_web@2x.png" @click="signInByGoogle"/>
+            <p class="app-note">Don't have an account? <router-link to="/sign-up">Sign up</router-link></p>
+        </div>
     </div>
 </template>
 
 
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { onBeforeMount, reactive, ref } from 'vue'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import userApi from '../../services/user-api'
 import router from '../../router'
 
+const props = defineProps({
+    redirect: {
+        type: String,
+        default: '',
+    },
+})
 
 interface RuleForm {
-  
     email: string
     password: string
-
-  
 }
 
 const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
-
+const signInButtonLoading = ref(false)
+const signInButtonDisabled = ref(false)
 const ruleForm = ref<RuleForm>({
     email: '',
     password: '',
 })
-
-const rules = reactive <FormRules<RuleForm>> ({
-    email:  [
+const rules = reactive<FormRules<RuleForm>>({
+    email: [
         { required: true, message: 'Please input user name', trigger: 'blur' },
-  ],
-    password:  [
+    ],
+    password: [
         { required: true, message: 'Please input user name', trigger: 'blur' },
-  ],
+    ],
 })
 
 const submitForm = async (formEl: FormInstance | undefined) => {
@@ -75,7 +75,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     }
     await ruleFormRef.value?.validate();
     const userloginStatus: any = await userApi.userLogin(signInData)
-    console.log(userloginStatus)
     if ( userloginStatus.code === 0 ){
         let usertoken = userloginStatus.data[0].token;
         localStorage.setItem('token',usertoken);
@@ -89,46 +88,41 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 }
 </script>
 
-
-
-
-
 <style scoped>
-
-.app-sign-in-form-container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
+.app-sign-in {
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-
 }
-
-.app-sign-in-form-info-input-items {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    width:30vw;
-    
+.app-sign-in-form-container{
+    width: 50%;
+    height: 50%;
 }
-
-.loginButton {
+.app-sign-in-form-info-input-form {
+    margin: 80px auto;
     margin-bottom: 0;
+    width: 40%;
 }
-
-.app-sign-in-form-to-forget-password {
-    position: absolute;
-   top:80%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
+.app-sign-in-form-info-input-form .el-form-item{
+    width: 100%;
 }
-
-
+.app-sign-in-form-info-input-form .app-note{
+    text-align: left;
+    box-sizing: border-box;
+    padding-left: 100px;
+}
+.app-login-button {
+    height: 44px;
+    width: 100%;
+}
+.app-google-login-button {
+    height: 44px;
+    cursor: pointer;
+}
+.app-divider{
+    margin: 30px auto;
+    width: 40%;
+}
 </style>
