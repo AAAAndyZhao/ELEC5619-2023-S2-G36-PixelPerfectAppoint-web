@@ -69,10 +69,6 @@ export default {
   width: auto; /* 自动调整宽度 */
   height: auto; /* 自动调整高度 */
 }
-.back{
-    position: absolute;
-    left: 20px;
-}
 
 
 </style>
