@@ -7,6 +7,7 @@ import axios from "../utils/axios.js";
 
 const getUserProfile = async () => {
     const userId = localStorage.getItem('userId');
+    // /info/{id}
     if (userId === null
         || userId === undefined
         || userId === '') {
@@ -14,6 +15,8 @@ const getUserProfile = async () => {
     }
     try {
         // return a fake user info response
+        return await axios.get(`/user/info/${userId}`);
+
         return {
             code: 0,
             data: [
@@ -164,27 +167,6 @@ const verifyResetPasswordToken = async (token, userId) => {
     }
 }
 
-const getUserInformation = async(page, limit, filterProps) => {
-    const userId = localStorage.getItem('userId');
-    if (userId === null
-        || userId === undefined
-        || userId === '') {
-        throw new Error('User id is invalid');
-    }
-    try{
-        return {
-            code: 0,
-            msg: 'OK',
-            data: [],
-            totalCount: 0,
-            totalPages: 0,
-        }
-    }catch (error) {
-        console.error('Error during requesting user posts: ', error);
-        throw error;
-    }
-}
-
 const getUserFollowings = async (userId, page, size, searchText) => {
     if (userId === null
         || userId === undefined
@@ -307,7 +289,6 @@ export default {
     checkUserNameExist,
     signOut,
     verifyResetPasswordToken,
-    getUserInformation,
     getUserFollowings,
     getUserFollowers,
     followUser,
