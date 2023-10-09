@@ -7,7 +7,6 @@ import axios from "../utils/axios.js";
 
 const getUserProfile = async () => {
     const userId = localStorage.getItem('userId');
-    // /info/{id}
     if (userId === null
         || userId === undefined
         || userId === '') {
@@ -16,18 +15,6 @@ const getUserProfile = async () => {
     try {
         // return a fake user info response
         return await axios.get(`/user/info/${userId}`);
-
-        return {
-            code: 0,
-            data: [
-                {
-                    id: 1,
-                    email: 'test@gmail.com',
-                    firstname: 'test',
-                    lastname: 'test',
-                }
-            ]
-        }
     } catch (error) {
         console.error('Error during requesting user info: ', error);
         throw error;
