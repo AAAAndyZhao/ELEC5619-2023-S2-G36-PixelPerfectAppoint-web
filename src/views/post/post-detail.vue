@@ -24,16 +24,13 @@ export default {
     const photos = ref([]);
     
     const showBigImage = (e) => {
-        console.log('showBigImage called');
         photoVisible.value = true;
         bigImgUrl.value = e.target.src;
-        console.log(photoVisible.value);
-        console.log('bigImgUrl', bigImgUrl.value);
+        
     };
 
     const closeBigImage = () => {
         photoVisible.value = false;
-        console.log("photoVisible", photoVisible.value);
     };
     
 
