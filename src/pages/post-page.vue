@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts"> 
-import { ref } from 'vue';
+
 import { ElCard } from 'element-plus';
 import router from '../router'
 
