@@ -5,6 +5,7 @@
 </template>
    
 <script >
+
   export default {
     props: {
       url: {
@@ -33,7 +34,7 @@
   left: 0;
   width: 100%; /* 填满屏幕宽度 */
   height: 100%; /* 填满屏幕高度 */
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   z-index: 1;
   display: flex;
   align-items: center;
