@@ -16,6 +16,7 @@ const uploadPhoto = async (photo) => {
         name: photo.name,
         description: photo.description,
         category_code: photo.categoryCode,
+        hidden: !photo.public,
     }
     if (hasCamParam(photo.camMaker)
     || hasCamParam(photo.camModel)
