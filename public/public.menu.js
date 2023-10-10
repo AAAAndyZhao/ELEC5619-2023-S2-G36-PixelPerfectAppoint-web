@@ -18,4 +18,15 @@ $MENU = {
         code: 2,
         value: 'Others'
     }],
+
+    "PHOTO_CATEGORY": [{
+        code: 0,
+        value: 'Uncategorized'
+    }, {
+        code: 1,
+        value: 'Landscape'
+    }, {
+        code: 2,
+        value: 'Portrait'
+    }],
 }
