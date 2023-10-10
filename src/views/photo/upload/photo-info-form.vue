@@ -46,6 +46,12 @@
             <el-form-item label="ISO" pro="iso">
                 <el-input :disabled="!props.photo" v-model="photoForm.iso" style="width: 100px;"></el-input>
             </el-form-item>
+            <el-form-item label="Public" pro="public">
+                <el-switch
+                    v-model="photoForm.public"
+                    size="large"
+                />
+            </el-form-item>
         </el-form>
     </div>
 </template>
@@ -73,6 +79,7 @@ const photoForm = ref({
     exposureTime: '',
     fNumber: '',
     iso: '',
+    public: false
 });
 
 watchEffect(() => {
@@ -88,6 +95,7 @@ watchEffect(() => {
             exposureTime: '',
             fNumber: '',
             iso: '',
+            public: false
         };
         return;
     }
@@ -132,16 +140,6 @@ const rules = {
 }
 
 const photoCategories = ref($MENU['PHOTO_CATEGORY'])
-
-const validate = async () => {
-    await photoFormRef.value.validate((valid, fields) => {
-        if (valid) {
-            console.log('submit!')
-        } else {
-            console.log('error submit!', fields)
-        }
-    })
-}
 </script>
 
 <style scoped>

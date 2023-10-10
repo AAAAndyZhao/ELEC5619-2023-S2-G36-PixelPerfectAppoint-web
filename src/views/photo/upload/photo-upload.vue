@@ -83,7 +83,8 @@ const uploadImageSuccessHandler = (response, file, fileList) => {
             name: file.name,
             imageId: response.data[0].id,
             description: '',
-            categoryCode: 0
+            categoryCode: 0,
+            public: true
         }
         if (response.data.length > 0 && response.data[0].metadata) {
             const metadata = response.data[0].metadata;
@@ -106,10 +107,11 @@ const uploadImageSuccessHandler = (response, file, fileList) => {
     }
 }
 const uploadImageErrorHandler = (err, file, fileList) => {
-    console.log(err, file, fileList)
+    console.err(err, file, fileList)
+    ElMessage.error('Upload failed! ' + err.message || 'Unknown error');
 }
 const hanldeUploadProgress = (event, file, fileList) => {
-    console.log(event, file, fileList)
+    
 }
 const beforeUpload = (file) => {
     // file size limit
@@ -249,6 +251,7 @@ const handleSubmitPhotoUploads = async () => {
             // clear photoList and fileList
             photoList.value = [];
             fileList.value = [];
+            displayedPhotoInfo.value = null;
         } else {
             ElMessage.error(`Submit failed, ${failureCount} photos failed to upload`);
         }
