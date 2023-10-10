@@ -53,9 +53,13 @@ const routes = [
             {
                 path: 'detail/:id',
                 components: {
+                    title: () => import('./components/title/title.vue'),
                     header: () => import('./components/main-header.vue'),
                     content: () => import('./views/post/post-detail.vue'),
                     info: () => import('./components/user-info/user-info-detail.vue'),
+                    description: () => import('./components/description/description.vue'),
+                    comment: () => import('./views/comment/comment.vue')
+                    
                 }
             }
         ]
@@ -89,6 +93,7 @@ const routes = [
                     header: () => import('./components/main-header.vue'),
                     content: () => import('./views/user/user-main.vue'),
                     side: () => import('./components/main-side.vue')
+                    
                 }
             },
         ]
