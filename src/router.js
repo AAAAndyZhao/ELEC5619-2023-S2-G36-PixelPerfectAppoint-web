@@ -75,6 +75,23 @@ const routes = [
                 }
             },
         ]
+    },
+    {
+        path: '/photo',
+        redirect: '/photo/upload',
+        component: MainPage,
+        name: 'PhotoPage',
+        meta: { requiresAuth: true },
+        children: [
+            {
+                path: 'upload',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/photo/upload/photo-upload.vue'),
+                    side: () => import('./components/main-side.vue')
+                }
+            }
+        ]
     }
 ]
 
