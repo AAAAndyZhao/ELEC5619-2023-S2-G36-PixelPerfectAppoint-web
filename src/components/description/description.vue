@@ -12,7 +12,7 @@ interface description{
     descriptionDetail: string;
 }
 const description = ref<description>({
-    descriptionDetail: '这是一段描述',
+    descriptionDetail: 'This is a description',
 });
 </script>
 
