@@ -11,7 +11,7 @@
             <div class="app-user-username">@{{ user.userName }}</div>
         </div>
         <div class="app-user-card-introduction">
-            <div class="app-user-introduction">{{ user.description ? user.description : 'This user is too lazy to leave a introduction.' }}</div>
+            <div class="app-user-introduction">{{ user.description ? shortenText(user.description, 100) : 'This user is too lazy to leave a introduction.' }}</div>
         </div>
         <div class="app-user-card-operation">
             <slot name="default">
@@ -38,6 +38,13 @@ defineProps({
         }
     }
 })
+
+const shortenText = (text, length) => {
+    if (text.length > length) {
+        return text.substring(0, length) + '...';
+    }
+    return text;
+}
 </script>
 
 <style scoped>
@@ -78,8 +85,8 @@ defineProps({
     height: 100%;
     flex: 1;
     box-sizing: border-box;
-    padding: 10px 20px;
     color: #999;
+    overflow: hidden;
 }
 .app-user-card-operation {
     min-width: 230px;
