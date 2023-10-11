@@ -45,8 +45,23 @@ const routes = [
         component: () => import('./pages/user/account-activation.vue')
     },
     {
+        path: '/',
+        redirect: '/main',
+        component: MainPage,
+        name: 'MainPage',
+        children: [
+            {
+                path: 'main',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/Home.vue'),
+                    side: () => import('./components/main-side.vue')
+                }
+            }
+        ]
+    },
+    {
         path: '/post',
-        redirect: '/post',
         component: Postpage,
         name: 'PostPage',
         children: [
@@ -65,16 +80,16 @@ const routes = [
         ]
     },
     {
-        path: '/',
-        redirect: '/main',
+        path: '/post',
         component: MainPage,
-        name: 'MainPage',
+        name: 'PostUploadPage',
+        meta: { requiresAuth: true },
         children: [
             {
-                path: 'main',
+                path: 'upload',
                 components: {
                     header: () => import('./components/main-header.vue'),
-                    content: () => import('./views/Home.vue'),
+                    content: () => import('./views/photo/upload/photo-upload.vue'),
                     side: () => import('./components/main-side.vue')
                 }
             }
@@ -103,23 +118,6 @@ const routes = [
         redirect: '/photo/upload',
         component: MainPage,
         name: 'PhotoPage',
-        meta: { requiresAuth: true },
-        children: [
-            {
-                path: 'upload',
-                components: {
-                    header: () => import('./components/main-header.vue'),
-                    content: () => import('./views/photo/upload/photo-upload.vue'),
-                    side: () => import('./components/main-side.vue')
-                }
-            }
-        ]
-    },
-    {
-        path: '/post',
-        redirect: '/post/upload',
-        component: MainPage,
-        name: 'PostUploadPage',
         meta: { requiresAuth: true },
         children: [
             {
