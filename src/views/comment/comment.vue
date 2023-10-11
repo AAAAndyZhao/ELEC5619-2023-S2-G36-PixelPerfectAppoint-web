@@ -121,7 +121,7 @@ const comments = ref<Comment[]>([
   },
   {
     id: 4,
-    userName: '蛤？',
+    userName: '?????',
     content: 'Hello World',
     avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
     commentDate: '2021-07-01 12:00:00',
@@ -152,9 +152,6 @@ const loadMoreSubComments = (comment: Comment) => {
     }
 }
 
-
-
-// 初始加载
 loadMoreComment();
 
 

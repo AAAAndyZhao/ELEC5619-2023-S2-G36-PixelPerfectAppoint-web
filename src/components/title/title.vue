@@ -12,7 +12,7 @@ interface PostInfo{
     createdate: string;
 }
 const postInfo = ref<PostInfo>({
-    title: '不会有人不看吧',
+    title: 'come on come on come on',
     createdate: '2021-07-01 12:00:00',
 });
 </script>
