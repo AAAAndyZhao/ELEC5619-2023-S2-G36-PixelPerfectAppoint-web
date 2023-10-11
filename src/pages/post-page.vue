@@ -13,6 +13,9 @@
             <el-card class="app-main-post-photo">
                 <router-view name="content"/>
             </el-card>
+            <el-card>
+                <like theme="filled" size="30" :fill="isLiked ? '#ff0000' : '#333'" @click="toggleLike"/>
+            </el-card>
             
             <el-card class = "app-main-user-info">
                 <div>
@@ -34,9 +37,15 @@
 
 import { ElCard } from 'element-plus';
 import router from '../router'
+import {Like} from '@icon-park/vue-next'
+import { ref } from 'vue';
 
 //点击返回按钮返回上一页
+const isLiked = ref(false);
 
+const toggleLike = () => {
+    isLiked.value = !isLiked.value;
+};
 
 const backTo = () => {
     router.back();
