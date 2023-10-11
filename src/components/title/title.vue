@@ -6,8 +6,8 @@
 </template>
 
 <script setup lang = 'ts'>
-import{ref} from 'vue'
-interface PostInfo{
+import { ref } from 'vue'
+interface PostInfo {
     title: string;
     createdate: string;
 }
@@ -19,12 +19,13 @@ const postInfo = ref<PostInfo>({
 
 
 <style scoped>
-.post-title{
+.post-title {
     font-size: 20px;
     font-weight: 500;
     text-align: left;
 }
-.post-date{
+
+.post-date {
     font-size: 12px;
     color: #999;
     text-align: left;

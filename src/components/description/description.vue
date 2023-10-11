@@ -1,14 +1,12 @@
 <template>
-
     <div class="description">
         <p class="description-detail"> {{ description.descriptionDetail }} </p>
     </div>
-    
 </template>
 
 <script setup lang = 'ts'>
-import{ref} from 'vue'
-interface description{
+import { ref } from 'vue'
+interface description {
     descriptionDetail: string;
 }
 const description = ref<description>({
@@ -17,7 +15,7 @@ const description = ref<description>({
 </script>
 
 <style scoped>
-.description{
+.description {
     text-align: left;
 }
 </style>

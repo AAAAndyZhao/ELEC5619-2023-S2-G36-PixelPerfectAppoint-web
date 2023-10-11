@@ -1,43 +1,43 @@
 <template>
     <el-contrainer class="app-container">
         <el-header class="app-header">
-            <router-view name="header"/>
+            <router-view name="header" />
         </el-header>
         <el-main class="app-main">
-            <div class = "tools">
-                <el-button type="info" class="back" @click="backTo" icon= "DArrowLeft" round></el-button>
+            <div class="tools">
+                <el-button type="info" class="back" @click="backTo" icon="DArrowLeft" round></el-button>
             </div>
             <el-card class="app-main-post-title">
-                <router-view name="title"/>
+                <router-view name="title" />
             </el-card>
             <el-card class="app-main-post-photo">
-                <router-view name="content"/>
+                <router-view name="content" />
             </el-card>
             <el-card>
-                <like theme="filled" size="30" :fill="isLiked ? '#ff0000' : '#333'" @click="toggleLike"/>
+                <like theme="filled" size="30" :fill="isLiked ? '#ff0000' : '#333'" @click="toggleLike" />
             </el-card>
-            
-            <el-card class = "app-main-user-info">
+
+            <el-card class="app-main-user-info">
                 <div>
-                    <router-view name="info"/>
+                    <router-view name="info" />
                 </div>
             </el-card>
             <el-card class="app-main-post-description">
-                <router-view name="description"/>
+                <router-view name="description" />
             </el-card>
             <el-card>
-                <router-view name="comment"/>
+                <router-view name="comment" />
             </el-card>
-            
+
         </el-main>
     </el-contrainer>
 </template>
 
-<script setup lang="ts"> 
+<script setup lang="ts">
 
 import { ElCard } from 'element-plus';
 import router from '../router'
-import {Like} from '@icon-park/vue-next'
+import { Like } from '@icon-park/vue-next'
 import { ref } from 'vue';
 
 //点击返回按钮返回上一页
@@ -60,57 +60,63 @@ const backTo = () => {
 
 </script>
 <style scoped>
-.app-container{
+.app-container {
     display: block;
     height: 100%;
 }
-.app-main-post-title{
+
+.app-main-post-title {
     border: none !important;
     box-shadow: none !important;
 }
-.tools{
+
+.tools {
     display: flex;
-    align-items: center; 
+    align-items: center;
     justify-content: space-between;
 }
-.post-comment{
+
+.post-comment {
     margin-top: 20px;
 }
-.app-main-user-info{
+
+.app-main-user-info {
     border-top: none !important;
     border-left: none !important;
     border-right: none !important;
     margin-top: 10px;
     margin-bottom: 10px;
     box-shadow: none !important;
-    
+
 }
-.post-info-detail{
+
+.post-info-detail {
     display: flex;
     margin-top: 1px;
     border: none !important;
     margin-top: 10px;
-    
+
 }
-.post-like{
+
+.post-like {
     display: flex;
     border: none !important;
     box-shadow: none !important;
-    
+
 }
-.post-info{
+
+.post-info {
     border-top: none !important;
     border-left: none !important;
     border-right: none !important;
     box-shadow: none !important;
 }
-.app-main-post-photo{
-    border:none !important;
+
+.app-main-post-photo {
+    border: none !important;
 }
 
-.app-main-post-description{
-    border:none !important;
+.app-main-post-description {
+    border: none !important;
     box-shadow: none !important;
-}
-
-</style>
+}</style>

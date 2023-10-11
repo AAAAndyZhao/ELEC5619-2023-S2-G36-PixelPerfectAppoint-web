@@ -1,6 +1,6 @@
 <template>
-    <div class = "user-info-container">
-        <div class = "user-info" >
+    <div class="user-info-container">
+        <div class="user-info">
             <el-avatar :src=userInfo.userAvatar :size="70"></el-avatar>
             <div class="user-info-detail">
                 <div class="user-name">
@@ -18,10 +18,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-interface userInfo{
-    userName : string;
-    userId : string;
-    userAvatar : string;
+interface userInfo {
+    userName: string;
+    userId: string;
+    userAvatar: string;
 }
 
 const userInfo = ref<userInfo>({
@@ -38,28 +38,29 @@ const userInfo = ref<userInfo>({
 </script>
 
 <style scoped>
-.user-info{
+.user-info {
     display: flex;
-    
+
 }
-.user-info-container{
+
+.user-info-container {
     display: flex;
-    align-items: center; 
+    align-items: center;
     justify-content: space-between;
 }
 
-.user-info-detail{
+.user-info-detail {
     margin-left: 12px;
     flex: 1;
     overflow: auto;
 }
 
-.user-name{
+.user-name {
     display: flex;
     align-items: center;
 }
-.user-id{
+
+.user-id {
     text-align: left;
 }
-
 </style>
