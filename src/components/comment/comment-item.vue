@@ -8,17 +8,17 @@
             <div class="comment-comment">
                 <span>{{ comment?.content }}</span>
             </div>
-           <div class="comment-info">
+            <div class="comment-info">
                 <div class="comment-info-time">
                     <span>{{ comment?.commentDate }}</span>
                 </div>
                 <div class="comment-info-reply">
                     <el-link :underline="false">Reply</el-link>
                 </div>
-                
-           </div>
+
+            </div>
         </div>
-        
+
 
     </div>
 </template>
@@ -27,40 +27,44 @@
 import { defineProps } from 'vue';
 
 const props = defineProps({
-  comment: Object as () => ({
-    userName: string,
-    content: String,
-    avatar:String
-    commentDate: String
-  })
+    comment: Object as () => ({
+        userName: string,
+        content: String,
+        avatar: String
+        commentDate: String
+    })
 });
 
 </script>
 
 <style scoped>
-.comment-container{
+.comment-container {
     display: flex;
-    
+
 }
-.comment-detail{
+
+.comment-detail {
     margin-left: 10px;
     position: relative;
 }
-.comment-name{
+
+.comment-name {
     text-align: left;
     font-size: 13px;
 }
-.comment-comment{
+
+.comment-comment {
     text-align: left;
     font-size: 15px;
     line-height: 24px;
 }
-.comment-info{
+
+.comment-info {
     display: flex;
     font-size: 12px;
-    
+
 }
-.comment-info-reply{
+
+.comment-info-reply {
     margin-left: 60px;
-}
-</style>
+}</style>

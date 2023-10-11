@@ -10,7 +10,7 @@
         <div class="load-more-subComments">
             <el-button v-if="comment.canLoadMoreSubComments" @click="loadMoreSubComments(comment)" text>load more replies</el-button>
         </div> 
-         
+        
     </div>
     <div>
         <el-button v-if="canLoadMoreComment" @click="loadMoreComment">load more comments</el-button>
@@ -45,7 +45,7 @@ interface subComment{
 }
 
 const comments = ref<Comment[]>([
-  {
+{
     id: 1,
     userName: 'John',
     content: 'Hello World',
@@ -74,8 +74,8 @@ const comments = ref<Comment[]>([
             commentDate: '2021-07-01 12:00:00',
         },
     ]
-  },
-  {
+},
+{
     id: 2,
     userName: 'gongfan',
     content: 'Hello World',
@@ -111,21 +111,21 @@ const comments = ref<Comment[]>([
             commentDate: '2021-07-01 12:00:00',
         },
     ]
-  },
-  {
+},
+{
     id: 3,
     userName: 'wulll',
     content: 'Hello World',
     avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
     commentDate: '2021-07-01 12:00:00',
-  },
-  {
+},
+{
     id: 4,
     userName: '?????',
     content: 'Hello World',
     avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
     commentDate: '2021-07-01 12:00:00',
-  }
+}
 ])
 
 
@@ -134,13 +134,13 @@ const displayedComments = ref<Comment[]>([]);
 const commentsPerPage = 1;
 const canLoadMoreComment = ref(comments.value.length > 0);
 const loadMoreComment = () => {
-  const moreComments = comments.value.splice(0, commentsPerPage);
-  moreComments.forEach(comment => {
-    initializeSubComments(comment);
-  });
-  displayedComments.value = [...displayedComments.value, ...moreComments];
-  canLoadMoreComment.value = comments.value.length > 0;
-}
+    const moreComments = comments.value.splice(0, commentsPerPage);
+    moreComments.forEach(comment => {
+        initializeSubComments(comment);
+    });
+    displayedComments.value = [...displayedComments.value, ...moreComments];
+    canLoadMoreComment.value = comments.value.length > 0;
+    }
 
 
 const subCommentsPerPage = 2;
