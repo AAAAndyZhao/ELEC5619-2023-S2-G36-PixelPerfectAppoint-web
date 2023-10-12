@@ -30,7 +30,7 @@ const handleClick = (tab) => {
 
 <style scoped>
 #app-user-profile-container {
-    height: 100%;
+    height: calc(100vh - 100px);
     padding: 10px;
     box-sizing: border-box;
     display: flex;
