@@ -293,7 +293,7 @@ onMounted(() => {
 
 <style scoped>
 .app-photo-upload {
-    height: 100%;
+    height: calc(100vh - 100px);
     width: 100%;
     box-sizing: border-box;
     padding: 20px;
