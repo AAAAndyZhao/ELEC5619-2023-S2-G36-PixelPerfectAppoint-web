@@ -45,8 +45,23 @@ const routes = [
         component: () => import('./pages/user/account-activation.vue')
     },
     {
+        path: '/',
+        redirect: '/main',
+        component: MainPage,
+        name: 'MainPage',
+        children: [
+            {
+                path: 'main',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/Home.vue'),
+                    side: () => import('./components/main-side.vue')
+                }
+            }
+        ]
+    },
+    {
         path: '/post',
-        redirect: '/post',
         component: Postpage,
         name: 'PostPage',
         children: [
@@ -65,16 +80,16 @@ const routes = [
         ]
     },
     {
-        path: '/',
-        redirect: '/main',
+        path: '/post',
         component: MainPage,
-        name: 'MainPage',
+        name: 'PostUploadPage',
+        meta: { requiresAuth: true },
         children: [
             {
-                path: 'main',
+                path: 'upload',
                 components: {
                     header: () => import('./components/main-header.vue'),
-                    content: () => import('./views/Home.vue'),
+                    content: () => import('./views/photo/upload/photo-upload.vue'),
                     side: () => import('./components/main-side.vue')
                 }
             }
@@ -116,19 +131,40 @@ const routes = [
         ]
     },
     {
-        path: '/post',
-        redirect: '/post/upload',
+        path: '/appointment',
         component: MainPage,
-        name: 'PostUploadPage',
+        name: 'AppointmentPage',
         meta: { requiresAuth: true },
         children: [
             {
-                path: 'upload',
+                path: 'create',
                 components: {
                     header: () => import('./components/main-header.vue'),
-                    content: () => import('./views/photo/upload/photo-upload.vue'),
+                    content: () => import('./views/appointment/create/appointment-create.vue'),
                     side: () => import('./components/main-side.vue')
-                }
+                },
+                children: [
+                    {
+                        path: 'information',
+                        component: () => import('./views/appointment/create/basic-information.vue'),
+                    },
+                    {
+                        path: 'location',
+                        component: () => import('./views/appointment/create/location.vue'),
+                    },
+                    {
+                        path: 'participants',
+                        component: () => import('./views/appointment/create/participants.vue'),
+                    },
+                ]
+            },
+            {
+                path: 'create/success',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/appointment/create/success.vue'),
+                    side: () => import('./components/main-side.vue')
+                },
             }
         ]
     }

@@ -171,11 +171,11 @@ const getUserFollowings = async (userId, page, size, searchText) => {
         throw new Error('User id is invalid');
     }
     if (isNaN(page) || page === null || page === undefined || page === ''
-    || page < 1) {
+        || page < 1) {
         throw new Error('Page is invalid');
     }
     if (isNaN(size) || size === null || size === undefined || size === ''
-    || size < 1) {
+        || size < 1) {
         throw new Error('Size is invalid');
     }
 
@@ -186,7 +186,7 @@ const getUserFollowings = async (userId, page, size, searchText) => {
             size: size,
             search_text: searchText
         });
-    }catch (error) {
+    } catch (error) {
         console.error('Error during requesting user followings: ', error);
         throw error;
     }
@@ -199,11 +199,11 @@ const getUserFollowers = async (userId, page, size, searchText) => {
         throw new Error('User id is invalid');
     }
     if (isNaN(page) || page === null || page === undefined || page === ''
-    || page < 1) {
+        || page < 1) {
         throw new Error('Page is invalid');
     }
     if (isNaN(size) || size === null || size === undefined || size === ''
-    || size < 1) {
+        || size < 1) {
         throw new Error('Size is invalid');
     }
     try {
@@ -213,7 +213,7 @@ const getUserFollowers = async (userId, page, size, searchText) => {
             size: size,
             search_text: searchText
         });
-    }catch (error) {
+    } catch (error) {
         console.error('Error during requesting user followers: ', error);
         throw error;
     }
@@ -241,7 +241,7 @@ const followUser = async (targetUserId) => {
                 authorization: token
             }
         });
-    }catch (error) {
+    } catch (error) {
         console.error('Error during requesting follow user: ', error.message);
         throw error;
     }
@@ -269,8 +269,21 @@ const unfollowUser = async (targetUserId) => {
                 authorization: token
             }
         });
-    }catch (error) {
+    } catch (error) {
         console.error('Error during requesting unfollow user: ', error.message);
+        throw error;
+    }
+}
+
+const searchUser = async (searchText, page, size) => {
+    try {
+        return await axios.post(`/user/search`, {
+            search_text: searchText,
+            page: page,
+            size: size
+        });
+    } catch (error) {
+        console.error('Error during requesting search user: ', error.message);
         throw error;
     }
 }
@@ -289,5 +302,6 @@ export default {
     getUserFollowings,
     getUserFollowers,
     followUser,
-    unfollowUser
+    unfollowUser,
+    searchUser
 }
