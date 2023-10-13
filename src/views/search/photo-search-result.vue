@@ -4,7 +4,7 @@
         :display="['title', 'text', 'updateDatetime', 'author', 'likes']">
         </PhotoCard>
         <div v-else class="app-no-data-text">
-            No post found
+            No photo found
         </div>
     </div>
 </template>
@@ -34,6 +34,11 @@ const hasData = computed(() => {
     box-sizing: border-box;
     padding: 0 20px 0 0;
     text-align: left;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 5px;
 }
 .app-no-data-text{
     font-size: 16px;
