@@ -31,6 +31,7 @@
         <div class="app-search-result">
             <UserSearchResult v-if="resultDisplayProps.user" :data="userData" />
             <PostSearchResult v-if="resultDisplayProps.post" :data="postData" />
+            <PhotoSearchResult v-if="resultDisplayProps.photo" :data="photoData" />
             <el-pagination layout="prev, pager, next" :total="pageProps.total" :current-page="pageProps.page"
                 :page-size="pageProps.size" @update:current-page="pageProps.handleCurrentPageChange" />
         </div>
@@ -39,10 +40,11 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { ElMessage } from 'element-plus';
 import { Search } from '@element-plus/icons-vue';
 import UserSearchResult from '@/views/search/user-search-result.vue';
 import PostSearchResult from '@/views/search/post-search-result.vue';
-import { ElMessage } from 'element-plus';
+import PhotoSearchResult from '@/views/search/photo-search-result.vue';
 import userApi from '@/services/user-api';
 import postApi from '@/services/post-api';
 
@@ -78,13 +80,13 @@ const searchTypeToSortedByOptionsMap = {
 const loading = ref(false);
 const searchForm = ref({
     searchText: '',
-    searchType: 'user',
+    searchType: 'photo',
     sortedBy: 'relevance',
 });
 const resultDisplayProps = ref({
-    user: true,
+    user: false,
     post: false,
-    photo: false,
+    photo: true,
 });
 
 const pageProps = ref({
@@ -98,7 +100,159 @@ const pageProps = ref({
 });
 
 const userData = ref([]);
-const photoData = ref([]);
+const photoData = ref([
+        {
+            "id": "aefa5b97-ec21-45e1-ad81-dd4674059406",
+            "owner": {
+                "id": "ff34d5ce-c025-4810-b49a-c38864574972",
+                "userName": "andyzhaocccc",
+                "alias": "AAAAndyZ",
+                "avatarUrl": "default",
+                "description": "I am a test user",
+                "professional": 3,
+                "followerCount": 0,
+                "following": false,
+                "followed": false
+            },
+            "name": "gcx1",
+            "description": "gcx1",
+            "uploadDatetime": "2023-10-13 19:03:28.0",
+            "location": null,
+            "hidden": false,
+            "deleted": false,
+            "url": "https://objectstorage.ap-sydney-1.oraclecloud.com/p/7qynybiKqne3SrXORgpDM70fVLwCnSl-bveQ-LCZDfs8VxDt-_LfaxAG-JTCCjQ8/n/sdhdhqcmzyxg/b/ppa-photo-bucket/o/344a5e8e-5a6d-4dc2-9153-44bfeabf493a",
+            "thumbnailUrl": "https://objectstorage.ap-sydney-1.oraclecloud.com/p/7qynybiKqne3SrXORgpDM70fVLwCnSl-bveQ-LCZDfs8VxDt-_LfaxAG-JTCCjQ8/n/sdhdhqcmzyxg/b/ppa-photo-bucket/o/344a5e8e-5a6d-4dc2-9153-44bfeabf493a_thumbnail",
+            "photoParamId": null,
+            "photoCategory": {
+                "code": 0,
+                "name": "Uncategorized"
+            },
+            "photoParam": null
+        },
+        {
+            "id": "b90982f6-8960-4555-a246-2b6f6872c8f1",
+            "owner": {
+                "id": "ff34d5ce-c025-4810-b49a-c38864574972",
+                "userName": "andyzhaocccc",
+                "alias": "AAAAndyZ",
+                "avatarUrl": "default",
+                "description": "I am a test user",
+                "professional": 3,
+                "followerCount": 0,
+                "following": false,
+                "followed": false
+            },
+            "name": "gcx2.PNG",
+            "description": "gcx2",
+            "uploadDatetime": "2023-10-13 19:03:28.0",
+            "location": null,
+            "hidden": false,
+            "deleted": false,
+            "url": "https://objectstorage.ap-sydney-1.oraclecloud.com/p/7qynybiKqne3SrXORgpDM70fVLwCnSl-bveQ-LCZDfs8VxDt-_LfaxAG-JTCCjQ8/n/sdhdhqcmzyxg/b/ppa-photo-bucket/o/31ccfd82-9d29-4dad-8a63-a8b51bae29ff",
+            "thumbnailUrl": "https://objectstorage.ap-sydney-1.oraclecloud.com/p/7qynybiKqne3SrXORgpDM70fVLwCnSl-bveQ-LCZDfs8VxDt-_LfaxAG-JTCCjQ8/n/sdhdhqcmzyxg/b/ppa-photo-bucket/o/31ccfd82-9d29-4dad-8a63-a8b51bae29ff_thumbnail",
+            "photoParamId": null,
+            "photoCategory": {
+                "code": 2,
+                "name": "Portrait"
+            },
+            "photoParam": null
+        },
+        {
+            "id": "cb988e30-dbbb-40a0-9a36-b303ee855941",
+            "owner": {
+                "id": "ff34d5ce-c025-4810-b49a-c38864574972",
+                "userName": "andyzhaocccc",
+                "alias": "AAAAndyZ",
+                "avatarUrl": "default",
+                "description": "I am a test user",
+                "professional": 3,
+                "followerCount": 0,
+                "following": false,
+                "followed": false
+            },
+            "name": "gcx.PNG",
+            "description": "gcx3",
+            "uploadDatetime": "2023-10-13 20:05:34.0",
+            "location": null,
+            "hidden": false,
+            "deleted": false,
+            "url": "https://objectstorage.ap-sydney-1.oraclecloud.com/p/7qynybiKqne3SrXORgpDM70fVLwCnSl-bveQ-LCZDfs8VxDt-_LfaxAG-JTCCjQ8/n/sdhdhqcmzyxg/b/ppa-photo-bucket/o/b4174eb1-b273-4f87-8ef0-2bf1f73fe0cf",
+            "thumbnailUrl": "https://objectstorage.ap-sydney-1.oraclecloud.com/p/7qynybiKqne3SrXORgpDM70fVLwCnSl-bveQ-LCZDfs8VxDt-_LfaxAG-JTCCjQ8/n/sdhdhqcmzyxg/b/ppa-photo-bucket/o/b4174eb1-b273-4f87-8ef0-2bf1f73fe0cf_thumbnail",
+            "photoParamId": null,
+            "photoCategory": {
+                "code": 2,
+                "name": "Portrait"
+            },
+            "photoParam": {
+                "id": "9e204e42-569b-4eeb-870e-3fb6a23b530d",
+                "camMaker": null,
+                "camModel": null,
+                "lens": null,
+                "focalLength": null,
+                "exposureTime": null,
+                "iso": null,
+                "resolutionX": 7339,
+                "resolutionY": 5504,
+                "fnumber": null
+            }
+        },
+        {
+            "id": "aefa5b97-ec21-45e1-ad81-dd4674059406",
+            "owner": {
+                "id": "ff34d5ce-c025-4810-b49a-c38864574972",
+                "userName": "andyzhaocccc",
+                "alias": "AAAAndyZ",
+                "avatarUrl": "default",
+                "description": "I am a test user",
+                "professional": 3,
+                "followerCount": 0,
+                "following": false,
+                "followed": false
+            },
+            "name": "gcx1",
+            "description": "gcx1",
+            "uploadDatetime": "2023-10-13 19:03:28.0",
+            "location": null,
+            "hidden": false,
+            "deleted": false,
+            "url": "https://objectstorage.ap-sydney-1.oraclecloud.com/p/7qynybiKqne3SrXORgpDM70fVLwCnSl-bveQ-LCZDfs8VxDt-_LfaxAG-JTCCjQ8/n/sdhdhqcmzyxg/b/ppa-photo-bucket/o/344a5e8e-5a6d-4dc2-9153-44bfeabf493a",
+            "thumbnailUrl": "https://objectstorage.ap-sydney-1.oraclecloud.com/p/7qynybiKqne3SrXORgpDM70fVLwCnSl-bveQ-LCZDfs8VxDt-_LfaxAG-JTCCjQ8/n/sdhdhqcmzyxg/b/ppa-photo-bucket/o/344a5e8e-5a6d-4dc2-9153-44bfeabf493a_thumbnail",
+            "photoParamId": null,
+            "photoCategory": {
+                "code": 0,
+                "name": "Uncategorized"
+            },
+            "photoParam": null
+        },
+        {
+            "id": "b90982f6-8960-4555-a246-2b6f6872c8f1",
+            "owner": {
+                "id": "ff34d5ce-c025-4810-b49a-c38864574972",
+                "userName": "andyzhaocccc",
+                "alias": "AAAAndyZ",
+                "avatarUrl": "default",
+                "description": "I am a test user",
+                "professional": 3,
+                "followerCount": 0,
+                "following": false,
+                "followed": false
+            },
+            "name": "gcx2.PNG",
+            "description": "gcx2",
+            "uploadDatetime": "2023-10-13 19:03:28.0",
+            "location": null,
+            "hidden": false,
+            "deleted": false,
+            "url": "https://objectstorage.ap-sydney-1.oraclecloud.com/p/7qynybiKqne3SrXORgpDM70fVLwCnSl-bveQ-LCZDfs8VxDt-_LfaxAG-JTCCjQ8/n/sdhdhqcmzyxg/b/ppa-photo-bucket/o/31ccfd82-9d29-4dad-8a63-a8b51bae29ff",
+            "thumbnailUrl": "https://objectstorage.ap-sydney-1.oraclecloud.com/p/7qynybiKqne3SrXORgpDM70fVLwCnSl-bveQ-LCZDfs8VxDt-_LfaxAG-JTCCjQ8/n/sdhdhqcmzyxg/b/ppa-photo-bucket/o/31ccfd82-9d29-4dad-8a63-a8b51bae29ff_thumbnail",
+            "photoParamId": null,
+            "photoCategory": {
+                "code": 2,
+                "name": "Portrait"
+            },
+            "photoParam": null
+        }
+    ]);
 const postData = ref([]);
 
 const searchBoxPlaceHolder = computed(() => {

@@ -1,11 +1,11 @@
 <template>
     <div class="app-photo-card">
-        <img :src="photo.thumbnail" :height="height" :width="width" />
+        <img :src="photo.thumbnailUrl" width="100" />
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const emits = defineEmits(["click"]);
 const props = defineProps({
@@ -23,9 +23,27 @@ const props = defineProps({
     },
 });
 
+const cardStyle = computed(() => {
+    return {
+        height: `${props.height}px`,
+        width: `${props.width}px`,
+    };
+});
 
 </script>
 
 <style scoped>
-
+.app-photo-card{
+    height: auto;
+    width: 30%;
+    background-color: red;
+    border-width: 2px;
+    border-style: solid;
+    border-color: black;
+    box-sizing: border-box;
+}
+img{
+    width: 100%;
+    height: auto;
+}
 </style>
