@@ -7,11 +7,15 @@
             </el-icon>
         </div>
         <div class="app-user-card-info">
-            <div class="app-user-alias">{{ user.alias }}</div>
-            <div class="app-user-username">@{{ user.userName }}</div>
+            <div v-if="display.includes('alias')" class="app-user-alias">{{ user.alias }}</div>
+            <div v-if="display.includes('userName')" class="app-user-username">@{{ user.userName }}</div>
         </div>
-        <div class="app-user-card-introduction">
-            <div class="app-user-introduction">{{ user.description ? shortenText(user.description, 100) : 'This user is too lazy to leave a introduction.' }}</div>
+        <div v-if="display.includes('description')" class="app-user-card-introduction">
+            <div class="app-user-introduction">{{ user.description ? shortenText(user.description, 200) : 'This user is too lazy to leave a introduction.' }}</div>
+        </div>
+        <div v-if="display.includes('followerCount')" class="app-user-follower-count">
+            <span class="app-user-follower-count-number">{{ shortenFollowerCount(user.followerCount) }}</span>
+            <span class="app-user-follower-count-text">Followers</span>
         </div>
         <div class="app-user-card-operation">
             <slot name="default">
@@ -32,9 +36,17 @@ defineProps({
                 alias: 'unknown',
                 userName: 'unknown',
                 description: 'unknown',
+                followerCount: 0,
                 avatar: '',
                 professional: 0
             }
+        }
+    },
+    display: {
+        type: Array,
+        required: false,
+        default: () => {
+            return ['alias', 'userName', 'description', 'followerCount'];
         }
     }
 })
@@ -44,6 +56,10 @@ const shortenText = (text, length) => {
         return text.substring(0, length) + '...';
     }
     return text;
+}
+
+const shortenFollowerCount = (count) => {
+    return $FUNC.shortenNumber(count);
 }
 </script>
 
@@ -88,8 +104,27 @@ const shortenText = (text, length) => {
     color: #999;
     overflow: hidden;
 }
+.app-user-follower-count{
+    width: 150px;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .app-user-follower-count-number{
+        font-size: 16px;
+        font-weight: bold;
+        font-style: italic;
+        margin-right: 5px;
+    }
+    .app-user-follower-count-text{
+        font-size: 12px;
+        font-style: italic;
+    }
+}
 .app-user-card-operation {
-    min-width: 230px;
+    min-width: 0;
     width: auto;
     height: 100%;
     box-sizing: border-box;
