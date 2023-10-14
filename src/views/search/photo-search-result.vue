@@ -1,5 +1,5 @@
 <template>
-    <div class="app-photo-search-list">
+    <div ref="containerRef" class="app-photo-search-list">
         <PhotoCard v-for="photo in data" :key="photo.id" :photo="photo" v-if="hasData"
         :display="['title', 'text', 'updateDatetime', 'author', 'likes']">
         </PhotoCard>
@@ -10,9 +10,14 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
 import PhotoCard from '@/components/photo/photo-card.vue';
 import { ElMessage } from 'element-plus';
+import Masonry from 'masonry-layout';
+import imagesLoaded from 'imagesloaded';
+
+const containerRef = ref(null);
+let msnry;
 
 const props = defineProps({
     data: {
@@ -25,6 +30,35 @@ const props = defineProps({
 const hasData = computed(() => {
     return props.data && props.data.length > 0;
 })
+watch(() => props.data, () => {
+    nextTick(() => {
+        imagesLoaded(containerRef.value, doMasonryLayout);
+    })
+})
+const doMasonryLayout = () => {
+    if (msnry) {
+        msnry.reloadItems();
+        msnry.layout();
+        console.log('layout reloaded')
+        return;
+    }
+    msnry = new Masonry(containerRef.value, {
+        itemSelector: '.app-photo-card',
+        columnWidth: '.app-photo-card',
+        horizontalOrder: true,
+        gutter: 20,
+    });
+    console.log('layout created')
+}
+onMounted(() => {
+    nextTick(() => {
+        imagesLoaded(containerRef.value, doMasonryLayout);
+    })
+})
+
+onBeforeUnmount(() => {
+    msnry.destroy();
+})
 </script>
 
 <style scoped>
@@ -34,11 +68,6 @@ const hasData = computed(() => {
     box-sizing: border-box;
     padding: 0 20px 0 0;
     text-align: left;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 5px;
 }
 .app-no-data-text{
     font-size: 16px;
@@ -46,15 +75,5 @@ const hasData = computed(() => {
     text-align: center;
     margin-top: 20px;
 }
-.app-mutual-followed-button,
-:deep(.app-unfollow-dropdown-item) {
-    width: 160px;
-}
-:deep(.app-unfollow-dropdown-item) {
-    width: 160px;
-    justify-content: center;
-    padding: 7px 19px;
-    box-sizing: border-box;
-    height: 30px;
-}
+
 </style>

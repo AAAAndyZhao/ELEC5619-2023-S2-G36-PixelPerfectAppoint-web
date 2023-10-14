@@ -27,7 +27,7 @@
             <span class="app-likes-text">Likes</span>
         </div>
         <div v-if="display.includes('author')"  class="app-author">
-            <div class="app-avator">
+            <div class="app-avatar">
                 <!-- <img v-if="post.author && post.author.avatarUrl" 
                 :src="post.author.avatarUrl"/>
                 <el-icon v-else>
@@ -167,7 +167,7 @@ const shortenLikesNumber = (number) => {
     align-items: flex-start;
     justify-content: flex-start;
     
-    .app-avator{
+    .app-avatar{
         aspect-ratio: 1 / 1;
         height: 30%;
     }
@@ -184,9 +184,9 @@ const shortenLikesNumber = (number) => {
     }
 }
 
-.app-avator img,
-.app-avator .el-icon,
-.app-avator .el-icon svg {
+.app-avatar img,
+.app-avatar .el-icon,
+.app-avatar .el-icon svg {
     width: 100%;
     height: 100%;
     border-radius: 50%;
