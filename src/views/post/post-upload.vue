@@ -10,35 +10,28 @@
                         Photos{{ fileList.length > 0 ? ` (${fileList.length})` : '' }}
                     </div>
                 </template>
-                <el-upload
-                class="app-upload"
-                method="post"
-                :accept="acceptFileTypes"
-                v-model:file-list="fileList"
-                :action="uploadActionUrl"
-                :headers="uploadRequestHeaders"
-                name="file"
-                list-type="picture-card"
-                :on-remove="handleRemove"
-                :on-error="uploadImageErrorHandler"
-                :on-success="uploadImageSuccessHandler"
-                :on-progress="hanldeUploadProgress"
-                :before-upload="beforeUpload">
-                    <el-icon><Plus /></el-icon>
+                <el-upload class="app-upload" method="post" :accept="acceptFileTypes" v-model:file-list="fileList"
+                    :action="uploadActionUrl" :headers="uploadRequestHeaders" name="file" list-type="picture-card"
+                    :on-remove="handleRemove" :on-error="uploadImageErrorHandler" :on-success="uploadImageSuccessHandler"
+                    :on-progress="hanldeUploadProgress" :before-upload="beforeUpload">
+                    <el-icon>
+                        <Plus />
+                    </el-icon>
                 </el-upload>
             </el-card>
             <div class="app-info-container">
                 <el-card class="app-post-info-form-container">
                     <template #header>
                         <div class="app-container-header">
-                            Post Information {{ displayedPhotoInfo === null ? '(please add photos first)' : `` }}
+                            Post Information {{ displayedPhotoInfo === null ? '(please add photos first)' : `` }}{{ title }}
                         </div>
                     </template>
-                    <PostInfoForm :photo="displayedPhotoInfo" :title="title" :description="description" @update:photo="handlePhotoFormUpdate"/>
+                    <PostInfoForm :photo="displayedPhotoInfo" @update:postInfo="receiveData" />
+
                 </el-card>
                 <div class="app-upload-buttons-container">
                     <el-button type="primary" size="large" @click="handleSubmitPhotoUploads"
-                    :disabled="photoList.length === 0">Submit</el-button>
+                        :disabled="photoList.length === 0">Submit</el-button>
                     <el-button size="large" @click="handleReset">Reset</el-button>
                 </div>
             </div>
@@ -52,6 +45,7 @@ import axios from '@/utils/axios.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import PostInfoForm from '../post/post-info-form.vue'
 import photoApi from '@/services/photo-api'
+import { OneThirdRotation } from '@icon-park/vue-next'
 
 
 const loading = ref(false)
@@ -61,8 +55,13 @@ const uploadRequestHeaders = ref({
     'authorization': localStorage.getItem('token')
 });
 const displayedPhotoInfo = ref(null);
-const title = ref('');
-const description = ref('');
+const postInfo = {
+    uid: localStorage.getItem('userId'),
+    title: '',
+    description: '',
+    image_ids: [],
+    cover_image_id: ''
+}
 const acceptFileTypes = ref('.jpeg, .png, .jpg, .jfif')
 const uploadActionUrl = ref(`${axios.defaults.baseURL}/image/upload?uid=${localStorage.getItem('userId')}`)
 const handlePictureCardPreview = (file) => {
@@ -86,7 +85,7 @@ const uploadImageSuccessHandler = (response, file, fileList) => {
             url: file.url, // used for click event finding the selected photo
             imageId: response.data[0].id,
         }
-     
+
         photoList.value.push(newItme);
         selectPhoto(newItme);
     } else {
@@ -100,7 +99,7 @@ const uploadImageErrorHandler = (err, file, fileList) => {
     ElMessage.error('Upload failed! ' + err.message || 'Unknown error');
 }
 const hanldeUploadProgress = (event, file, fileList) => {
-    
+
 }
 const beforeUpload = (file) => {
     // file size limit
@@ -152,22 +151,21 @@ const handleClickPhotoItem = (event) => {
         }
     }
 }
-const handlePhotoFormUpdate = (photo) => {
-    // update the photo in photoList
-    for (const item of photoList.value) {
-        if (item.url === photo.url) {
-            Object.assign(item, photo);
-            break;
-        }
-    }
-}
-const isFormValid = (title,description) => {
+const receiveData = (updatedPhotoForm) => {
+    // 在这里处理子组件传递过来的数据
+    postInfo.title = updatedPhotoForm.title;
+    postInfo.description = updatedPhotoForm.description;
+    console.log("postInfo", postInfo);
+};
+
+
+const isFormValid = (title, description) => {
     if (!title || title.length === 0
-    || title.length > 50) {
+        || title.length > 50) {
         console.error('title', title.value)
         return false;
     }
-    if (!description|| description.length === 0) {
+    if (!description || description.length === 0) {
         console.error('description', description.value)
         return false;
     }
@@ -175,17 +173,21 @@ const isFormValid = (title,description) => {
 }
 const handleSubmitPhotoUploads = async () => {
     let allValid = true;
-    
-        if (!isFormValid(title.value,description.value)) {
-                    allValid = false;
-        }
-    
+    for (const photo of photoList.value) {
+       postInfo.image_ids.push(photo.imageId);
+    }
+
+
+    if (!isFormValid(postInfo.title, postInfo.description)) {
+        allValid = false;
+    }
+
     if (!allValid) {
         ElMessage.error('Please fill in all the required fields');
         return;
     }
     // submit photoList to backend
-    try{
+    try {
         loading.value = true;
         const resList = await photoApi.uploadPhotoList(photoList.value);
         let failureCount = 0;
@@ -203,10 +205,10 @@ const handleSubmitPhotoUploads = async () => {
         } else {
             ElMessage.error(`Submit failed, ${failureCount} photos failed to upload`);
         }
-    }catch(err){
+    } catch (err) {
         ElMessage.error('Submit failed');
         return;
-    }finally{
+    } finally {
         loading.value = false;
     }
 }
@@ -246,25 +248,30 @@ onMounted(() => {
     box-sizing: border-box;
     padding: 20px;
 }
+
 .app-post-upload-title {
     height: 36px;
 }
+
 .app-post-upload-title h2 {
     text-align: left;
     margin-block-start: 0;
 }
+
 .app-post-photo-upload-content {
     height: calc(100% - 36px);
     width: 100%;
     box-sizing: border-box;
     padding: 30px 0;
 }
+
 .app-post-photo-upload-content {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
 }
+
 .app-post-photo-upload-content>.app-photos-container {
     height: 100%;
     width: 64%;
@@ -272,7 +279,8 @@ onMounted(() => {
     padding: 10px;
     text-align: left;
 }
-.app-post-photo-upload-content>.app-info-container{
+
+.app-post-photo-upload-content>.app-info-container {
     height: 100%;
     width: 34%;
     box-sizing: border-box;
@@ -282,12 +290,14 @@ onMounted(() => {
     justify-content: space-between;
     align-items: flex-start;
 }
+
 .app-post-photo-upload-content>.app-info-container>.app-photos-info-form-container {
     height: calc(100% - 100px);
     width: 100%;
     box-sizing: border-box;
     padding: 10px;
 }
+
 .app-post-photo-upload-content>.app-info-container>.app-upload-buttons-container {
     height: 100px;
     width: 100%;
@@ -298,20 +308,23 @@ onMounted(() => {
     justify-content: center;
     flex-direction: row;
 }
-.app-post-photo-upload-content .app-container-header{
+
+.app-post-photo-upload-content .app-container-header {
     font-weight: bold;
     font-size: 18px;
     text-align: left;
 }
+
 :deep(.app-post-photo-upload-content .el-card__body) {
     height: calc(100% - 64px);
     width: 100%;
     box-sizing: border-box;
 }
-:deep(.app-post-info-form-container .el-form-item){
+
+:deep(.app-post-info-form-container .el-form-item) {
     margin-bottom: 30px;
 }
+
 .app-upload-buttons-container .el-button {
     width: 200px;
-}
-</style>
+}</style>
