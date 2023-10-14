@@ -126,7 +126,7 @@ const routes = [
                 path: 'upload',
                 components: {
                     header: () => import('./components/main-header.vue'),
-                    content: () => import('./views/photo/upload/photo-upload.vue'),
+                    content: () => import('./views/post/post-upload.vue'),
                     side: () => import('./components/main-side.vue')
                 }
             }
