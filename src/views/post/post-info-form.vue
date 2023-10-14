@@ -47,7 +47,7 @@ watchEffect(() => {
 });
 
 watchEffect(() => {
-    emits('update:postInfo', { ...photoForm });
+    emits('update:postInfo', { ...photoForm.value });
 })
 
 const rules = {
