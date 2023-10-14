@@ -167,6 +167,21 @@ const routes = [
                 },
             }
         ]
+    },
+    {
+        path: '/search',
+        component: MainPage,
+        children: [
+            {
+                path: '',
+                name: 'SearchPage',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/search/search.vue'),
+                    side: () => import('./components/main-side.vue')
+                }
+            }
+        ]
     }
 ]
 

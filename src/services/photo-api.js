@@ -19,12 +19,12 @@ const uploadPhoto = async (photo) => {
         hidden: !photo.public,
     }
     if (hasCamParam(photo.camMaker)
-    || hasCamParam(photo.camModel)
-    || hasCamParam(photo.exposureTime)
-    || hasCamParam(photo.fNumber)
-    || hasCamParam(photo.iso)
-    || hasCamParam(photo.focalLength)
-    || hasCamParam(photo.lens)) {
+        || hasCamParam(photo.camModel)
+        || hasCamParam(photo.exposureTime)
+        || hasCamParam(photo.fNumber)
+        || hasCamParam(photo.iso)
+        || hasCamParam(photo.focalLength)
+        || hasCamParam(photo.lens)) {
         body.param = {};
         if (hasCamParam(photo.camMaker)) {
             body.param.camMaker = photo.camMaker;
@@ -76,7 +76,39 @@ const uploadPhotoList = (photoList) => {
     })
 }
 
+const searchPhotos = async (
+    searchText, page = 1, size = 30,
+    categoryCode, sortedBy, order,
+    photoParamProps
+) => {
+    try {
+        const body = {
+            search_text: searchText,
+            page: page,
+            size: size,
+            category_code: categoryCode,
+            sorted_by: sortedBy,
+            order: order
+        }
+        if (photoParamProps.camMaker){
+            body.cam_maker = photoParamProps.camMaker
+        }
+        if (photoParamProps.camModel){
+            body.cam_model = photoParamProps.camModel
+        }
+        if (photoParamProps.lens){
+            body.lens = photoParamProps.lens
+        }
+
+        return axios.post("/photo/search", body);
+    } catch (error) {
+        console.error("Error during searching photos: ", error.message)
+        throw error
+    }
+}
+
 export default {
     uploadPhoto,
-    uploadPhotoList
+    uploadPhotoList,
+    searchPhotos
 }
