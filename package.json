@@ -17,6 +17,8 @@
     "dayjs": "^1.11.9",
     "element-plus": "^2.3.12",
     "flag-icon-css": "^4.1.7",
+    "imagesloaded": "^5.0.0",
+    "masonry-layout": "^4.2.2",
     "moment": "^2.29.4",
     "validator": "^13.11.0",
     "vue": "^3.3.4",

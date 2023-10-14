@@ -97,6 +97,9 @@ const uploadImageSuccessHandler = (response, file, fileList) => {
             // could be f/1.4, f/2.8, f/4, f/5.6, f/8, f/11, f/16, f/22, or without 'f/', regex should consider all these cases
             newItme.fNumber = extractCameraParamByRegex(/f\/(.*)/, metadata.f_number);
             newItme.iso = metadata.iso;
+            newItme.resolutionX = metadata.resolution_x || metadata.width;
+            newItme.resolutionY = metadata.resolution_y || metadata.height;
+
         }
         photoList.value.push(newItme);
         selectPhoto(newItme);
@@ -107,7 +110,7 @@ const uploadImageSuccessHandler = (response, file, fileList) => {
     }
 }
 const uploadImageErrorHandler = (err, file, fileList) => {
-    console.err(err, file, fileList)
+    console.error(err, file, fileList)
     ElMessage.error('Upload failed! ' + err.message || 'Unknown error');
 }
 const hanldeUploadProgress = (event, file, fileList) => {
@@ -123,6 +126,7 @@ const beforeUpload = (file) => {
     ElMessage.success('Uploading...');
 }
 const extractCameraParamByRegex = (regex, str) => {
+    if (!str) return str;
     const match = str.match(regex);
     if (match) {
         return match[1];
@@ -185,36 +189,36 @@ const isFormValid = (photoItem) => {
         console.error('categoryCode', photoItem.categoryCode)
         return false;
     }
-    if (!photoItem.camMaker || photoItem.camMaker.length > 64) {
-        console.error('camMaker', photoItem.camMaker)
-        return false;
-    }
-    if (!photoItem.camModel || photoItem.camModel.length > 64) {
-        console.error('camModel', photoItem.camModel)
-        return false;
-    }
-    if (!photoItem.lens || photoItem.lens.length > 64) {
-        console.error('lens', photoItem.lens)
-        return false;
-    }
+    // if (!photoItem.camMaker || photoItem.camMaker.length > 64) {
+    //     console.error('camMaker', photoItem.camMaker)
+    //     return false;
+    // }
+    // if (!photoItem.camModel || photoItem.camModel.length > 64) {
+    //     console.error('camModel', photoItem.camModel)
+    //     return false;
+    // }
+    // if (!photoItem.lens || photoItem.lens.length > 64) {
+    //     console.error('lens', photoItem.lens)
+    //     return false;
+    // }
     const focalLengthRegex = /^\d{1,4}$/;
     const exposureTimeRegex = /^1\/\d{1,4}$|^1$|^\d{1,5}$/;
     const fNumberRegex = /^\d{1,2}\.?\d{0,2}$/;
     const isoRegex = /^\d{1,4}$/;
-    if (!photoItem.focalLength || !focalLengthRegex.test(photoItem.focalLength)) {
-        console.error('focalLength', photoItem.focalLength)
+    if (photoItem.focalLength && !focalLengthRegex.test(photoItem.focalLength)) {
+        ElMessage.error('Focal length is invalid');
         return false;
     }
-    if (!photoItem.exposureTime || !exposureTimeRegex.test(photoItem.exposureTime)) {
-        console.error('exposureTime', photoItem.exposureTime)
+    if (photoItem.exposureTime && !exposureTimeRegex.test(photoItem.exposureTime)) {
+        ElMessage.error('Exposure time is invalid');
         return false;
     }
-    if (!photoItem.fNumber || !fNumberRegex.test(photoItem.fNumber)) {
-        console.error('fNumber', photoItem.fNumber)
+    if (photoItem.fNumber && !fNumberRegex.test(photoItem.fNumber)) {
+        ElMessage.error('F number is invalid');
         return false;
     }
-    if (!photoItem.iso || !isoRegex.test(photoItem.iso)) {
-        console.error('iso', photoItem.iso)
+    if (photoItem.iso && !isoRegex.test(photoItem.iso)) {
+        ElMessage.error('ISO is invalid');
         return false;
     }
     return true;
@@ -233,7 +237,7 @@ const handleSubmitPhotoUploads = async () => {
         }
     }
     if (!allValid) {
-        ElMessage.error('Please fill in all the required fields');
+        ElMessage.error('Some form items are invalid');
         return;
     }
     // submit photoList to backend
@@ -293,7 +297,7 @@ onMounted(() => {
 
 <style scoped>
 .app-photo-upload {
-    height: calc(100vh - 100px);
+    min-height: calc(100vh - 100px);
     width: 100%;
     box-sizing: border-box;
     padding: 20px;
@@ -318,11 +322,12 @@ onMounted(() => {
     align-items: flex-start;
 }
 .app-photo-upload-content>.app-photos-container {
-    height: 100%;
+    min-height: calc(100vh - 100px);
     width: 64%;
     box-sizing: border-box;
     padding: 10px;
     text-align: left;
+    overflow: auto;
 }
 .app-photo-upload-content>.app-info-container{
     height: 100%;
