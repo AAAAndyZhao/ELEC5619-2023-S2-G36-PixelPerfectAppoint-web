@@ -24,7 +24,22 @@ const getUserPosts = async (page, limit, filterProps) => {
         throw error;
     }
 }
+const uploadPost = async (post) => {
+    const userId = localStorage.getItem('userId');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    try{
+        return await axios.post('/post/add', post);
+    }catch(error){
+        throw error;
+    }
+    
+}
 
 export default {
-    getUserPosts
+    getUserPosts,
+    uploadPost,
 }
