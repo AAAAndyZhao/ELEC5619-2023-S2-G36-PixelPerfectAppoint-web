@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { ref, watchEffect } from 'vue';
+import { reactive, ref, watchEffect } from 'vue';
 
 const photoFormRef = ref(null)
 //从父组件传递过来的数据
@@ -22,22 +22,15 @@ const props = defineProps({
         type: Object,
         required: false
     },
-    title: {
-        type: String,
-        required: false
-    },
-    description: {
-        type: String,
-        required: false
-    },
+    
 });
 //向父组件传递数据
-const emits = defineEmits(['update:photo']);
+const emits = defineEmits([ 'update:postInfo']);
 
 const photoForm = ref({
     title: '',
     description: '',
-    public: false
+    
 });
 
 
@@ -47,18 +40,15 @@ watchEffect(() => {
         photoForm.value = {
             title: '',
             description: '',
-            public: false
         };
         return;
     }
-    
-
 
 });
+
 watchEffect(() => {
-    if (!props.photo || !photoFormRef.value) return;
-    emits('update:photo', { ...photoForm.value });
-});
+    emits('update:postInfo', { ...photoForm });
+})
 
 const rules = {
     title: [
