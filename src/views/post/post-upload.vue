@@ -32,7 +32,7 @@
                     <PostInfoForm :photo="photoUploaded" @update:postInfo="receiveData" />
                     <div class="app-container-footer">
                         Cover Image:
-                        <el-image style="width: 100px; height: 100px" :src="cover_image_url" fit="fill" />
+                        <el-image style="width: 100px; height: 100px" :src="cover_image_url" fit="fill" size=""/>
                     </div>
 
 
@@ -52,7 +52,7 @@
 import { ref, onMounted, nextTick } from 'vue'
 import axios from '@/utils/axios.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import PostInfoForm from '../post/post-info-form.vue'
+import PostInfoForm from '../../components/post/post-info-form.vue'
 import postApi from '@/services/post-api'
 import { OneThirdRotation } from '@icon-park/vue-next'
 
@@ -282,23 +282,24 @@ onMounted(() => {
 }
 
 .app-post-photo-upload-content {
-    height: calc(100% - 36px);
+    height: 100% ;
     width: 100%;
     box-sizing: border-box;
     padding: 30px 0;
 }
 
 .app-post-photo-upload-content {
+   
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
 }
 
 
 .app-post-photo-upload-content>.app-photos-container {
     height: 100%;
-    width: 64%;
+    width: 100%;
     box-sizing: border-box;
     padding: 10px;
     text-align: left;
@@ -310,7 +311,7 @@ onMounted(() => {
 
 .app-post-photo-upload-content>.app-info-container {
     height: 100%;
-    width: 34%;
+    width: 100%;
     box-sizing: border-box;
     padding: 0;
     display: flex;

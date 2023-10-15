@@ -63,6 +63,6 @@ const searchPosts = async (searchText, page = 1, size = 30, sortedBy, order, onl
 
 export default {
     getUserPosts,
-    uploadPost,,
+    uploadPost,
     searchPosts
 }
