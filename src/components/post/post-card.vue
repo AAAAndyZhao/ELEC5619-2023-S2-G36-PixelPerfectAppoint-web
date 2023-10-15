@@ -1,10 +1,15 @@
 <template>
     <el-card class="app-post-card" body-class="app-post-card-body">
         <div class="app-post-card-img">
-            <img :src="post.coverImageUrl" alt="avatar" v-if="post.coverUrl"/>
-            <!-- todo: default post cover image -->
+            <el-image v-if="post.coverUrl" :src="post.coverUrl">
+                <template #error>
+                    <el-icon>
+                        <Picture />
+                    </el-icon>
+                </template>
+            </el-image>
             <el-icon v-else>
-                <Avatar />
+                <Picture />
             </el-icon>
         </div>
         <div class="app-post-card-content">
