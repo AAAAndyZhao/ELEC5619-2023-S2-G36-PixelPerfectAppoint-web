@@ -7,7 +7,10 @@
             <el-card class="app-photos-container">
                 <template #header>
                     <div class="app-container-header">
-                        Photos{{ fileList.length > 0 ? ` (${fileList.length})` : '' }}
+                        Photos{{ fileList.length > 0 ? ` (${fileList.length})` : ' ' }}
+                    </div>
+                    <div class="app-container-tips">
+                        (By default the latest uploaded photo will be used as the cover, if you want to change the cover, please click on the uploaded photo)
                     </div>
                 </template>
                 <el-upload class="app-upload" method="post" :accept="acceptFileTypes" v-model:file-list="fileList"
@@ -23,12 +26,12 @@
                 <el-card class="app-post-info-form-container">
                     <template #header>
                         <div class="app-container-header">
-                            Post Information {{ displayedPhotoInfo === null ? '(please add photos first)' : `` }}{{ title }}
+                            Post Information {{ photoUploaded === null ? '(please add photos first)' : `` }}{{ title }}
                         </div>
                     </template>
-                    <PostInfoForm :photo="displayedPhotoInfo" @update:postInfo="receiveData" />
+                    <PostInfoForm :photo="photoUploaded" @update:postInfo="receiveData" />
                     <div class="app-container-footer">
-                        Cover Image: 
+                        Cover Image:
                         <el-image style="width: 100px; height: 100px" :src="cover_image_url" fit="fill" />
                     </div>
 
@@ -36,7 +39,7 @@
 
                 </el-card>
                 <div class="app-upload-buttons-container">
-                    <el-button type="primary" size="large" @click="handleSubmitPhotoUploads"
+                    <el-button type="primary" size="large" @click="handleSubmitPostUploads"
                         :disabled="photoList.length === 0">Submit</el-button>
                     <el-button size="large" @click="handleReset">Reset</el-button>
                 </div>
@@ -60,7 +63,7 @@ const photoList = ref([])
 const uploadRequestHeaders = ref({
     'authorization': localStorage.getItem('token')
 });
-const displayedPhotoInfo = ref(null);
+const photoUploaded = ref(null);
 const postInfo = {
     uid: localStorage.getItem('userId'),
     title: '',
@@ -82,9 +85,9 @@ const handleRemove = (file, fileList) => {
             break;
         }
     }
-    displayedPhotoInfo.value = null;
+    photoUploaded.value = null;
 }
-//上传成功后，返回response，file，fileList
+
 const uploadImageSuccessHandler = (response, file, fileList) => {
     if (response.code === 0) {
         ElMessage.success('Upload successfully!');
@@ -92,9 +95,9 @@ const uploadImageSuccessHandler = (response, file, fileList) => {
             url: file.url, // used for click event finding the selected photo
             imageId: response.data[0].id,
         }
-        console.log("测试", file.url,file.imageId)
         cover_image_url.value = file.url
         postInfo.cover_image_id = newItme.imageId
+        ElMessage.success('cover image changed');
         photoList.value.push(newItme);
         selectPhoto(newItme);
     } else {
@@ -128,8 +131,8 @@ const extractCameraParamByRegex = (regex, str) => {
     }
 }
 const selectPhoto = (photoItem, showError = false) => {
-    //将传入子组件的displayedPhotoInfo的值改为photoItem
-    displayedPhotoInfo.value = photoItem;
+
+    photoUploaded.value = photoItem;
     // unset all `.el-upload-list__item-thumbnail`'s parentElement border
     const doms = document.querySelectorAll('.el-upload-list__item-thumbnail');
     for (const dom of doms) {
@@ -156,6 +159,7 @@ const handleClickPhotoItem = (event) => {
             if (photo.url === src) {
                 console.log(photo)
                 cover_image_url.value = photo.url
+                ElMessage.success('cover image changed');
                 postInfo.cover_image_id = photo.imageId
                 selectPhoto(photo);
             }
@@ -163,7 +167,7 @@ const handleClickPhotoItem = (event) => {
     }
 }
 const receiveData = (updatedPhotoForm) => {
-    // 在这里处理子组件传递过来的数据
+
     postInfo.title = updatedPhotoForm.title;
     postInfo.text = updatedPhotoForm.description;
 };
@@ -181,7 +185,7 @@ const isFormValid = (title, description) => {
     }
     return true;
 }
-const handleSubmitPhotoUploads = async () => {
+const handleSubmitPostUploads = async () => {
     let allValid = true;
     for (const photo of photoList.value) {
         postInfo.image_ids.push(photo.imageId);
@@ -201,22 +205,22 @@ const handleSubmitPhotoUploads = async () => {
     try {
         loading.value = true;
         const res = await postApi.uploadPost(postInfo);
-        
+
         if (res.code === 0) {
             ElMessage.success('Submit successfully');
             // clear photoList and fileList 
             photoList.value = [];
             fileList.value = [];
-            displayedPhotoInfo.value = null;
+            photoUploaded.value = null;
             cover_image_url.value = ''
-            displayedPhotoInfo.value = null;
+            photoUploaded.value = null;
         } else {
             ElMessage.error(`Submit failed, ${failureCount} photos failed to upload`);
             postInfo.image_ids = [];
             photoList.value = [];
             fileList.value = [];
             cover_image_url.value = ''
-            displayedPhotoInfo.value = null;
+            photoUploaded.value = null;
         }
     } catch (error) {
         ElMessage.error('Submit failed');
@@ -224,7 +228,7 @@ const handleSubmitPhotoUploads = async () => {
         photoList.value = [];
         fileList.value = [];
         cover_image_url.value = ''
-        displayedPhotoInfo.value = null;
+        photoUploaded.value = null;
         return;
     } finally {
         loading.value = false;
@@ -244,7 +248,7 @@ const handleReset = () => {
         loading.value = true;
         photoList.value = [];
         fileList.value = [];
-        displayedPhotoInfo.value = null;
+        photoUploaded.value = null;
         setTimeout(() => {
             loading.value = false;
             ElMessage.success('Reset successfully');
@@ -290,6 +294,7 @@ onMounted(() => {
     align-items: flex-start;
 }
 
+
 .app-post-photo-upload-content>.app-photos-container {
     height: 100%;
     width: 64%;
@@ -297,6 +302,10 @@ onMounted(() => {
     padding: 10px;
     text-align: left;
 }
+.app-container-tips{
+    font-size: 15px;
+    color: #909399;
+    margin-top: 6px;}
 
 .app-post-photo-upload-content>.app-info-container {
     height: 100%;
@@ -309,7 +318,7 @@ onMounted(() => {
     align-items: flex-start;
 }
 
-.app-post-photo-upload-content>.app-info-container>.app-photos-info-form-container {
+.app-post-photo-upload-content>.app-info-container>.app-post-info-form-container {
     height: calc(100% - 50px);
     width: 100%;
     box-sizing: border-box;
@@ -334,7 +343,7 @@ onMounted(() => {
 }
 
 .app-post-photo-upload-content .app-container-footer {
-    font-size: 18px;
+   
     text-align: left;
     display: flex;
     flex-direction: row;
