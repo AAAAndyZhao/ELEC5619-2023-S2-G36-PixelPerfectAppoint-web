@@ -81,6 +81,8 @@ const props = defineProps({
 const emits = defineEmits(['update:photo']);
 
 const photoForm = ref({
+    // required fields
+    id: '',
     name: '',
     description: '',
     categoryCode: 0,
@@ -93,7 +95,7 @@ const photoForm = ref({
     iso: '',
     resolutionX: '',
     resolutionY: '',
-    public: false
+    public: false,  // converted from hidden field
 });
 
 const resolution = computed(() => {
