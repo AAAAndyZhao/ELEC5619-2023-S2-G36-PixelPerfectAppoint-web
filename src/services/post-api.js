@@ -32,8 +32,14 @@ const uploadPost = async (post) => {
         throw new Error('User id is invalid');
     }
     try{
-        return await axios.post('/post/add', post);
+        console.log("hhhhhhhh",post);
+        return await axios.post('/post/add', post,{
+            headers: {
+                "authorization": localStorage.getItem("token")
+            }
+        });
     }catch(error){
+       
         throw error;
     }
     

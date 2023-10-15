@@ -27,6 +27,12 @@
                         </div>
                     </template>
                     <PostInfoForm :photo="displayedPhotoInfo" @update:postInfo="receiveData" />
+                    <div class="app-container-footer">
+                        Cover Image: 
+                        <el-image style="width: 100px; height: 100px" :src="cover_image_url" fit="fill" />
+                    </div>
+
+
 
                 </el-card>
                 <div class="app-upload-buttons-container">
@@ -44,7 +50,7 @@ import { ref, onMounted, nextTick } from 'vue'
 import axios from '@/utils/axios.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import PostInfoForm from '../post/post-info-form.vue'
-import photoApi from '@/services/photo-api'
+import postApi from '@/services/post-api'
 import { OneThirdRotation } from '@icon-park/vue-next'
 
 
@@ -58,10 +64,11 @@ const displayedPhotoInfo = ref(null);
 const postInfo = {
     uid: localStorage.getItem('userId'),
     title: '',
-    description: '',
+    text: '',
     image_ids: [],
     cover_image_id: ''
 }
+const cover_image_url = ref('')
 const acceptFileTypes = ref('.jpeg, .png, .jpg, .jfif')
 const uploadActionUrl = ref(`${axios.defaults.baseURL}/image/upload?uid=${localStorage.getItem('userId')}`)
 const handlePictureCardPreview = (file) => {
@@ -85,7 +92,9 @@ const uploadImageSuccessHandler = (response, file, fileList) => {
             url: file.url, // used for click event finding the selected photo
             imageId: response.data[0].id,
         }
-
+        console.log("测试", file.url,file.imageId)
+        cover_image_url.value = file.url
+        postInfo.cover_image_id = newItme.imageId
         photoList.value.push(newItme);
         selectPhoto(newItme);
     } else {
@@ -146,6 +155,8 @@ const handleClickPhotoItem = (event) => {
         for (const photo of photoList.value) {
             if (photo.url === src) {
                 console.log(photo)
+                cover_image_url.value = photo.url
+                postInfo.cover_image_id = photo.imageId
                 selectPhoto(photo);
             }
         }
@@ -154,8 +165,7 @@ const handleClickPhotoItem = (event) => {
 const receiveData = (updatedPhotoForm) => {
     // 在这里处理子组件传递过来的数据
     postInfo.title = updatedPhotoForm.title;
-    postInfo.description = updatedPhotoForm.description;
-    console.log("postInfo", postInfo);
+    postInfo.text = updatedPhotoForm.description;
 };
 
 
@@ -174,11 +184,12 @@ const isFormValid = (title, description) => {
 const handleSubmitPhotoUploads = async () => {
     let allValid = true;
     for (const photo of photoList.value) {
-       postInfo.image_ids.push(photo.imageId);
+        postInfo.image_ids.push(photo.imageId);
     }
+    console.log("postInfo", postInfo);
 
 
-    if (!isFormValid(postInfo.title, postInfo.description)) {
+    if (!isFormValid(postInfo.title, postInfo.text)) {
         allValid = false;
     }
 
@@ -189,24 +200,31 @@ const handleSubmitPhotoUploads = async () => {
     // submit photoList to backend
     try {
         loading.value = true;
-        const resList = await photoApi.uploadPhotoList(photoList.value);
-        let failureCount = 0;
-        for (const res of resList) {
-            if (res.code !== 0) {
-                failureCount++;
-            }
-        }
-        if (failureCount === 0) {
+        const res = await postApi.uploadPost(postInfo);
+        
+        if (res.code === 0) {
             ElMessage.success('Submit successfully');
-            // clear photoList and fileList
+            // clear photoList and fileList 
             photoList.value = [];
             fileList.value = [];
             displayedPhotoInfo.value = null;
+            cover_image_url.value = ''
+            displayedPhotoInfo.value = null;
         } else {
             ElMessage.error(`Submit failed, ${failureCount} photos failed to upload`);
+            postInfo.image_ids = [];
+            photoList.value = [];
+            fileList.value = [];
+            cover_image_url.value = ''
+            displayedPhotoInfo.value = null;
         }
-    } catch (err) {
+    } catch (error) {
         ElMessage.error('Submit failed');
+        postInfo.image_ids = [];
+        photoList.value = [];
+        fileList.value = [];
+        cover_image_url.value = ''
+        displayedPhotoInfo.value = null;
         return;
     } finally {
         loading.value = false;
@@ -292,7 +310,7 @@ onMounted(() => {
 }
 
 .app-post-photo-upload-content>.app-info-container>.app-photos-info-form-container {
-    height: calc(100% - 100px);
+    height: calc(100% - 50px);
     width: 100%;
     box-sizing: border-box;
     padding: 10px;
@@ -315,8 +333,18 @@ onMounted(() => {
     text-align: left;
 }
 
+.app-post-photo-upload-content .app-container-footer {
+    font-size: 18px;
+    text-align: left;
+    display: flex;
+    flex-direction: row;
+    align-content: space-around;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
 :deep(.app-post-photo-upload-content .el-card__body) {
-    height: calc(100% - 64px);
+
     width: 100%;
     box-sizing: border-box;
 }
@@ -327,4 +355,5 @@ onMounted(() => {
 
 .app-upload-buttons-container .el-button {
     width: 200px;
-}</style>
+}
+</style>
