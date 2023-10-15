@@ -46,37 +46,7 @@ import postApi from '@/services/post-api';
 import { ElMessage } from 'element-plus';
 
 const loading = ref(false);
-const postData = ref([{
-    id: 1,
-    title: 'Post 1',
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nislnislnislnislnislnisl.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.`,
-    coverImageUrl: '',
-    lastModifyDateTime: '2021-10-10',
-}, {
-    id: 1,
-    title: 'Post 1',
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nislnislnislnislnislnisl.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.`,
-    coverImageUrl: '',
-    lastModifyDateTime: '2021-10-10',
-}, {
-    id: 1,
-    title: 'Post 1',
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nislnislnislnislnislnisl.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.`,
-    coverImageUrl: '',
-    lastModifyDateTime: '2021-10-10',
-}, {
-    id: 1,
-    title: 'Post 1',
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nislnislnislnislnislnisl.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.`,
-    coverImageUrl: '',
-    lastModifyDateTime: '2021-10-10',
-}, {
-    id: 1,
-    title: 'Post 1',
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nislnislnislnislnislnisl.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.`,
-    coverImageUrl: '',
-    lastModifyDateTime: '2021-10-10',
-}, ]);
+const postData = ref([]);
 const sortOptions = ref([{
     label: 'Newest',
     value: 'newest'

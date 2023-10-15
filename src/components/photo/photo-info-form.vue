@@ -19,6 +19,18 @@
                 </el-select>
             </el-form-item>
             <el-divider content-position="left">Advanced</el-divider>
+            <el-form-item label="Resolution" prop="camMaker">
+                <el-input disabled v-model="photoForm.resolutionX" size="large">
+                    <template #prefix>
+                        W- 
+                    </template>
+                </el-input>
+                <el-input disabled v-model="photoForm.resolutionY" size="large">                
+                    <template #prefix>
+                        H- 
+                    </template>
+                </el-input>
+            </el-form-item>
             <el-form-item label="Camera Maker" prop="camMaker">
                 <el-input :disabled="!props.photo" v-model="photoForm.camMaker" size="large"></el-input>
             </el-form-item>
@@ -57,7 +69,7 @@
 </template>
 
 <script setup>
-import { ref, watchEffect } from 'vue';
+import { ref, watchEffect, computed } from 'vue';
 
 const photoFormRef = ref(null)
 const props = defineProps({
@@ -69,6 +81,8 @@ const props = defineProps({
 const emits = defineEmits(['update:photo']);
 
 const photoForm = ref({
+    // required fields
+    id: '',
     name: '',
     description: '',
     categoryCode: 0,
@@ -79,7 +93,18 @@ const photoForm = ref({
     exposureTime: '',
     fNumber: '',
     iso: '',
-    public: false
+    resolutionX: '',
+    resolutionY: '',
+    public: false,  // converted from hidden field
+});
+
+const resolution = computed(() => {
+    if (!props.photo) return;
+    const { resolutionX, resolutionY } = props.photo;
+    return {
+        resolutionX: resolutionX ? resolutionX.toString() : '',
+        resolutionY: resolutionY ? resolutionY.toString() : ''
+    }
 });
 
 watchEffect(() => {

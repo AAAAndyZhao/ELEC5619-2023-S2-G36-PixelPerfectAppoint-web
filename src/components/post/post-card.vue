@@ -1,30 +1,56 @@
 <template>
     <el-card class="app-post-card" body-class="app-post-card-body">
         <div class="app-post-card-img">
-            <img :src="post.coverImageUrl" alt="avatar" v-if="post.coverImageUrl"/>
-            <!-- todo: default post cover image -->
+            <el-image v-if="post.coverUrl" :src="post.coverUrl">
+                <template #error>
+                    <el-icon>
+                        <Picture />
+                    </el-icon>
+                </template>
+            </el-image>
             <el-icon v-else>
-                <Avatar />
+                <Picture />
             </el-icon>
         </div>
         <div class="app-post-card-content">
-            <div class="app-post-title">{{ post.title }}</div>
-            <div class="app-post-content">
-                {{ post.content }}
+            <div v-if="display.includes('title')" class="app-post-title">{{ post.simpleText }}</div>
+            <div v-if="display.includes('text')" class="app-post-content">
+                {{ post.simpleText }}
             </div>
-            <div class="app-post-last-modify-time">
-                Last modified on <span>{{ post.lastModifyDateTime }}</span>
+            <div v-if="display.includes('updateDatetime')" class="app-post-last-modify-time">
+                <span>Last modified on</span>
+                <span class="app-date-value">{{ post.updateDatetime }}</span>
             </div>
         </div>
-        <div class="app-post-card-operation">
+        <div v-if="display.includes('operation')" class="app-post-card-operation">
             <slot name="default">
 
             </slot>
+        </div>
+        <div v-if="display.includes('likes')"  class="app-likes">
+            <span class="app-likes-number">{{ shortenLikesNumber(post.likes) }}</span>
+            <span class="app-likes-text">Likes</span>
+        </div>
+        <div v-if="display.includes('author')"  class="app-author">
+            <div class="app-avatar">
+                <img v-if="post.author && post.author.avatarUrl" 
+                :src="post.author.avatarUrl"/>
+                <el-icon v-else>
+                    <Avatar />
+                </el-icon>
+            </div>
+            <div class="app-author-alias">
+                {{ hasAuthor ? post.author.alias : 'Unknown' }}
+            </div>
+            <div class="app-author-username">
+                @{{ hasAuthor ? post.author.userName : 'Unknown' }}
+            </div>
         </div>
     </el-card>
 </template>
 
 <script setup>
+import { computed } from 'vue';
 defineProps({
     post: {
         type: Object,
@@ -33,12 +59,28 @@ defineProps({
             return {
                 id: 'unknown',
                 title: 'unknown',
-                content: 'unknown',
-                coverImageUrl: '',
-                lastModifyDateTime: 'unknown',
+                simpleText: 'unknown',
+                coverUrl: '',
+                updateDatetime: 'unknown',
+                author: null
             }
         }
+    },
+    display: {
+        type: Array,
+        required: false,
+        default: () => {
+            return ['title', 'text', 'updateDatetime', 'author', 'operation', 'likes'];
+        }
     }
+})
+
+const shortenLikesNumber = (number) => {
+    return $FUNC.shortenNumber(number);
+}
+
+const hasAuthor = computed(() => {
+    return post.author && post.author.id;
 })
 </script>
 
@@ -76,16 +118,18 @@ defineProps({
     flex: 1;
     box-sizing: border-box;
     padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 .app-post-card-content .app-post-title {
-    height: 30px;
+    width: 100%;
     font-size: 24px;
     font-weight: bold;
     box-sizing: border-box;
     margin-bottom: 10px;
 }
 .app-post-card-content .app-post-content {
-    height: calc(100% - 80px);
     width: 100%;
     font-size: 16px;
     margin-bottom: 10px;
@@ -99,10 +143,16 @@ defineProps({
     width: 100%;
     font-size: 16px;
     color: #909399;
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-end;
 }
-.app-post-card-content .app-post-last-modify-time span {
+.app-post-card-content .app-post-last-modify-time span.app-date-value {
     font-weight: bold;
     text-decoration: underline;
+    margin-left: 10px;
 }
 .app-post-card-operation {
     width: auto;
@@ -114,5 +164,57 @@ defineProps({
     align-items: center;
     justify-content: space-evenly;
 }
+.app-author{
+    width: 160px;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 10px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    
+    .app-avatar{
+        aspect-ratio: 1 / 1;
+        height: 30%;
+    }
 
+    .app-author-alias{
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 5px;
+    }
+    .app-author-username{
+        font-size: 14px;
+        color: #999;
+        margin-top: 5px;
+    }
+}
+
+.app-avatar img,
+.app-avatar .el-icon,
+.app-avatar .el-icon svg {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+.app-likes{
+    width: 150px;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .app-likes-number{
+        font-size: 16px;
+        font-weight: bold;
+        font-style: italic;
+        margin-right: 5px;
+    }
+    .app-likes-text{
+        font-size: 12px;
+        font-style: italic;
+    }
+}
 </style>

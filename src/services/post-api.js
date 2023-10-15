@@ -11,7 +11,7 @@ const getUserPosts = async (page, limit, filterProps) => {
         || userId === '') {
         throw new Error('User id is invalid');
     }
-    try{
+    try {
         return {
             code: 0,
             msg: 'OK',
@@ -19,7 +19,7 @@ const getUserPosts = async (page, limit, filterProps) => {
             totalCount: 0,
             totalPages: 0,
         }
-    }catch (error) {
+    } catch (error) {
         console.error('Error during requesting user posts: ', error);
         throw error;
     }
@@ -45,7 +45,24 @@ const uploadPost = async (post) => {
     
 }
 
+const searchPosts = async (searchText, page = 1, size = 30, sortedBy, order, onlyFollowing = false) => {
+    try {
+        return axios.post('/post/search', {
+            search_text: searchText,
+            page: page,
+            size: size,
+            sorted_by: sortedBy,
+            order: order
+            // onlyFollowing not implemented yet
+        });
+    } catch (error) {
+        console.error('Error during searching posts: ', error);
+        throw error;
+    }
+}
+
 export default {
     getUserPosts,
-    uploadPost,
+    uploadPost,,
+    searchPosts
 }
