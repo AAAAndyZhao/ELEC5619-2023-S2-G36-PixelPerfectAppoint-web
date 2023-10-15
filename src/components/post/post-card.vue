@@ -33,26 +33,24 @@
         </div>
         <div v-if="display.includes('author')"  class="app-author">
             <div class="app-avatar">
-                <!-- <img v-if="post.author && post.author.avatarUrl" 
+                <img v-if="post.author && post.author.avatarUrl" 
                 :src="post.author.avatarUrl"/>
                 <el-icon v-else>
-                    <Avatar />
-                </el-icon> -->
-                <el-icon>
                     <Avatar />
                 </el-icon>
             </div>
             <div class="app-author-alias">
-                {{ post.author.alias }}
+                {{ hasAuthor ? post.author.alias : 'Unknown' }}
             </div>
             <div class="app-author-username">
-                @{{ post.author.userName }}
+                @{{ hasAuthor ? post.author.userName : 'Unknown' }}
             </div>
         </div>
     </el-card>
 </template>
 
 <script setup>
+import { computed } from 'vue';
 defineProps({
     post: {
         type: Object,
@@ -80,6 +78,10 @@ defineProps({
 const shortenLikesNumber = (number) => {
     return $FUNC.shortenNumber(number);
 }
+
+const hasAuthor = computed(() => {
+    return post.author && post.author.id;
+})
 </script>
 
 <style scoped>

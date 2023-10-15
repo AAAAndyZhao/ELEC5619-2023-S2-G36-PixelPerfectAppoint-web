@@ -50,7 +50,7 @@
 import { ref, onMounted, nextTick } from 'vue'
 import axios from '@/utils/axios.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import PhotoInfoForm from './photo-info-form.vue'
+import PhotoInfoForm from '@/components/photo/photo-info-form.vue'
 import photoApi from '@/services/photo-api'
 
 const loading = ref(false)
