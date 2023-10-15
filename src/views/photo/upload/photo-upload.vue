@@ -60,7 +60,7 @@ const uploadRequestHeaders = ref({
     'authorization': localStorage.getItem('token')
 });
 const displayedPhotoInfo = ref(null);
-const acceptFileTypes = ref('.jpeg, .png, .jpg, .jfif')
+const acceptFileTypes = ref('.jpeg, .png, .jpg, ')
 const uploadActionUrl = ref(`${axios.defaults.baseURL}/image/upload?uid=${localStorage.getItem('userId')}`)
 const handlePictureCardPreview = (file) => {
     console.log(file)

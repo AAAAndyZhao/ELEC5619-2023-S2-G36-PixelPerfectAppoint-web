@@ -72,7 +72,7 @@ const postInfo = {
     cover_image_id: ''
 }
 const cover_image_url = ref('')
-const acceptFileTypes = ref('.jpeg, .png, .jpg, .jfif')
+const acceptFileTypes = ref('.jpeg, .png, .jpg')
 const uploadActionUrl = ref(`${axios.defaults.baseURL}/image/upload?uid=${localStorage.getItem('userId')}`)
 const handlePictureCardPreview = (file) => {
     console.log(file)
