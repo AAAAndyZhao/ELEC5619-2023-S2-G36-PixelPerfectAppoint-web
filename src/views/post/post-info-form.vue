@@ -1,10 +1,10 @@
 <template>
     <div class="app-photo-info-form">
         <el-form :model="photoForm" label-width="120px" :rules="rules" ref="photoFormRef">
-            <el-form-item label="Title" prop="title">
+            <el-form-item label="Title:" prop="title">
                 <el-input :disabled="!props.photo" v-model="photoForm.title" size="large"></el-input>
             </el-form-item>
-            <el-form-item label="Description" prop="description">
+            <el-form-item label="Description:" prop="description">
                 <el-input :disabled="!props.photo" type="textarea" v-model="photoForm.description"
                 :rows="4" resize="none" size="large"></el-input>
             </el-form-item>
