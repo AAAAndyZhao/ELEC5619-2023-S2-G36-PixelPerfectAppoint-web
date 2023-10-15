@@ -249,6 +249,7 @@ const handleReset = () => {
         photoList.value = [];
         fileList.value = [];
         photoUploaded.value = null;
+        cover_image_url.value = ''
         setTimeout(() => {
             loading.value = false;
             ElMessage.success('Reset successfully');
