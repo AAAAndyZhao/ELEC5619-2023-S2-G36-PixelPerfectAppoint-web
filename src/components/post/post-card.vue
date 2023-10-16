@@ -51,7 +51,7 @@
 
 <script setup>
 import { computed } from 'vue';
-defineProps({
+const props= defineProps({
     post: {
         type: Object,
         required: false,
@@ -74,7 +74,7 @@ defineProps({
         }
     }
 })
-
+const post = props.post;
 const shortenLikesNumber = (number) => {
     return $FUNC.shortenNumber(number);
 }

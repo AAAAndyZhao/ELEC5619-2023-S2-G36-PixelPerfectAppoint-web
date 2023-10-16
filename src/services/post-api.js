@@ -12,13 +12,8 @@ const getUserPosts = async (page, limit, filterProps) => {
         throw new Error('User id is invalid');
     }
     try {
-        return {
-            code: 0,
-            msg: 'OK',
-            data: [],
-            totalCount: 0,
-            totalPages: 0,
-        }
+        //get post api
+        return await axios.get(`/post/get_of_user?uid=${userId}&page=${page}&size=${limit}`); 
     } catch (error) {
         console.error('Error during requesting user posts: ', error);
         throw error;
@@ -32,7 +27,6 @@ const uploadPost = async (post) => {
         throw new Error('User id is invalid');
     }
     try{
-        console.log("hhhhhhhh",post);
         return await axios.post('/post/add', post,{
             headers: {
                 "authorization": localStorage.getItem("token")
