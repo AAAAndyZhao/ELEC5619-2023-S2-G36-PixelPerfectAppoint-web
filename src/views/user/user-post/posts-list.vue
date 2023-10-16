@@ -11,7 +11,7 @@
 <script setup>
 import { computed } from 'vue';
 import { Empty } from '@icon-park/vue-next';
-import PostCard from '@/components/post/post-card.vue';
+import PostCarSd from '@/components/post/post-card.vue';
 const props = defineProps({
     data: {
         type: Array,
