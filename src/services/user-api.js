@@ -21,6 +21,22 @@ const getUserProfile = async () => {
     }
 }
 
+const updateUserProfile = async (userData) => {
+    const userId = localStorage.getItem('userId');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    try {
+        // return user update response
+        return await axios.post(`/user/update_info`, userData);
+    } catch (error) {
+        console.error('Error during requesting user info: ', error);
+        throw error;
+    }
+}
+
 
 const userRegister = async (userData) => {
     try {
@@ -267,6 +283,7 @@ const unfollowUser = async (targetUserId) => {
 
 export default {
     getUserProfile,
+    updateUserProfile,
     userLogin,
     userRegister,
     requestChangePassword,
