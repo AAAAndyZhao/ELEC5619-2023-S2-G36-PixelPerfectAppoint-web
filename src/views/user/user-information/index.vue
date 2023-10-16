@@ -33,7 +33,7 @@
                 <el-form-item label="Full name" required>
                     <el-col :span="11">
                         <el-form-item prop="firstName">
-                            <el-input v-model="ruleForm.firstName" v-bind:value="profileData.firstName" placeholder="firstname" />
+                            <el-input id="first-name" v-model="ruleForm.firstName" placeholder="firstname" />
                         </el-form-item>
                     </el-col>
                     <el-col class="text-center" :span="2">
@@ -41,18 +41,18 @@
                     </el-col>
                     <el-col :span="11">
                         <el-form-item prop="lastName">
-                            <el-input v-model="ruleForm.lastName" v-bind:value="profileData.lastName" placeholder="lastname" />
+                            <el-input id="last-name" v-model="ruleForm.lastName" placeholder="lastname" />
                         </el-form-item>
                     </el-col>
                 </el-form-item>
                 <el-form-item label="Alias" prop="alias">
-                    <el-input v-model="ruleForm.alias" v-bind:value="profileData.alias"></el-input>
+                    <el-input id="alias" v-model="ruleForm.alias"></el-input>
                 </el-form-item>
                 <el-form-item label="User name" prop="userName">
-                    <el-input v-model="ruleForm.userName" v-bind:value="profileData.userName"></el-input>
+                    <el-input id="username" v-model="ruleForm.userName"></el-input>
                 </el-form-item>
                 <el-form-item label="Email" prop="email">
-                    <el-input v-model="ruleForm.email" v-bind:value="profileData.email"></el-input>
+                    <el-input id="email" v-model="ruleForm.email"></el-input>
                 </el-form-item>
                 <el-form-item label="Phone" prop="phone">
                     <el-select v-model="ruleForm.phone.phoneCode" class="app-phone-code-select">
@@ -61,7 +61,7 @@
                             {{ `${country.name} +(${country.dialCode})` }}
                         </el-option>
                     </el-select>
-                    <el-input v-model="ruleForm.phone.phoneNumber" v-bind:value="profileData.phoneNumber" class="app-phone-number-input"></el-input>
+                    <el-input id="phone_number" v-model="ruleForm.phone.phoneNumber" class="app-phone-number-input"></el-input>
                 </el-form-item>
                 <el-form-item label="Birthday" prop="birthday" class="app-birthday-picker">
                     <el-date-picker v-model="ruleForm.birthday" type="date" label="Pick a date"
@@ -74,6 +74,19 @@
                         <el-option label="Female" :value="1"/>
                         <el-option label="Prefer not to disclose" :value="2"/>
                     </el-select>
+                </el-form-item>
+                <el-form-item label="Professional" prop="professional">
+                    <el-checkbox-group v-model="ruleForm.professional">
+                        <el-checkbox label="Photographer" name="professional" border />
+                        <el-checkbox label="Model" name="professional" border />
+                        <el-checkbox label="Others" name="professional" border />
+                    </el-checkbox-group>
+                </el-form-item>
+                <el-form-item label="Password" prop="newPassword" class="app-password-input">
+                    <el-input type="password" v-model="ruleForm.newPassword" placeholder="Please enter password"></el-input>
+                </el-form-item>
+                <el-form-item label="Confirm Password" prop="checkPassword" class="app-password-input">
+                    <el-input type="password" v-model="ruleForm.checkPassword" placeholder="Please enter password again"></el-input>
                 </el-form-item>
 
                 <el-form-item>
@@ -99,6 +112,8 @@ import moment from "moment";
 import { allCountries } from 'country-telephone-data';
 import MenuUtils from '@/utils/menu';
 
+declare const $MENU: any;
+
 const loading = ref(false);
 const profileData = ref({});
 
@@ -116,14 +131,6 @@ function toggle_edit_mode() {
         button.textContent = 'Save';
     } else if (button?.textContent == 'Save') {
         submitForm();
-        if (edit_container != null) {
-            edit_container.style.display = 'none';
-        }
-        if (view_container != null) {
-            view_container.style.display = 'block';
-        }
-        button.textContent = 'Edit';
-        fetchProfileData();
     }
 }
 
@@ -133,6 +140,31 @@ const fetchProfileData = async () => {
         const res = await postApi.getUserProfile();
         if (res.code === 0){
             profileData.value = res.data[0];
+            var first_name_input = document.getElementById("first-name");
+            if (first_name_input != null) {
+                first_name_input.value = profileData.value.firstName;
+            }
+            var last_name_input = document.getElementById("last-name");
+            if (last_name_input != null) {
+                last_name_input.value = profileData.value.lastName;
+            }
+            var alias_input = document.getElementById("alias");
+            if (alias_input != null) {
+                alias_input.value = profileData.value.alias;
+            }
+            var username_input = document.getElementById("username");
+            if (username_input != null) {
+                username_input.value = profileData.value.userName;
+            }
+            var email_input = document.getElementById("email");
+            if (email_input != null) {
+                email_input.value = profileData.value.email;
+            }
+            var phone_number_input = document.getElementById("phone_number");
+            if (phone_number_input != null) {
+                phone_number_input.value = profileData.value.phoneNumber;
+            }
+
             var gender_select = document.getElementById("gender-select");
             if (gender_select != null) {
                 gender_select.value = profileData.value.gender;
@@ -221,30 +253,6 @@ const checkPhone = (_rule: any, value: Phone, callback: any) => {
     callback(new Error("Please input right phone number and code!"))
 }
 
-const checkEmailExist = (_rule: any, value: any, callback: any) => {
-    setTimeout(() => {
-        userApi.checkUserEmailExist(value).then((res: any) => {
-            if (res.code === 1) {
-                callback(new Error("Email already exists!"))
-            } else {
-                callback()
-            }
-        })
-    }, 1000)
-}
-
-const checkUserNameExist = (_rule: any, value: any, callback: any) => {
-    setTimeout(() => {
-        userApi.checkUserNameExist(value).then((res: any) => {
-            if (res.code === 1) {
-                callback(new Error("User name already exists!"))
-            } else {
-                callback()
-            }
-        })
-    }, 1000)
-}
-
 const rules = reactive<FormRules<RuleForm>>({
     firstName: [
         { required: true, message: 'Please input first name', trigger: 'blur' },
@@ -260,13 +268,11 @@ const rules = reactive<FormRules<RuleForm>>({
     ],
     userName: [
         { required: true, message: 'Please input user name', trigger: 'blur' },
-        { min: 6, max: 16, message: 'Length should be 6 to 16', trigger: 'blur' },
-        { validator: checkUserNameExist, trigger: 'blur'}
+        { min: 6, max: 16, message: 'Length should be 6 to 16', trigger: 'blur' }
     ],
     email: [
         { required: true, message: 'Please input email address', trigger: 'blur' },
-        { validator: checkEmail, trigger: 'blur' },
-        { validator: checkEmailExist, trigger: 'blur'},
+        { validator: checkEmail, trigger: 'blur' }
     ],
     phone: [
         { required: true, message: 'Please input phone number', trigger: 'blur' },
@@ -330,6 +336,7 @@ const submitForm = async () => {
     try {
         // check form validation
         await ruleFormRef.value?.validate();
+        let professionalCode = MenuUtils.getMultiMenuCode($MENU['USER_PROFESSIONAL'], ruleForm.value.professional)
 
         const birthday = moment(ruleForm.value.birthday).format("YYYY-MM-DD")
 
@@ -337,17 +344,32 @@ const submitForm = async () => {
             user_name: ruleForm.value.userName,
             email: ruleForm.value.email,
             alias: ruleForm.value.alias,
+            password: ruleForm.value.checkPassword,
             phone_code: ruleForm.value.phone.phoneCode,
             phone_number: ruleForm.value.phone.phoneNumber,
             first_name: ruleForm.value.firstName,
             last_name: ruleForm.value.lastName,
             birthday: birthday,
-            gender: ruleForm.value.gender
+            gender: ruleForm.value.gender,
+            description: "I am a test user",
+            professional: professionalCode
         }
-        const userRegStatus: any = await userApi.userSave(userDate)
+        const userRegStatus: any = await userApi.updateUserProfile(userDate)
         if (userRegStatus.code === 0) {
             ElMessage.success("User information saved successfully!");
-            toggle_edit_mode();
+            var button = document.getElementById('edit-profile-btn');
+            var edit_container = document.getElementById('profile-edit-container');
+            var view_container = document.getElementById('profile-view-container');
+            if (edit_container != null) {
+                edit_container.style.display = 'none';
+            }
+            if (view_container != null) {
+                view_container.style.display = 'block';
+            }
+            if (button != null) {
+                button.textContent = 'Edit';
+            }
+            fetchProfileData();
         } else {
             if (!userRegStatus.data || userRegStatus.data.length === 0) {
                 ElMessage.error(`Send email failed: ${userRegStatus.msg}`);
