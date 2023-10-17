@@ -58,10 +58,11 @@
                         </el-checkbox-group>
                     </el-form-item>
                     <el-form-item label="Password" prop="newPassword" class="app-password-input">
-                        <el-input type="password" v-model="ruleForm.newPassword" placeholder="Please enter password"></el-input>
+                        <el-input type="password" v-model="ruleForm.newPassword" placeholder="Please enter password"
+                        show-password></el-input>
                     </el-form-item>
                     <el-form-item label="Confirm Password" prop="checkPassword" class="app-password-input">
-                        <el-input type="password" v-model="ruleForm.checkPassword" placeholder="Please enter password again"></el-input>
+                        <el-input type="password" v-model="ruleForm.checkPassword" placeholder="Please enter password again" show-password></el-input>
                     </el-form-item>
 
 
