@@ -1,7 +1,7 @@
 <template>
     <el-card class="app-post-card" body-class="app-post-card-body">
         <div class="app-post-card-img">
-            <el-image v-if="post.coverUrl" :src="post.coverUrl">
+            <el-image v-if="post.coverPhoto.thumbnailUrl" :src="post.coverPhoto.thumbnailUrl">
                 <template #error>
                     <el-icon>
                         <Picture />
@@ -13,7 +13,9 @@
             </el-icon>
         </div>
         <div class="app-post-card-content">
-            <div v-if="display.includes('title')" class="app-post-title">{{ post.simpleText }}</div>
+            <div v-if="display.includes('title')" class="app-post-title">
+                <el-link :href="`/post/detail/${post.id}`" target="_blank">{{ post.title }}</el-link>
+            </div>
             <div v-if="display.includes('text')" class="app-post-content">
                 {{ post.simpleText }}
             </div>
@@ -22,19 +24,20 @@
                 <span class="app-date-value">{{ post.updateDatetime }}</span>
             </div>
         </div>
-        <div v-if="display.includes('operation')" class="app-post-card-operation">
-            <slot name="default">
-
-            </slot>
-        </div>
         <div v-if="display.includes('likes')"  class="app-likes">
             <span class="app-likes-number">{{ shortenLikesNumber(post.likes) }}</span>
             <span class="app-likes-text">Likes</span>
         </div>
         <div v-if="display.includes('author')"  class="app-author">
             <div class="app-avatar">
-                <img v-if="post.author && post.author.avatarUrl" 
-                :src="post.author.avatarUrl"/>
+                <el-image v-if="post.author && post.author.avatarUrl" 
+                    :src="post.author.avatarUrl">
+                    <template #error>
+                        <el-icon>
+                            <Avatar />
+                        </el-icon>
+                    </template>
+                </el-image>
                 <el-icon v-else>
                     <Avatar />
                 </el-icon>
@@ -46,12 +49,17 @@
                 @{{ hasAuthor ? post.author.userName : 'Unknown' }}
             </div>
         </div>
+        <div v-if="display.includes('operation')" class="app-post-card-operation">
+            <slot name="default">
+
+            </slot>
+        </div>
     </el-card>
 </template>
 
 <script setup>
 import { computed } from 'vue';
-const props= defineProps({
+const props = defineProps({
     post: {
         type: Object,
         required: false,
@@ -70,7 +78,7 @@ const props= defineProps({
         type: Array,
         required: false,
         default: () => {
-            return ['title', 'text', 'updateDatetime', 'author', 'operation', 'likes'];
+            return ['title', 'text', 'updateDatetime', 'author', 'likes'];
         }
     }
 })
@@ -80,7 +88,7 @@ const shortenLikesNumber = (number) => {
 }
 
 const hasAuthor = computed(() => {
-    return post.author && post.author.id;
+    return props.post.author && props.post.author.id;
 })
 </script>
 
@@ -128,6 +136,12 @@ const hasAuthor = computed(() => {
     font-weight: bold;
     box-sizing: border-box;
     margin-bottom: 10px;
+
+    .el-link{
+        font-size: 24px;
+        font-weight: bold;
+        box-sizing: border-box;
+    }
 }
 .app-post-card-content .app-post-content {
     width: 100%;

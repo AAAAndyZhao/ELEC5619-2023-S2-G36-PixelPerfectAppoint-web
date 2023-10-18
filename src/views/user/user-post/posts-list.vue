@@ -1,6 +1,13 @@
 <template>
     <div class="app-posts-list">
-        <PostCard v-for="post in data" :key="post.id" :post="post" v-if="hasData">
+        <PostCard v-for="post in data" :key="post.id" :post="post" v-if="hasData"
+        :display="['title', 'text', 'updateDatetime', 'likes', 'operation']">
+            <el-button size="small" @click="handleEdit(post)">
+                Edit
+            </el-button>
+            <el-button type="danger" size="small" @click="handleRemove(post)">
+                Remove
+            </el-button>
         </PostCard>
         <div v-else class="app-no-data-text">
             No posts found
@@ -12,6 +19,10 @@
 import { computed } from 'vue';
 import { Empty } from '@icon-park/vue-next';
 import PostCard from '@/components/post/post-card.vue';
+import { ElMessage, ElMessageBox } from 'element-plus';
+
+const emits = defineEmits(['remove', 'edit']);
+
 const props = defineProps({
     data: {
         type: Array,
@@ -22,6 +33,26 @@ const props = defineProps({
 const hasData = computed(() => {
     return props.data && props.data.length > 0;
 })
+
+const handleRemove = (post) => {
+    ElMessageBox.confirm(
+        `Are you sure to delete this post?`,
+        'Warning',
+        {
+            confirmButtonText: 'OK',
+            cancelButtonText: 'Cancel',
+            type: 'warning',
+        }
+    ).then(() => {
+        emits('remove', post.id);
+    }).catch(() => {
+        // do nothing
+    });
+}
+const handleEdit = (post) => {
+    // todo
+    console.log('edit post', post);
+}
 </script>
 
 <style scoped>

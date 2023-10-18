@@ -149,7 +149,7 @@ const rules = {
         { max: 64, message: 'Lens info should be at most 64', trigger: 'blur' }
     ],
     focalLength: [
-        { pattern: /^\d{1,4}$/, message: 'Focal length should be a number between 1 and 9999', trigger: 'blur' }
+        { pattern: /^\d{1,4}.?\d{0,2}$/, message: 'Focal length should be a number between 1 and 9999', trigger: 'blur' }
     ],
     exposureTime: [
         // exposure time could be 1/1000, 1/100, 1/10, 1, 10, 100, 1000
@@ -160,7 +160,7 @@ const rules = {
         { pattern: /^\d{1,2}\.?\d{0,2}$/, message: 'Invalid F number', trigger: 'blur' }
     ],
     iso: [
-        { pattern: /^\d{1,5}$/, message: 'ISO should be a number between 1 and 99999', trigger: 'blur' }
+        { pattern: /^\d{1,7}$/, message: 'ISO should be a number between 1 and 99999', trigger: 'blur' }
     ]
 }
 
