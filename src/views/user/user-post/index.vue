@@ -30,7 +30,7 @@
         </div>
         <el-divider></el-divider>
         <div class="app-posts-container" v-loading="loading">
-            <PostsList :data="postData"/>
+            <PostsList :data="postData" @remove="handleRemovePost"/>
             <el-pagination layout="prev, pager, next"
             :total="postsPaginationProps.total"
             :current-page="postsPaginationProps.currentPage"
@@ -156,6 +156,22 @@ const fetchPostsData = async (isReload = false) => {
 const handleSortChange = (value) => {
     filterProps.sortedBy = value;
     fetchPostsData(true);
+}
+
+const handleRemovePost = async (postId) => {
+    loading.value = true;
+    try{
+        const res = await postApi.deleteSinglePost(postId);
+        if (res.code === 0){
+            ElMessage.success('Post deleted successfully');
+            fetchPostsData(true);
+        }else{
+            ElMessage.error('Failed to delete post: ' + res.msg);
+        }
+    }catch(err){
+        console.error(err);
+        ElMessage.error('Failed to delete post');
+    }
 }
 
 onMounted(() => {
