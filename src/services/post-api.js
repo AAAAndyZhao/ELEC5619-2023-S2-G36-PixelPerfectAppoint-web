@@ -12,13 +12,16 @@ const getUserPosts = async (page, limit, filterProps) => {
         throw new Error('User id is invalid');
     }
     try {
-        return {
-            code: 0,
-            msg: 'OK',
-            data: [],
-            totalCount: 0,
-            totalPages: 0,
-        }
+        return axios.post(`/post/get_of_user?uid=${userId}`, {
+            uid: userId,
+            search_text: filterProps.searchText,
+            page: page,
+            size: limit,
+            sorted_by: filterProps.sortedBy,
+            order: filterProps.order,
+            start: filterProps.start,
+            end: filterProps.end
+        })
     } catch (error) {
         console.error('Error during requesting user posts: ', error);
         throw error;
@@ -41,7 +44,35 @@ const searchPosts = async (searchText, page = 1, size = 30, sortedBy, order, onl
     }
 }
 
+const deleteSinglePost = async (postId) => {
+    return await deletePosts([postId]);
+}
+
+const deletePosts = async (postIds) => {
+    const userId = localStorage.getItem('userId');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    try {
+        return axios.post(`/post/delete`, {
+            uid: userId,
+            post_ids: postIds
+        }, {
+            headers: {
+                "authorization": localStorage.getItem("token")
+            }
+        });
+    } catch (error) {
+        console.error('Error during deleting post: ', error);
+        throw error;
+    }
+}
+
 export default {
     getUserPosts,
-    searchPosts
+    searchPosts,
+    deleteSinglePost,
+    deletePosts
 }
