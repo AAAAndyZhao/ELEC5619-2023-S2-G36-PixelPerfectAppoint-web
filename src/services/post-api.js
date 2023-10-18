@@ -44,7 +44,35 @@ const searchPosts = async (searchText, page = 1, size = 30, sortedBy, order, onl
     }
 }
 
+const deleteSinglePost = async (postId) => {
+    return await deletePosts([postId]);
+}
+
+const deletePosts = async (postIds) => {
+    const userId = localStorage.getItem('userId');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    try {
+        return axios.post(`/post/delete`, {
+            uid: userId,
+            post_ids: postIds
+        }, {
+            headers: {
+                "authorization": localStorage.getItem("token")
+            }
+        });
+    } catch (error) {
+        console.error('Error during deleting post: ', error);
+        throw error;
+    }
+}
+
 export default {
     getUserPosts,
-    searchPosts
+    searchPosts,
+    deleteSinglePost,
+    deletePosts
 }

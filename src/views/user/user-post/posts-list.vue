@@ -19,6 +19,10 @@
 import { computed } from 'vue';
 import { Empty } from '@icon-park/vue-next';
 import PostCard from '@/components/post/post-card.vue';
+import { ElMessage, ElMessageBox } from 'element-plus';
+
+const emits = defineEmits(['remove', 'edit']);
+
 const props = defineProps({
     data: {
         type: Array,
@@ -31,8 +35,19 @@ const hasData = computed(() => {
 })
 
 const handleRemove = (post) => {
-    // todo
-    console.log('remove post', post);
+    ElMessageBox.confirm(
+        `Are you sure to delete this post?`,
+        'Warning',
+        {
+            confirmButtonText: 'OK',
+            cancelButtonText: 'Cancel',
+            type: 'warning',
+        }
+    ).then(() => {
+        emits('remove', post.id);
+    }).catch(() => {
+        // do nothing
+    });
 }
 const handleEdit = (post) => {
     // todo
