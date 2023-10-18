@@ -91,5 +91,8 @@ const deletePosts = async (postIds) => {
 
 export default {
     getUserPosts,
-    searchPosts
+    searchPosts,
+    deleteSinglePost,
+    deletePosts
+
 }
