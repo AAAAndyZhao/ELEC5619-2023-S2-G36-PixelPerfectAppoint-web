@@ -12,13 +12,16 @@ const getUserPosts = async (page, limit, filterProps) => {
         throw new Error('User id is invalid');
     }
     try {
-        return {
-            code: 0,
-            msg: 'OK',
-            data: [],
-            totalCount: 0,
-            totalPages: 0,
-        }
+        return axios.post(`/post/get_of_user?uid=${userId}`, {
+            uid: userId,
+            search_text: filterProps.searchText,
+            page: page,
+            size: limit,
+            sorted_by: filterProps.sortedBy,
+            order: filterProps.order,
+            start: filterProps.start,
+            end: filterProps.end
+        })
     } catch (error) {
         console.error('Error during requesting user posts: ', error);
         throw error;
