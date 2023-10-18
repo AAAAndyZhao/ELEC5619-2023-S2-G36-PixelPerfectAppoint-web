@@ -30,7 +30,7 @@
         </div>
         <el-divider></el-divider>
         <div class="app-posts-container" v-loading="loading">
-            <PostsList :data="postData" @remove="handleRemovePost"/>
+            <PostsList :data="postData" @remove="handleRemovePost" @edit="handleEditPost"/>
             <el-pagination layout="prev, pager, next"
             :total="postsPaginationProps.total"
             :current-page="postsPaginationProps.currentPage"
@@ -172,6 +172,10 @@ const handleRemovePost = async (postId) => {
         console.error(err);
         ElMessage.error('Failed to delete post');
     }
+}
+
+const handleEditPost = (postId) => {
+    // todo: to edit post page
 }
 
 onMounted(() => {
