@@ -1,6 +1,13 @@
 <template>
     <div class="app-posts-list">
-        <PostCard v-for="post in data" :key="post.id" :post="post" v-if="hasData">
+        <PostCard v-for="post in data" :key="post.id" :post="post" v-if="hasData"
+        :display="['title', 'text', 'updateDatetime', 'likes', 'operation']">
+            <el-button size="small" @click="handleEdit(post)">
+                Edit
+            </el-button>
+            <el-button type="danger" size="small" @click="handleRemove(post)">
+                Remove
+            </el-button>
         </PostCard>
         <div v-else class="app-no-data-text">
             No posts found
@@ -22,6 +29,15 @@ const props = defineProps({
 const hasData = computed(() => {
     return props.data && props.data.length > 0;
 })
+
+const handleRemove = (post) => {
+    // todo
+    console.log('remove post', post);
+}
+const handleEdit = (post) => {
+    // todo
+    console.log('edit post', post);
+}
 </script>
 
 <style scoped>
