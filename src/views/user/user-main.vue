@@ -28,13 +28,17 @@ const handleClick = (tab) => {
     activeTab.value = tab.name;
 };
 
-onMounted(async () => {
+const changeTabByRoute = () => {
     const tab = router.currentRoute.value.query.tab;
     if (tab === undefined || tab === null || tab === '') {
         activeTab.value = 'information';
     } else {
         activeTab.value = tab;
     }
+};
+
+onMounted(async () => {
+    changeTabByRoute();
 });
 
 </script>
