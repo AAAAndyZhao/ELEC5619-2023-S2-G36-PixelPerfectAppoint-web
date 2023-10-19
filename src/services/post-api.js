@@ -27,6 +27,26 @@ const getUserPosts = async (page, limit, filterProps) => {
         throw error;
     }
 }
+const uploadPost = async (post) => {
+    const userId = localStorage.getItem('userId');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    try{
+        console.log("hhhhhhhh",post);
+        return await axios.post('/post/add', post,{
+            headers: {
+                "authorization": localStorage.getItem("token")
+            }
+        });
+    }catch(error){
+       
+        throw error;
+    }
+    
+}
 
 const searchPosts = async (searchText, page = 1, size = 30, sortedBy, order, onlyFollowing = false) => {
     try {
@@ -72,6 +92,7 @@ const deletePosts = async (postIds) => {
 
 export default {
     getUserPosts,
+    uploadPost,
     searchPosts,
     deleteSinglePost,
     deletePosts
