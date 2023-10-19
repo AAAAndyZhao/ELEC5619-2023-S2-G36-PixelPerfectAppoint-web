@@ -3,13 +3,13 @@
         <el-tabs v-model="activeTab" class="app-user-profile-tabs" @tab-click="handleClick" stretch>
             <el-tab-pane label="Information" name="information">Information</el-tab-pane>
             <el-tab-pane label="Follower/Following" name="follower" lazy>
-                <UserFollowingView/>
+                <UserFollowingView />
             </el-tab-pane>
             <el-tab-pane label="Posts" name="posts" lazy>
-                <UserPostsView/>
+                <UserPostsView />
             </el-tab-pane>
             <el-tab-pane label="Portfolio/Photos" name="portfolio" lazy>
-                <PortfolioPhoto/>
+                <PortfolioPhoto />
             </el-tab-pane>
             <el-tab-pane label="Reviews" name="fifth" lazy>Reviews</el-tab-pane>
         </el-tabs>
@@ -17,14 +17,25 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import UserFollowingView from '@/views/user/user-following-follower/index.vue';
 import UserPostsView from '@/views/user/user-post/index.vue';
+import router from '@/router.js';
 
-const activeTab = ref('posts');
+
+const activeTab = ref('information');
 const handleClick = (tab) => {
     activeTab.value = tab.name;
 };
+
+onMounted(async () => {
+    const tab = router.currentRoute.value.query.tab;
+    if (tab === undefined || tab === null || tab === '') {
+        activeTab.value = 'information';
+    } else {
+        activeTab.value = tab;
+    }
+});
 
 </script>
 
@@ -48,6 +59,7 @@ const handleClick = (tab) => {
     height: calc(100% - 40px);
     width: 100%;
 }
+
 :deep(.app-user-profile-tabs>.el-tabs__content>.el-tab-pane) {
     height: 100%;
     width: 100%;
