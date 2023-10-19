@@ -11,7 +11,7 @@
                 </el-form-item>
                 <el-form-item label="Password" prop="password">
                     <el-input v-model="ruleForm.password" placeholder="Please enter password" type="password"
-                    size="large" show-password></el-input>
+                    size="large" show-password @keyup.enter.native="submitForm"></el-input>
                 </el-form-item>
                 <p class="app-note">Forget Password? <router-link to="/forget-password">Forget</router-link></p>
                 <el-form-item>
