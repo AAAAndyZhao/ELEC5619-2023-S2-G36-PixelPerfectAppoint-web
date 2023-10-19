@@ -56,9 +56,16 @@
             <h3 style="margin: auto 30px;">
                 <span style="font-weight: 600; font-size: x-small;">{{ userName }}</span>
             </h3>
-            <el-dropdown trigger="click">
-                <el-button type="primary" style="margin: auto; margin-right: 10px; width: 80px">
-                    More<el-icon class="el-icon--right"><arrow-down /></el-icon>
+            <el-dropdown trigger="click" @visible-change="clickIconTransition">
+                <el-button type="primary"
+                    style="margin: auto 10px auto 30px; width: 30px; border-radius: 30px; background-color: #fff; border: #fff;">
+                    <!-- <el-icon class="el-icon--right"><arrow-down /></el-icon> -->
+                    <el-icon style="transform: rotate(90deg); transition: all 0.3s;" color="#409EFF" size="20px" v-if="!isRotated">
+                        <More />
+                    </el-icon>
+                    <el-icon color="#409EFF" size="20px" v-if="isRotated">
+                        <More />
+                    </el-icon>
                 </el-button>
                 <template #dropdown>
                     <el-dropdown-menu>
@@ -80,7 +87,7 @@
 import { ref, computed, watchEffect, onMounted } from 'vue'
 import { ElMessage, ElMessageBox, ElDialog, ElAvatar, ElButton } from 'element-plus'
 import { ArrowDown } from '@element-plus/icons-vue'
-import { Home, Split } from '@icon-park/vue-next'
+import { Home, Mounted, Split } from '@icon-park/vue-next'
 import router from '../router.js'
 import '@icon-park/vue-next/styles/index.css'
 import userApi from '../services/user-api'
@@ -89,6 +96,7 @@ import { useStore } from 'vuex'
 const userName = ref('')
 const nameAbbreviation = ref('')
 const needLogIn = ref(false)
+const isRotated = ref(false)
 
 const handleOpen = (key, keyPath) => {
     console.log(key, keyPath)
@@ -99,7 +107,9 @@ const handleClose = (key, keyPath) => {
 }
 
 const goToHomePage = () => {
-    router.push('/')
+    router.push('/').then(() => {
+        window.location.reload()
+    })
 }
 
 const goToProfile = () => {
@@ -154,6 +164,14 @@ const getUserInfoForDisplay = async (userId) => {
     }
 }
 
+const clickIconTransition = () => {
+    isRotated.value = !isRotated.value
+}
+
+// if I click any other place, the isRotated would be false again
+
+
+
 onMounted(() => {
     getUserInfoForDisplay()
 })
@@ -173,8 +191,6 @@ onMounted(() => {
     height: 10%;
     display: flex;
     flex-direction: row;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
 }
 
 #app-side-user-need-login {
