@@ -1,11 +1,11 @@
 <template>
-    <div class="app-user-post">
-        <div class="app-title">My Posts</div>
+    <div class="app-user-appointment">
+        <div class="app-title">My Appointment</div>
         <div class="app-filter-container">
             <el-input class="app-filter app-search-input"
-            :prefix-icon="Search" placeholder="Search posts"
+            :prefix-icon="Search" placeholder="Search appointments"
             v-model="filterProps.searchText"
-            @keyup.enter.native="fetchPostsData(true)"/>
+            @keyup.enter.native="fetchAppointmentData(true)"/>
             <el-date-picker
             class="app-filter app-date-range-picker"
             v-model="filterProps.dateRange"
@@ -14,7 +14,7 @@
             range-separator="To"
             start-placeholder="Start date"
             end-placeholder="End date"/>
-            <el-button type="primary" @click="fetchPostsData(true)">Search</el-button>
+            <el-button type="primary" @click="fetchAppointmentData(true)">Search</el-button>
             <div class="app-sort-select-container">
                 <label>Sorted by</label>
                 <el-select v-model="filterProps.sortedBy" class="app-filter app-sort-select" placeholder="Select" size="large"
@@ -29,27 +29,34 @@
             </div>
         </div>
         <el-divider></el-divider>
-        <div class="app-posts-container" v-loading="loading">
-            <PostsList :data="postData" @remove="handleRemovePost" @edit="handleEditPost"/>
+        <div class="app-table-container" v-loading="loading">
+            <UserAppointmentTable :data="appointmentData"
+            :page="paginationProps.currentPage"
+            :size="paginationProps.pageSize"
+            @change-status="handleChangeAppointmentStatus"
+            @view="handleViewAppointmentDetail"
+            @edit="handleEditAppointment"
+            @quit="handleQuitFromAppointment"
+            @load-more="loadMore"/>
             <el-pagination layout="prev, pager, next"
-            :total="postsPaginationProps.total"
-            :current-page="postsPaginationProps.currentPage"
-            :page-size="postsPaginationProps.pageSize"
-            @update:current-page="postsPaginationProps.handleCurrentPageChange"/>
+                :total="paginationProps.total"
+                :current-page="paginationProps.currentPage"
+                :page-size="paginationProps.pageSize"
+                @update:current-page="paginationProps.handleCurrentPageChange"/>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
 import { Search } from '@icon-park/vue-next';
-import PostsList from './posts-list.vue';
-import postApi from '@/services/post-api';
-import { ElMessage } from 'element-plus';
+import { ref, onMounted } from 'vue';
 import dayjs from 'dayjs';
+import { ElMessage } from 'element-plus';
+import UserAppointmentTable from './user-appointment-table.vue';
+import appointmentApi from '@/services/appointment-api';
 
 const loading = ref(false);
-const postData = ref([]);
+const appointmentData = ref([]);
 const sortOptions = ref([{
     label: 'Newest',
     value: 'newest',
@@ -64,14 +71,8 @@ const sortOptions = ref([{
         sortedBy: 'latest',
         order: 'asc'
     }
-}, {
-    label: 'Most liked',
-    value: 'likes',
-    sort: {
-        sortedBy: 'likes',
-        order: 'desc'
-    }
 }]);
+
 const dateRangeShortcuts = [{
     text: 'Last week',
     value: () => {
@@ -101,25 +102,31 @@ const dateRangeShortcuts = [{
 const filterProps = ref({
     searchText: '',
     sortedBy: 'newest',
+    notCompletedFirst: false,
     dateRange: []
 });
 
-const postsPaginationProps = ref({
+const paginationProps = ref({
     currentPage: 1,
     pageSize: 30,
     total: 0,
     handleCurrentPageChange: (page) => {
-        postsPaginationProps.value.currentPage = page;
-        fetchPostsData();
+        paginationProps.value.currentPage = page;
+        fetchAppointmentData();
     }
 });
 
-const fetchPostsData = async (isReload = false) => {
+const fetchAppointmentData = async (isReload = false) => {
     loading.value = true;
-    if (isReload){
-        postsPaginationProps.value.currentPage = 1;
+    if (isReload) {
+        paginationProps.value.currentPage = 1;
+        appointmentData.value = [];
     }
     const sortedOption = sortOptions.value.find(item => item.value === filterProps.value.sortedBy);
+    if (!sortedOption) {
+        console.error('Invalid sorted option');
+        return;
+    };
     let startDateStr;
     let endDateStr;
     if (filterProps.value.dateRange && filterProps.value.dateRange.length === 2){
@@ -127,28 +134,26 @@ const fetchPostsData = async (isReload = false) => {
         endDateStr = dayjs(filterProps.value.dateRange[1]).format('YYYY-MM-DD');
     }
     try{
-        const res = await postApi.getUserPosts(
-            postsPaginationProps.value.currentPage,
-            postsPaginationProps.value.pageSize,
-            {
-                ...sortedOption.sort,
-                searchText: filterProps.value.searchText,
-                dateRange: filterProps.value.dateRange,
-                start: startDateStr,
-                end: endDateStr
-            }
-        );
+        const res = await appointmentApi.getAppointmentByUser({
+            page: paginationProps.value.currentPage,
+            size: paginationProps.value.pageSize,
+            sortedBy: sortedOption.sort.sortedBy,
+            order: sortedOption.sort.order,
+            searchText: filterProps.value.searchText,
+            start: startDateStr,
+            end: endDateStr,
+            notCompletedFirst: filterProps.value.notCompletedFirst
+        })
         if (res.code === 0){
-            postData.value = res.data;
-            postsPaginationProps.total = res.totalCount;
+            appointmentData.value = res.data;
+            paginationProps.value.total = res.totalCount;
         }else{
-            ElMessage.error('Failed to get posts data: ' + res.msg);
-            postData.value = [];
-            postsPaginationProps.total = 0;
+            console.error(res.msg);
+            ElMessage.error('Failed to get appointment data: ' + res.msg);
         }
-    }catch(err){
-        console.error(err);
-        ElMessage.error('Failed to get posts data');
+    }catch(e){
+        console.error(e);
+        ElMessage.error('Failed to get appointment data');
     }finally{
         setTimeout(() => {
             loading.value = false;
@@ -158,37 +163,50 @@ const fetchPostsData = async (isReload = false) => {
 
 const handleSortChange = (value) => {
     filterProps.sortedBy = value;
-    fetchPostsData(true);
+    fetchAppointmentData(true);
 }
 
-const handleRemovePost = async (postId) => {
-    loading.value = true;
+const handleChangeAppointmentStatus = async (appointment, statusCode) => {
+    console.log('handleChangeAppointmentStatus', appointment);
     try{
-        const res = await postApi.deleteSinglePost(postId);
+        const res = await appointmentApi.changeAppointmentStatusByCreator(appointment.id, statusCode);
         if (res.code === 0){
-            ElMessage.success('Post deleted successfully');
-            fetchPostsData(true);
+            ElMessage.success('Change appointment status successfully');
+            fetchAppointmentData(true);
         }else{
-            ElMessage.error('Failed to delete post: ' + res.msg);
+            console.error(res.msg);
+            ElMessage.error('Failed to change appointment status: ' + res.msg);
         }
-    }catch(err){
-        console.error(err);
-        ElMessage.error('Failed to delete post');
+    }catch(e){
+        console.error(e);
+        ElMessage.error('Failed to change appointment status');
     }
 }
-
-const handleEditPost = (postId) => {
-    // todo: to edit post page
+const handleViewAppointmentDetail = (appointment) => {
+    console.log('handleViewAppointmentDetail', appointment);
 }
-
+const handleEditAppointment = (appointment) => {
+    console.log('handleEditAppointment', appointment);
+}
+const handleQuitFromAppointment = (appointment) => {
+    console.log('handleQuitFromAppointment', appointment);
+}
+const loadMore = () => {
+    if (appointmentData.value.length >= paginationProps.value.total) {
+        ElMessage.info('No more data');
+        return;
+    }
+    console.log('loadMore')
+    paginationProps.value.currentPage += 1;
+    fetchAppointmentData();
+}
 onMounted(() => {
-    fetchPostsData(true);
-});
+    fetchAppointmentData(true);
+})
 </script>
 
 <style scoped>
-.app-user-post{
-    height: 100%;
+.app-user-appointment{
     min-height: 100%;
 }
 .app-title {
@@ -224,13 +242,7 @@ onMounted(() => {
 .app-filter-container .app-filter.app-sort-select {
     width: 200px;
 }
-.app-posts-container {
-    height: calc(100% - 160px);
-    width: 100%;
-    box-sizing: border-box;
-    padding: 20px 20px;
-    overflow-y: auto;
-}
+
 .app-sort-select-container{
     display: flex;
     flex-direction: row;
@@ -239,8 +251,16 @@ onMounted(() => {
     gap: 10px;
     flex: 1;
 }
-.app-posts-container .el-pagination {
-    justify-content: center
+
+.app-table-container {
+    height: calc(100% - 160px);
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px 20px;
+    overflow-y: auto;
 }
 
+.app-table-container .el-pagination {
+    justify-content: center
+}
 </style>

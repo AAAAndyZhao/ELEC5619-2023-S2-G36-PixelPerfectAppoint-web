@@ -78,4 +78,21 @@ $MENU = {
         code: 15,
         value: 'Other'
     }],
+    "APPOINTMENT_STATUS": [{
+        code: 0,
+        value: 'CREATED',
+        tagType: ''
+    }, {
+        code: 1,
+        value: 'ALL ACCEPTED',
+        tagType: ''
+    }, {
+        code: 2,
+        value: 'COMPLETED',
+        tagType: 'success'
+    }, {
+        code: 3,
+        value: 'CANCELLED',
+        tagType: 'info'
+    }]
 }
