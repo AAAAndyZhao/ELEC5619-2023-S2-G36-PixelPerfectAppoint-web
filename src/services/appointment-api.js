@@ -125,6 +125,72 @@ const createAppointment = async (appointment) => {
     }
 }
 
+const getAppointmentByUser = async (filterProps) => {
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    if (token === null
+        || token === undefined
+        || token === '') {
+        throw new Error('User token is invalid');
+    }
+    try {
+        return await axios.post(`/appointment/get_of_user`, {
+            uid: userId,
+            search_text: filterProps.searchText,
+            page: filterProps.page,
+            size: filterProps.size,
+            sorted_by: filterProps.sortedBy,
+            order: filterProps.order,
+            start: filterProps.start,
+            end: filterProps.end,
+            not_completed_first: filterProps.notCompletedFirst
+        }, {
+            headers: {
+                authorization: token
+            }
+        });
+    } catch (error) {
+        console.error('Error during requesting get appointment by user: ', error.message);
+        throw error;
+    }
+}
+
+const changeAppointmentStatusByCreator = async (appointmentId, status) => {
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    if (token === null
+        || token === undefined
+        || token === '') {
+        throw new Error('User token is invalid');
+    }
+    try {
+        return await axios.post(`/appointment/change_status`, {
+            uid: userId,
+            appointment_id: appointmentId,
+            status: status
+        }, {
+            headers: {
+                authorization: token
+            }
+        });
+    } catch (error) {
+        console.error('Error during requesting change appointment status by creator: ', error.message);
+        throw error;
+    }
+}
+
 export default {
-    createAppointment
+    createAppointment,
+    getAppointmentByUser,
+    changeAppointmentStatusByCreator
 }
