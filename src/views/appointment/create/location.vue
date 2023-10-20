@@ -148,7 +148,7 @@ onMounted(async () => {
 <style scoped>
 .app-appointment-create-location {
     width: 100%;
-    height: 100%;
+    min-height: calc(100vh - 160px);
     box-sizing: border-box;
 
     .app-title {
@@ -164,7 +164,7 @@ onMounted(async () => {
     }
 
     .app-content {
-        height: calc(100% - 36px);
+        height: calc(100vh - 196px);
         width: 100%;
         box-sizing: border-box;
         padding: 10px 0;
