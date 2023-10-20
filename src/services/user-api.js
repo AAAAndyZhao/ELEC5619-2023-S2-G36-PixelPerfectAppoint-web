@@ -4,6 +4,8 @@ All the api calls should be defined here.
 */
 
 import axios from "../utils/axios.js";
+import MenuUtils from "../utils/menu";
+import dayjs from "dayjs";
 
 const getUserProfile = async () => {
     const userId = localStorage.getItem('userId');
@@ -14,17 +16,47 @@ const getUserProfile = async () => {
     }
     try {
         // return a fake user info response
-        return {
-            code: 0,
-            data: [
-                {
-                    id: 1,
-                    email: 'test@gmail.com',
-                    firstname: 'test',
-                    lastname: 'test',
-                }
-            ]
+        return await axios.get(`/user/info/${userId}`);
+    } catch (error) {
+        console.error('Error during requesting user info: ', error);
+        throw error;
+    }
+}
+
+const updateUserProfile = async (userData) => {
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    if (token === null
+        || token === undefined
+        || token === '') {
+        throw new Error('User token is invalid');
+    }
+    try {
+        console.log(userData)
+        const body = {
+            uid: userId,
+            alias: userData.alias,
+            phone_code: userData.phoneCode.indexOf('+') > -1
+                ? userData.phoneCode
+                : `+${userData.phoneCode}`,
+            phone_number: userData.phoneNumber,
+            first_name: userData.firstName,
+            last_name: userData.lastName,
+            birthday: dayjs(userData.birthday).format('YYYY-MM-DD'),
+            gender: userData.gender,
+            description: userData.description,
+            professional: MenuUtils.getMultiMenuCode($MENU['USER_PROFESSIONAL'], userData.professional),
         }
+        return await axios.post(`/user/update_info`, body, {
+            headers: {
+                authorization: token
+            }
+        });
     } catch (error) {
         console.error('Error during requesting user info: ', error);
         throw error;
@@ -303,8 +335,37 @@ const searchUser = async (searchText, page, size) => {
     }
 }
 
+const updateAvatar = async (imageId) => {
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    if (token === null
+        || token === undefined
+        || token === '') {
+        throw new Error('User token is invalid');
+    }
+    try{
+        return await axios.post(`/user/update_avatar`, {
+            uid: userId,
+            image_id: imageId
+        }, {
+            headers: {
+                authorization: token
+            }
+        });
+    }catch (error) {
+        console.error('Error during requesting update avatar: ', error.message);
+        throw error;
+    }
+}
+
 export default {
     getUserProfile,
+    updateUserProfile,
     userLogin,
     userRegister,
     requestChangePassword,
@@ -319,5 +380,6 @@ export default {
     followUser,
     unfollowUser,
     searchUser,
-    getUserInformation
+    getUserInformation,
+    updateAvatar
 }

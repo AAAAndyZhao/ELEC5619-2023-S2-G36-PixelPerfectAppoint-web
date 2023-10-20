@@ -1,7 +1,9 @@
 <template>
     <el-container id="app-user-profile-container">
         <el-tabs v-model="activeTab" class="app-user-profile-tabs" @tab-click="handleClick" stretch>
-            <el-tab-pane label="Information" name="information">Information</el-tab-pane>
+            <el-tab-pane label="Information" name="information">
+                <UserInformationView/>
+            </el-tab-pane>
             <el-tab-pane label="Follower/Following" name="follower" lazy>
                 <UserFollowingView />
             </el-tab-pane>
@@ -18,6 +20,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import UserInformationView from '@/views/user/user-information/index.vue';
 import UserFollowingView from '@/views/user/user-following-follower/index.vue';
 import UserPostsView from '@/views/user/user-post/index.vue';
 import router from '@/router.js';
