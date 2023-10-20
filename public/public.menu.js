@@ -18,7 +18,16 @@ $MENU = {
         code: 2,
         value: 'Others'
     }],
-
+    "USER_GENDER": [{
+        code: 0,
+        value: 'Male'
+    }, {
+        code: 1,
+        value: 'Female'
+    }, {
+        code: 2,
+        value: 'Prefer not to disclose'
+    }],
     "PHOTO_CATEGORY": [{
         code: 0,
         value: 'Uncategorized'

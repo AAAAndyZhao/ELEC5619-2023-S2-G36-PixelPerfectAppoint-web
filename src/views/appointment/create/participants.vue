@@ -11,7 +11,7 @@
                     </div>
                 </template>
                 <el-input class="app-search-user-input" v-model="searchText" size="large"
-                placeholder="Search by username / email / alias / id">
+                placeholder="Search by username / email / alias / id" @keyup.native.enter="searchUser">
                     <template #prefix>
                         <el-icon><Search /></el-icon>
                     </template>
@@ -128,7 +128,7 @@ watchEffect(() => {
 <style scoped>
 .app-appointment-create-participants{
     width: 100%;
-    height: 100%;
+    min-height: calc(100vh - 160px);
     box-sizing: border-box;
     .app-title{
         height: 36px;
@@ -142,7 +142,7 @@ watchEffect(() => {
     }
 
     .app-content {
-        height: calc(100% - 36px);
+        height: calc(100vh - 196px);
         width: 100%;
         box-sizing: border-box;
         padding: 10px 0;
