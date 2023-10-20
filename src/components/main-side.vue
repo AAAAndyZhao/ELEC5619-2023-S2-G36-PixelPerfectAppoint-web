@@ -48,13 +48,13 @@
             </el-menu-item>
         </el-menu>
         <div id="app-side-user" v-if="!needLogIn">
-            <div class="app-side-user-avatar" style="margin: auto 50px; margin-right: 0px;">
-                <el-avatar>
-                    {{ nameAbbreviation }}
-                </el-avatar>
+            <div class="app-side-user-avatar">
+                <UserAvatar :user="user"/>
             </div>
             <h3 style="margin: auto 30px;">
-                <span style="font-weight: 600; font-size: x-small;">{{ userName }}</span>
+                <div class="app-user-alias">
+                    <el-link href="/user">{{ user.alias }}</el-link>
+                </div>
             </h3>
             <el-dropdown trigger="click" @visible-change="clickIconTransition">
                 <el-button type="primary"
@@ -92,11 +92,11 @@ import router from '../router.js'
 import '@icon-park/vue-next/styles/index.css'
 import userApi from '../services/user-api'
 import { useStore } from 'vuex'
+import UserAvatar from '@/components/user/user-avatar.vue'
 
-const userName = ref('')
-const nameAbbreviation = ref('')
 const needLogIn = ref(false)
 const isRotated = ref(false)
+const user = ref({})
 
 const handleOpen = (key, keyPath) => {
     console.log(key, keyPath)
@@ -152,12 +152,8 @@ const getUserInfoForDisplay = async (userId) => {
         needLogIn.value = true
     } else {
         const getUserInfoRes = await userApi.getUserInformation(userId)
-        if (getUserInfoRes.code === 0) {
-            if (getUserInfoRes.data[0].alias.length > 7) {
-                userName.value = getUserInfoRes.data[0].alias.substring(0, 7) + '...'
-                nameAbbreviation.value = (getUserInfoRes.data[0].firstName).charAt(0) + (getUserInfoRes.data[0].lastName).charAt(0)
-                // todo: if the avatar is available, can test for it.
-            }
+        if (getUserInfoRes.code === 0 && getUserInfoRes.data.length > 0) {
+            user.value = getUserInfoRes.data[0]
         } else {
             ElMessage.error(`Failed to get user info: ${getUserInfoRes.msg}`)
         }
@@ -167,8 +163,6 @@ const getUserInfoForDisplay = async (userId) => {
 const clickIconTransition = () => {
     isRotated.value = !isRotated.value
 }
-
-// if I click any other place, the isRotated would be false again
 
 
 
@@ -189,8 +183,12 @@ onMounted(() => {
 #app-side-user {
     width: 100%;
     height: 10%;
+    box-sizing: border-box;
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
 }
 
 #app-side-user-need-login {
@@ -203,5 +201,14 @@ onMounted(() => {
     margin: auto;
     width: 80%;
     height: 80%;
+}
+
+.app-user-alias{
+    width: 100px;
+    font-weight: 600;
+    font-size: small;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 </style>

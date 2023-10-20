@@ -162,7 +162,7 @@ onMounted(() => {
 .app-appointment-create {
     width: 100%;
     /* height is the whole view - header height */
-    height: calc(100vh - 100px);
+    min-height: calc(100vh - 100px);
     box-sizing: border-box;
     padding: 0 20px;
 }
