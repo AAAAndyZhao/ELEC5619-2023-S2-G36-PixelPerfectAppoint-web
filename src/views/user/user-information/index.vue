@@ -5,24 +5,28 @@
         </div>
         <div class="app-info-form-container">
             <div class="app-avatar-container">
-                <el-avatar :size="150" :src="profileData.avatar"></el-avatar>
+                <UserAvatar class="app-user-avatar"
+                :size="100" :user="profileData" @click="handleClickAvatar"/> 
             </div>
         </div>
+        <UserUploadAvatarDialog :show="showUploadAvatarDialog"/>
     </div>
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
+import { nextTick, onMounted, reactive, ref } from 'vue'
 import userApi from '@/services/user-api';
 import { ElMessage } from 'element-plus';
 import router from '@/router';
 import moment from "moment";
 import { allCountries } from 'country-telephone-data';
 import MenuUtils from '@/utils/menu';
+import UserAvatar from '@/components/user/user-avatar.vue';
+import UserUploadAvatarDialog from '@/components/user/user-upload-avatar-dialog.vue'
 
 const loading = ref(false);
 const profileData = ref({});
-
+const showUploadAvatarDialog = ref(false);
 
 const fetchProfileData = async () => {
     loading.value = true;
@@ -35,7 +39,7 @@ const fetchProfileData = async () => {
             ElMessage.error('Failed to get profile data');
         }
     }catch(err){
-        console.log(err);
+        console.error(err);
         ElMessage.error('Failed to get profile data');
     }finally{
         setTimeout(() => {
@@ -43,6 +47,14 @@ const fetchProfileData = async () => {
         }, 1000);
     }
 }
+
+const handleClickAvatar = () => {
+    showUploadAvatarDialog.value = false;
+    nextTick(() => {
+        showUploadAvatarDialog.value = true;
+    })
+}
+
 onMounted(() => {
     fetchProfileData();
 });
@@ -51,8 +63,7 @@ onMounted(() => {
 
 <style scoped>
 .app-user-information {
-    height: 100%;
-    min-height: 100%;
+    min-height: calc(100vh - 100px);
 }
 
 .app-title-container {
@@ -69,6 +80,14 @@ onMounted(() => {
     font-weight: bold;
 }
 .app-info-form-container{
-    min-height: calc(100vh - 100px);
+    min-height: calc(100vh - 160px);
+    text-align: left;
+    cursor: pointer;
+}
+
+.app-user-avatar:hover {
+    border: 1px solid #409eff;
+    filter: brightness(0.8);
+    transition: all 0.2s;
 }
 </style>
