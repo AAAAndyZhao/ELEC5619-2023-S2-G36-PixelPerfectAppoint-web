@@ -5,13 +5,13 @@
                 <UserInformationView/>
             </el-tab-pane>
             <el-tab-pane label="Follower/Following" name="follower" lazy>
-                <UserFollowingView/>
+                <UserFollowingView />
             </el-tab-pane>
             <el-tab-pane label="Posts" name="posts" lazy>
-                <UserPostsView/>
+                <UserPostsView />
             </el-tab-pane>
             <el-tab-pane label="Portfolio/Photos" name="portfolio" lazy>
-                <PortfolioPhoto/>
+                <PortfolioPhoto />
             </el-tab-pane>
             <el-tab-pane label="Reviews" name="fifth" lazy>Reviews</el-tab-pane>
         </el-tabs>
@@ -19,21 +19,36 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import UserInformationView from '@/views/user/user-information/index.vue';
 import UserFollowingView from '@/views/user/user-following-follower/index.vue';
 import UserPostsView from '@/views/user/user-post/index.vue';
+import router from '@/router.js';
 
-const activeTab = ref('posts');
+
+const activeTab = ref('information');
 const handleClick = (tab) => {
     activeTab.value = tab.name;
 };
+
+const changeTabByRoute = () => {
+    const tab = router.currentRoute.value.query.tab;
+    if (tab === undefined || tab === null || tab === '') {
+        activeTab.value = 'information';
+    } else {
+        activeTab.value = tab;
+    }
+};
+
+onMounted(async () => {
+    changeTabByRoute();
+});
 
 </script>
 
 <style scoped>
 #app-user-profile-container {
-    height: 100%;
+    height: calc(100vh - 100px);
     padding: 10px;
     box-sizing: border-box;
     display: flex;
@@ -51,6 +66,7 @@ const handleClick = (tab) => {
     height: calc(100% - 40px);
     width: 100%;
 }
+
 :deep(.app-user-profile-tabs>.el-tabs__content>.el-tab-pane) {
     height: 100%;
     width: 100%;

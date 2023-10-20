@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import MainPage from './pages/main-page.vue'
 import userApi from './services/user-api.js'
+import Postpage from './pages/post-page.vue'
 
 const routes = [
     {
@@ -60,6 +61,41 @@ const routes = [
         ]
     },
     {
+        path: '/post',
+        component: Postpage,
+        name: 'PostPage',
+        children: [
+            {
+                path: 'detail/:id',
+                components: {
+                    title: () => import('./components/title/title.vue'),
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/post/post-detail.vue'),
+                    info: () => import('./components/user-info/user-info-detail.vue'),
+                    description: () => import('./components/description/description.vue'),
+                    comment: () => import('./views/comment/comment.vue')
+                    
+                }
+            }
+        ]
+    },
+    {
+        path: '/post',
+        component: MainPage,
+        name: 'PostUploadPage',
+        meta: { requiresAuth: true },
+        children: [
+            {
+                path: 'upload',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/post/post-upload.vue'),
+                    side: () => import('./components/main-side.vue')
+                }
+            }
+        ]
+    },
+    {
         path: '/user',
         redirect: '/user/profile',
         component: MainPage,
@@ -72,8 +108,79 @@ const routes = [
                     header: () => import('./components/main-header.vue'),
                     content: () => import('./views/user/user-main.vue'),
                     side: () => import('./components/main-side.vue')
+                    
                 }
             },
+        ]
+    },
+    {
+        path: '/photo',
+        redirect: '/photo/upload',
+        component: MainPage,
+        name: 'PhotoPage',
+        meta: { requiresAuth: true },
+        children: [
+            {
+                path: 'upload',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/photo/upload/photo-upload.vue'),
+                    side: () => import('./components/main-side.vue')
+                }
+            }
+        ]
+    },
+    {
+        path: '/appointment',
+        component: MainPage,
+        name: 'AppointmentPage',
+        meta: { requiresAuth: true },
+        children: [
+            {
+                path: 'create',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/appointment/create/appointment-create.vue'),
+                    side: () => import('./components/main-side.vue')
+                },
+                children: [
+                    {
+                        path: 'information',
+                        component: () => import('./views/appointment/create/basic-information.vue'),
+                    },
+                    {
+                        path: 'location',
+                        component: () => import('./views/appointment/create/location.vue'),
+                    },
+                    {
+                        path: 'participants',
+                        component: () => import('./views/appointment/create/participants.vue'),
+                    },
+                ]
+            },
+            {
+                path: 'create/success',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/appointment/create/success.vue'),
+                    side: () => import('./components/main-side.vue')
+                },
+            }
+        ]
+    },
+    {
+        path: '/search',
+        component: MainPage,
+        children: [
+            {
+                path: '',
+                name: 'SearchPage',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/search/search.vue'),
+                    side: () => import('./components/main-side.vue')
+                }
+            }
         ]
     }
 ]

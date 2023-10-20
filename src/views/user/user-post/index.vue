@@ -14,9 +14,11 @@
             range-separator="To"
             start-placeholder="Start date"
             end-placeholder="End date"/>
+            <el-button type="primary" @click="fetchPostsData(true)">Search</el-button>
             <div class="app-sort-select-container">
                 <label>Sorted by</label>
-                <el-select v-model="filterProps.sortedBy" class="app-filter app-sort-select" placeholder="Select" size="large">
+                <el-select v-model="filterProps.sortedBy" class="app-filter app-sort-select" placeholder="Select" size="large"
+                @change="handleSortChange">
                     <el-option
                     v-for="item in sortOptions"
                     :key="item.value"
@@ -28,7 +30,7 @@
         </div>
         <el-divider></el-divider>
         <div class="app-posts-container" v-loading="loading">
-            <PostsList :data="postData"/>
+            <PostsList :data="postData" @remove="handleRemovePost"/>
             <el-pagination layout="prev, pager, next"
             :total="postsPaginationProps.total"
             :current-page="postsPaginationProps.currentPage"
@@ -43,52 +45,31 @@ import { ref, onMounted } from 'vue';
 import { Search } from '@icon-park/vue-next';
 import PostsList from './posts-list.vue';
 import postApi from '@/services/post-api';
-import { ElMessage } from 'element-plus';
+import { ElMessage, dayjs } from 'element-plus';
 
 const loading = ref(false);
-const postData = ref([{
-    id: 1,
-    title: 'Post 1',
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nislnislnislnislnislnisl.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.`,
-    coverImageUrl: '',
-    lastModifyDateTime: '2021-10-10',
-}, {
-    id: 1,
-    title: 'Post 1',
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nislnislnislnislnislnisl.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.`,
-    coverImageUrl: '',
-    lastModifyDateTime: '2021-10-10',
-}, {
-    id: 1,
-    title: 'Post 1',
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nislnislnislnislnislnisl.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.`,
-    coverImageUrl: '',
-    lastModifyDateTime: '2021-10-10',
-}, {
-    id: 1,
-    title: 'Post 1',
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nislnislnislnislnislnisl.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.`,
-    coverImageUrl: '',
-    lastModifyDateTime: '2021-10-10',
-}, {
-    id: 1,
-    title: 'Post 1',
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nislnislnislnislnislnisl.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nunc ultrices nunc, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.c, vitae ultricies nisl nisl eget nisl.`,
-    coverImageUrl: '',
-    lastModifyDateTime: '2021-10-10',
-}, ]);
+const postData = ref([]);
 const sortOptions = ref([{
     label: 'Newest',
-    value: 'newest'
+    value: 'newest',
+    sort: {
+        sortedBy: 'latest',
+        order: 'desc'
+    }
 }, {
     label: 'Oldest',
-    value: 'oldest'
+    value: 'oldest',
+    sort: {
+        sortedBy: 'latest',
+        order: 'asc'
+    }
 }, {
     label: 'Most liked',
-    value: 'most_liked'
-}, {
-    label: 'Most commented',
-    value: 'most_commented'
+    value: 'likes',
+    sort: {
+        sortedBy: 'likes',
+        order: 'desc'
+    }
 }]);
 const dateRangeShortcuts = [{
     text: 'Last week',
@@ -137,25 +118,59 @@ const fetchPostsData = async (isReload = false) => {
     if (isReload){
         postsPaginationProps.currentPage = 1;
     }
+    const sortedOption = sortOptions.value.find(item => item.value === filterProps.value.sortedBy);
+    let startDateStr;
+    let endDateStr;
+    if (filterProps.value.dateRange && filterProps.value.dateRange.length === 2){
+        startDateStr = dayjs(filterProps.value.dateRange[0]).format('YYYY-MM-DD');
+        endDateStr = dayjs(filterProps.value.dateRange[1]).format('YYYY-MM-DD');
+    }
     try{
         const res = await postApi.getUserPosts(
             postsPaginationProps.value.currentPage,
             postsPaginationProps.value.pageSize,
-            filterProps.value
+            {
+                ...sortedOption.sort,
+                searchText: filterProps.value.searchText,
+                dateRange: filterProps.value.dateRange,
+                start: startDateStr,
+                end: endDateStr
+            }
         );
         if (res.code === 0){
             postData.value = res.data;
             postsPaginationProps.total = res.totalCount;
         }else{
-            ElMessage.error('Failed to get posts data');
+            ElMessage.error('Failed to get posts data: ' + res.msg);
         }
     }catch(err){
-        console.log(err);
+        console.error(err);
         ElMessage.error('Failed to get posts data');
     }finally{
         setTimeout(() => {
             loading.value = false;
         }, 1000);
+    }
+}
+
+const handleSortChange = (value) => {
+    filterProps.sortedBy = value;
+    fetchPostsData(true);
+}
+
+const handleRemovePost = async (postId) => {
+    loading.value = true;
+    try{
+        const res = await postApi.deleteSinglePost(postId);
+        if (res.code === 0){
+            ElMessage.success('Post deleted successfully');
+            fetchPostsData(true);
+        }else{
+            ElMessage.error('Failed to delete post: ' + res.msg);
+        }
+    }catch(err){
+        console.error(err);
+        ElMessage.error('Failed to delete post');
     }
 }
 
@@ -207,6 +222,7 @@ onMounted(() => {
     width: 100%;
     box-sizing: border-box;
     padding: 20px 20px;
+    overflow-y: auto;
 }
 .app-sort-select-container{
     display: flex;
