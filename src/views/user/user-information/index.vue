@@ -2,109 +2,17 @@
     <div class="app-user-information">
         <div class="app-title-container">
             <div class="app-title">My Profile</div>
-            <button id="edit-profile-btn" class="btn-primary" @click="toggle_edit_mode">Edit</button>
         </div>
-        <div id="profile-view-container">
-            <div class="profile-data"><img v-bind:src="profileData.avatarUrl == 'default' ? 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg' : profileData.avatarUrl"/></div>
-            <div class="profile-label">First Name</div>
-            <div class="profile-data">{{profileData.firstName}}</div>
-            <div class="profile-label">Last Name</div>
-            <div class="profile-data">{{profileData.lastName}}</div>
-            <div class="profile-label">Alias</div>
-            <div class="profile-data">{{profileData.alias}}</div>
-            <div class="profile-label">User Name</div>
-            <div class="profile-data">{{profileData.userName}}</div>
-            <div class="profile-label">Email</div>
-            <div class="profile-data">{{profileData.email}}</div>
-            <div class="profile-label">Birthday</div>
-            <div class="profile-data">{{profileData.birthday}}</div>
-            <div class="profile-label">Description</div>
-            <div class="profile-data">{{profileData.description}}</div>
-            <div class="profile-label">Gender</div>
-            <div class="profile-data">{{profileData.gender}}</div>
-            <div class="profile-label">Phone Code</div>
-            <div class="profile-data">+{{profileData.phoneCode}}</div>
-            <div class="profile-label">Phone Number</div>
-            <div class="profile-data">{{profileData.phoneNumber}}</div>
-        </div>
-        <div id="profile-edit-container">
-            <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="150px"
-                class="app-sign-up-form-info-input-items" :size="formSize" status-icon>
-                <el-form-item label="Full name" required>
-                    <el-col :span="11">
-                        <el-form-item prop="firstName">
-                            <el-input id="first-name" v-model="ruleForm.firstName" placeholder="firstname" />
-                        </el-form-item>
-                    </el-col>
-                    <el-col class="text-center" :span="2">
-                        <span class="text-gray-500"></span>
-                    </el-col>
-                    <el-col :span="11">
-                        <el-form-item prop="lastName">
-                            <el-input id="last-name" v-model="ruleForm.lastName" placeholder="lastname" />
-                        </el-form-item>
-                    </el-col>
-                </el-form-item>
-                <el-form-item label="Alias" prop="alias">
-                    <el-input id="alias" v-model="ruleForm.alias"></el-input>
-                </el-form-item>
-                <el-form-item label="User name" prop="userName">
-                    <el-input id="username" v-model="ruleForm.userName"></el-input>
-                </el-form-item>
-                <el-form-item label="Email" prop="email">
-                    <el-input id="email" v-model="ruleForm.email"></el-input>
-                </el-form-item>
-                <el-form-item label="Phone" prop="phone">
-                    <el-select v-model="ruleForm.phone.phoneCode" class="app-phone-code-select">
-                        <el-option v-for="country in allCountries" :key="country.iso2" :label="`+ ${country.dialCode}`" :value="country.dialCode">
-                            <span :class="['flag-icon', `flag-icon-${country.iso2}`]"></span>
-                            {{ `${country.name} +(${country.dialCode})` }}
-                        </el-option>
-                    </el-select>
-                    <el-input id="phone_number" v-model="ruleForm.phone.phoneNumber" class="app-phone-number-input"></el-input>
-                </el-form-item>
-                <el-form-item label="Birthday" prop="birthday" class="app-birthday-picker">
-                    <el-date-picker v-model="ruleForm.birthday" type="date" label="Pick a date"
-                        placeholder="Pick a date" style="width: 100%"
-                        :disabled-date="disabledDateOfBirthday"/>
-                </el-form-item>
-                <el-form-item label="Gender" prop="gender">
-                    <el-select id="gender-select" v-model="ruleForm.gender" placeholder="choose gender">
-                        <el-option label="Male" :value="0"/>
-                        <el-option label="Female" :value="1"/>
-                        <el-option label="Prefer not to disclose" :value="2"/>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="Professional" prop="professional">
-                    <el-checkbox-group v-model="ruleForm.professional">
-                        <el-checkbox label="Photographer" name="professional" border />
-                        <el-checkbox label="Model" name="professional" border />
-                        <el-checkbox label="Others" name="professional" border />
-                    </el-checkbox-group>
-                </el-form-item>
-                <el-form-item label="Password" prop="newPassword" class="app-password-input">
-                    <el-input type="password" v-model="ruleForm.newPassword" placeholder="Please enter password"></el-input>
-                </el-form-item>
-                <el-form-item label="Confirm Password" prop="checkPassword" class="app-password-input">
-                    <el-input type="password" v-model="ruleForm.checkPassword" placeholder="Please enter password again"></el-input>
-                </el-form-item>
-
-                <el-form-item>
-                    <el-button type="primary" @click="submitForm"
-                    :disabled="submitButtonDisabled"
-                    :loading="submitButtonLoading">
-                        Save
-                    </el-button>
-                </el-form-item>
-            </el-form>
+        <div class="app-info-form-container">
+            <div class="app-avatar-container">
+                <el-avatar :size="150" :src="profileData.avatar"></el-avatar>
+            </div>
         </div>
     </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { onMounted, reactive, ref } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
-import postApi from '@/services/user-api';
 import userApi from '@/services/user-api';
 import { ElMessage } from 'element-plus';
 import router from '@/router';
@@ -112,64 +20,17 @@ import moment from "moment";
 import { allCountries } from 'country-telephone-data';
 import MenuUtils from '@/utils/menu';
 
-declare const $MENU: any;
-
 const loading = ref(false);
 const profileData = ref({});
 
-function toggle_edit_mode() {
-    var button = document.getElementById('edit-profile-btn');
-    var edit_container = document.getElementById('profile-edit-container');
-    var view_container = document.getElementById('profile-view-container');
-    if (button?.textContent == 'Edit') {
-        if (edit_container != null) {
-            edit_container.style.display = 'block';
-        }
-        if (view_container != null) {
-            view_container.style.display = 'none';
-        }
-        button.textContent = 'Save';
-    } else if (button?.textContent == 'Save') {
-        submitForm();
-    }
-}
 
 const fetchProfileData = async () => {
     loading.value = true;
     try{
-        const res = await postApi.getUserProfile();
-        if (res.code === 0){
-            profileData.value = res.data[0];
-            var first_name_input = document.getElementById("first-name");
-            if (first_name_input != null) {
-                first_name_input.value = profileData.value.firstName;
-            }
-            var last_name_input = document.getElementById("last-name");
-            if (last_name_input != null) {
-                last_name_input.value = profileData.value.lastName;
-            }
-            var alias_input = document.getElementById("alias");
-            if (alias_input != null) {
-                alias_input.value = profileData.value.alias;
-            }
-            var username_input = document.getElementById("username");
-            if (username_input != null) {
-                username_input.value = profileData.value.userName;
-            }
-            var email_input = document.getElementById("email");
-            if (email_input != null) {
-                email_input.value = profileData.value.email;
-            }
-            var phone_number_input = document.getElementById("phone_number");
-            if (phone_number_input != null) {
-                phone_number_input.value = profileData.value.phoneNumber;
-            }
-
-            var gender_select = document.getElementById("gender-select");
-            if (gender_select != null) {
-                gender_select.value = profileData.value.gender;
-            }
-            
+        const res = await userApi.getUserProfile();
+        console.log(res)
+        if (res.code === 0 && res.data !== null && res.data.length > 0){
+            profileData.value = res.data[0]
         }else{
             ElMessage.error('Failed to get profile data');
         }
@@ -182,212 +43,9 @@ const fetchProfileData = async () => {
         }, 1000);
     }
 }
-
-interface Phone {
-    phoneCode: string,
-    phoneNumber: string
-}
-
-interface RuleForm {
-    firstName: string
-    lastName: string
-    alias: string
-    userName: string
-    email: string
-    phone: Phone
-    birthday: string
-    gender: number | null
-    professional: string[]
-    newPassword: string
-    checkPassword: string
-}
-
 onMounted(() => {
     fetchProfileData();
 });
-
-const submitButtonDisabled = ref(false)
-const submitButtonLoading = ref(false)
-const formSize = ref('default')
-const ruleFormRef = ref<FormInstance>()
-
-const ruleForm = ref<RuleForm>({
-    firstName: profileData.firstName,
-    lastName: '',
-    alias: '',
-    userName: '',
-    email: '',
-    phone: {
-        phoneCode: '61',
-        phoneNumber: '',
-    },
-    birthday: '',
-    gender: null,
-    professional: [],
-    newPassword: '',
-    checkPassword: '',
-})
-
-const disabledDateOfBirthday = (time: Date) => {
-  return time.getTime() > Date.now()
-}
-
-const checkEmail = (_rule: any, value: any, callback: any) => {
-    const regEmail = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
-    if (regEmail.test(value)) {
-        return callback();
-    }
-    callback(new Error("Please input right email!"))
-}
-
-const checkPhone = (_rule: any, value: Phone, callback: any) => {
-    const regPhoneCode = /^\d{1,4}$/;
-    const regPhoneNumber = /^\d{9,11}$/;
-    if (regPhoneCode.test(value.phoneCode) && regPhoneNumber.test(value.phoneNumber)) {
-        return callback();
-    }else if (!regPhoneCode.test(value.phoneCode)) {
-        callback(new Error("Please input right phone code! 1-4 digits"))
-    }else if (!regPhoneNumber.test(value.phoneNumber)) {
-        callback(new Error("Please input right phone number! 9-11 digits"))
-    }
-    callback(new Error("Please input right phone number and code!"))
-}
-
-const rules = reactive<FormRules<RuleForm>>({
-    firstName: [
-        { required: true, message: 'Please input first name', trigger: 'blur' },
-        { min: 1, max: 32, message: 'Length should be less than 32', trigger: 'blur' },
-    ],
-    lastName: [
-        { required: true, message: 'Please input last name', trigger: 'blur' },
-        { min: 1, max: 32, message: 'Length should be less than 32', trigger: 'blur' },
-    ],
-    alias: [
-        { required: true, message: 'Please input alias', trigger: 'blur' },
-        { min: 6, max: 32, message: 'Length should be 6 to 32', trigger: 'blur' },
-    ],
-    userName: [
-        { required: true, message: 'Please input user name', trigger: 'blur' },
-        { min: 6, max: 16, message: 'Length should be 6 to 16', trigger: 'blur' }
-    ],
-    email: [
-        { required: true, message: 'Please input email address', trigger: 'blur' },
-        { validator: checkEmail, trigger: 'blur' }
-    ],
-    phone: [
-        { required: true, message: 'Please input phone number', trigger: 'blur' },
-        { validator: checkPhone, trigger: 'blur' },
-    ],
-    birthday: [
-        {
-            required: true,
-            message: 'Please pick a date',
-            trigger: 'change',
-        },
-    ],
-    gender: [
-        {
-            required: true,
-            message: 'Please select your gender',
-            trigger: 'change',
-        },
-    ],
-    professional: [
-        {
-            type: 'array',
-            required: true,
-            message: 'Please select at least one professional',
-            trigger: 'change',
-        },
-    ],
-    newPassword: [
-        { required: true, message: 'Please input password', trigger: 'blur' },
-        {
-            trigger: 'blur',
-            validator: (_rule, value, callback) => {
-                var passwordreg = /(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,16}/
-                if (!passwordreg.test(value)) {
-                    callback(new Error('Password must be a combination of numbers, letters and special characters, please enter 8-16 digits.'))
-                } else {
-                    return callback()
-                }
-            }
-        },
-    ],
-    checkPassword: [
-        { required: true, message: 'Please input confirmed password', trigger: 'blur' },
-        {
-            validator: (_rule: any, value: any, callback: any) => {
-                if (value === '') {
-                    callback(new Error('Please input password again'));
-                } else if (value !== ruleForm.value.newPassword) {
-                    callback(new Error('Two passwords are inconsistent!'));
-                } else {
-                    callback();
-                }
-            }, trigger: 'blur',
-        }
-    ],
-})
-
-const submitForm = async () => {
-    submitButtonDisabled.value = true;
-    submitButtonLoading.value = true;
-    try {
-        // check form validation
-        await ruleFormRef.value?.validate();
-        let professionalCode = MenuUtils.getMultiMenuCode($MENU['USER_PROFESSIONAL'], ruleForm.value.professional)
-
-        const birthday = moment(ruleForm.value.birthday).format("YYYY-MM-DD")
-
-        const userDate = {
-            user_name: ruleForm.value.userName,
-            email: ruleForm.value.email,
-            alias: ruleForm.value.alias,
-            password: ruleForm.value.checkPassword,
-            phone_code: ruleForm.value.phone.phoneCode,
-            phone_number: ruleForm.value.phone.phoneNumber,
-            first_name: ruleForm.value.firstName,
-            last_name: ruleForm.value.lastName,
-            birthday: birthday,
-            gender: ruleForm.value.gender,
-            description: "I am a test user",
-            professional: professionalCode
-        }
-        const userRegStatus: any = await userApi.updateUserProfile(userDate)
-        if (userRegStatus.code === 0) {
-            ElMessage.success("User information saved successfully!");
-            var button = document.getElementById('edit-profile-btn');
-            var edit_container = document.getElementById('profile-edit-container');
-            var view_container = document.getElementById('profile-view-container');
-            if (edit_container != null) {
-                edit_container.style.display = 'none';
-            }
-            if (view_container != null) {
-                view_container.style.display = 'block';
-            }
-            if (button != null) {
-                button.textContent = 'Edit';
-            }
-            fetchProfileData();
-        } else {
-            if (!userRegStatus.data || userRegStatus.data.length === 0) {
-                ElMessage.error(`Send email failed: ${userRegStatus.msg}`);
-            }else{
-                const errorMsg = `Send email failed: ${userRegStatus.data.join(', ')}`;
-                ElMessage.error(errorMsg);
-            }
-        }
-    } catch (error) {
-        console.error(error)
-        ElMessage.error("Save failed! Some error occurred!");
-    } finally {
-        setTimeout(() => {
-            submitButtonDisabled.value = false;
-            submitButtonLoading.value = false;
-        }, 1000)
-    }
-};
 
 </script>
 
@@ -410,24 +68,7 @@ const submitForm = async () => {
     text-align: left;
     font-weight: bold;
 }
-
-.edit-profile-btn {
-    margin-left: 25px;
-}
-
-#profile-edit-container {
-    display: none;
-}
-
-.profile-label {
-    font-size: 18px;
-    text-align: left;
-    font-weight: bold;
-}
-
-.profile-data {
-    font-size: 16px;
-    text-align: left;
-    margin-bottom: 10px;
+.app-info-form-container{
+    min-height: calc(100vh - 100px);
 }
 </style>
