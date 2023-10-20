@@ -1,6 +1,12 @@
 <template>
     <div class="app-user-appointment">
-        <div class="app-title">My Appointment</div>
+        <div class="app-title">
+            My Appointment
+            <el-button size="large" class="app-create-appointment-button"
+            @click="createNewAppointment">
+                <el-icon><Plus /></el-icon>Create
+            </el-button>
+        </div>
         <div class="app-filter-container">
             <el-input class="app-filter app-search-input"
             :prefix-icon="Search" placeholder="Search appointments"
@@ -36,8 +42,7 @@
             @change-status="handleChangeAppointmentStatus"
             @view="handleViewAppointmentDetail"
             @edit="handleEditAppointment"
-            @quit="handleQuitFromAppointment"
-            @load-more="loadMore"/>
+            @quit="handleQuitFromAppointment"/>
             <el-pagination layout="prev, pager, next"
                 :total="paginationProps.total"
                 :current-page="paginationProps.currentPage"
@@ -51,9 +56,10 @@
 import { Search } from '@icon-park/vue-next';
 import { ref, onMounted } from 'vue';
 import dayjs from 'dayjs';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 import UserAppointmentTable from './user-appointment-table.vue';
 import appointmentApi from '@/services/appointment-api';
+import router from '@/router.js';
 
 const loading = ref(false);
 const appointmentData = ref([]);
@@ -166,21 +172,39 @@ const handleSortChange = (value) => {
     fetchAppointmentData(true);
 }
 
-const handleChangeAppointmentStatus = async (appointment, statusCode) => {
-    console.log('handleChangeAppointmentStatus', appointment);
-    try{
-        const res = await appointmentApi.changeAppointmentStatusByCreator(appointment.id, statusCode);
-        if (res.code === 0){
-            ElMessage.success('Change appointment status successfully');
-            fetchAppointmentData(true);
-        }else{
-            console.error(res.msg);
-            ElMessage.error('Failed to change appointment status: ' + res.msg);
-        }
-    }catch(e){
-        console.error(e);
-        ElMessage.error('Failed to change appointment status');
+const handleChangeAppointmentStatus = (appointment, statusCode) => {
+    let confirmText;
+    if (statusCode === 2){
+        // complete
+        confirmText = 'Are you sure to complete the appointment?';
+    }else if (statusCode === 3){
+        // cancel
+        confirmText = 'Are you sure to cancel the appointment?';
+    }else{
+        return;
     }
+    ElMessageBox.confirm(confirmText, 'Warning', {
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+    }).then(async () => {
+        try{
+            const res = await appointmentApi.changeAppointmentStatusByCreator(appointment.id, statusCode);
+            if (res.code === 0){
+                ElMessage.success('Change appointment status successfully');
+                fetchAppointmentData(true);
+            }else{
+                console.error(res.msg);
+                ElMessage.error('Failed to change appointment status: ' + res.msg);
+            }
+        }catch(e){
+            console.error(e);
+            ElMessage.error('Failed to change appointment status');
+        }
+    }).catch(() => {
+        // do nothing
+    })
+    
 }
 const handleViewAppointmentDetail = (appointment) => {
     console.log('handleViewAppointmentDetail', appointment);
@@ -189,16 +213,32 @@ const handleEditAppointment = (appointment) => {
     console.log('handleEditAppointment', appointment);
 }
 const handleQuitFromAppointment = (appointment) => {
-    console.log('handleQuitFromAppointment', appointment);
+    ElMessageBox.confirm('Are you sure to quit from the appointment?', 'Warning', {
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+    }).then(async () => {
+        try{
+            const res = await appointmentApi.quitAppointment(appointment.id);
+            if (res.code === 0){
+                ElMessage.success('Quit from appointment successfully');
+                fetchAppointmentData(true);
+            }else{
+                console.error(res.msg);
+                ElMessage.error('Failed to quit from appointment: ' + res.msg);
+            }
+        }catch(e){
+            console.error(e);
+            ElMessage.error('Failed to quit from appointment');
+        }
+    }).catch(() => {
+        // do nothing
+    })
 }
-const loadMore = () => {
-    if (appointmentData.value.length >= paginationProps.value.total) {
-        ElMessage.info('No more data');
-        return;
-    }
-    console.log('loadMore')
-    paginationProps.value.currentPage += 1;
-    fetchAppointmentData();
+const createNewAppointment = () => {
+    router.push({
+        path: '/appointment/create'
+    })
 }
 onMounted(() => {
     fetchAppointmentData(true);
@@ -215,6 +255,11 @@ onMounted(() => {
     font-size: 30px;
     text-align: left;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    flex-wrap: nowrap;
 }
 .app-filter-container {
     height: 60px;

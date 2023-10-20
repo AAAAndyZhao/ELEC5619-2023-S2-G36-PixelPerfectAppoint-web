@@ -189,8 +189,37 @@ const changeAppointmentStatusByCreator = async (appointmentId, status) => {
     }
 }
 
+const quitAppointment = async (appointmentId) => {
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    if (token === null
+        || token === undefined
+        || token === '') {
+        throw new Error('User token is invalid');
+    }
+    try {
+        return await axios.post(`/appointment/quit`, {
+            uid: userId,
+            appointment_id: appointmentId
+        }, {
+            headers: {
+                authorization: token
+            }
+        });
+    } catch (error) {
+        console.error('Error during requesting quit appointment: ', error.message);
+        throw error;
+    }
+}
+
 export default {
     createAppointment,
     getAppointmentByUser,
-    changeAppointmentStatusByCreator
+    changeAppointmentStatusByCreator,
+    quitAppointment
 }
