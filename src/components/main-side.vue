@@ -52,7 +52,9 @@
                 <UserAvatar :user="user"/>
             </div>
             <h3 style="margin: auto 30px;">
-                <div class="app-user-alias">{{ user.alias }}</div>
+                <div class="app-user-alias">
+                    <el-link href="/user">{{ user.alias }}</el-link>
+                </div>
             </h3>
             <el-dropdown trigger="click" @visible-change="clickIconTransition">
                 <el-button type="primary"
@@ -162,8 +164,6 @@ const clickIconTransition = () => {
     isRotated.value = !isRotated.value
 }
 
-// if I click any other place, the isRotated would be false again
-
 
 
 onMounted(() => {
@@ -206,7 +206,7 @@ onMounted(() => {
 .app-user-alias{
     width: 100px;
     font-weight: 600;
-    font-size: x-small;
+    font-size: small;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;

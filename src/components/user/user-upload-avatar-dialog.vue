@@ -1,5 +1,6 @@
 <template>
-    <el-dialog :model-value="show">
+    <el-dialog :model-value="show" class="app-upload-avatar-dialog"
+    width="30%">
         <template #header>
             <h3>Upload Avatar</h3>
         </template>
@@ -15,32 +16,37 @@
         :on-error="uploadImageErrorHandler"
         :on-success="uploadImageSuccessHandler"
         :on-progress="hanldeUploadProgress"
-        :before-upload="beforeUpload">
+        :before-upload="beforeUpload"
+        :disabled="disabledUpload">
             <el-icon><Plus /></el-icon>
         </el-upload>
     </el-dialog>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import axios from '@/utils/axios';
+import { ElMessage } from 'element-plus';
 const props = defineProps({
     show: {
         type: Boolean,
         default: false
     }
 });
-
+const disabledUpload = computed(() => {
+    return fileList.value.length >= 1
+})
 const acceptFileTypes = ref('.jpeg, .png, .jpg, ')
 const fileList = ref([]);
 const uploadRequestHeaders = ref({
     'authorization': localStorage.getItem('token')
 });
-const uploadActionUrl = ref(`${axios.defaults.baseURL}/image/upload?uid=${localStorage.getItem('userId')}`)
+const uploadActionUrl = ref(`${axios.defaults.baseURL}/image/upload?uid=${localStorage.getItem('userId')}&simple=true`)
 const emits = defineEmits(['upload-success']);
 
 const uploadImageSuccessHandler = (res) => {
     console.log(res)
+    emits('upload-success', res)
 }
 
 const uploadImageErrorHandler = (err, file, fileList) => {
@@ -51,6 +57,7 @@ const hanldeUploadProgress = (event, file, fileList) => {
     
 }
 const beforeUpload = (file) => {
+    console.log(file)
     // file size limit
     const isLt100M = file.size / 1024 / 1024 < 100;
     if (!isLt100M) {
@@ -62,4 +69,5 @@ const beforeUpload = (file) => {
 </script>
 
 <style scoped>
+
 </style>
