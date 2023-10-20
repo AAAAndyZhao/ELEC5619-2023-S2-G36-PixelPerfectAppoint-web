@@ -138,6 +138,7 @@ const routes = [
         children: [
             {
                 path: 'create',
+                redirect: '/appointment/create/information',
                 components: {
                     header: () => import('./components/main-header.vue'),
                     content: () => import('./views/appointment/create/appointment-create.vue'),

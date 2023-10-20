@@ -115,7 +115,7 @@ import { Position } from '@element-plus/icons-vue';
 import MenuUtils from '@/utils/menu';
 import MapShow from '@/components/map/map-show.vue';
 
-const emits = defineEmits(['change-status', 'view', 'edit', 'quit', 'load-more']);
+const emits = defineEmits(['change-status', 'view', 'edit', 'quit']);
 const props = defineProps({
     data: {
         type: Array,
