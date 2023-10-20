@@ -215,7 +215,7 @@ onMounted(() => {
     box-sizing: border-box;
 }
 .app-filter-container .app-filter.app-search-input {
-    width: 400px;
+    width: 300px;
 }
 :deep(.app-filter-container .app-filter.app-date-range-picker) {
     width: 400px;
