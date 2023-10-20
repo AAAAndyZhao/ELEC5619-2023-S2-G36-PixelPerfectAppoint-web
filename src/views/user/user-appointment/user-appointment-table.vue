@@ -46,7 +46,7 @@
                 width="300">
                 <template #default="scope">
                     <div style="display: flex; align-items: center;">
-                        <el-avatar :src="scope.row.creator.avatar" :size="40" />
+                        <UserAvatar :user="scope.row.creator" :size="40"/>
                         <span style="margin-left: 10px;">{{ scope.row.creator.alias }}</span>
                     </div>
                 </template>
@@ -54,8 +54,8 @@
             <el-table-column
                 label="Participants">
                 <template #default="scope">
-                    <div style="display: flex; align-items: center;">
-                        <el-avatar v-for="participant in scope.row.participants" :key="participant.id" :src="participant.avatar" :size="40" />
+                    <div style="display: flex; align-items: center; gap: 2px;">
+                        <UserAvatar v-for="participant in scope.row.participants" :key="participant.id" :user="participant.user" :size="40"/>
                     </div>
                 </template>
             </el-table-column>
@@ -114,6 +114,7 @@ import { ref, computed } from 'vue';
 import { Position } from '@element-plus/icons-vue';
 import MenuUtils from '@/utils/menu';
 import MapShow from '@/components/map/map-show.vue';
+import UserAvatar from '@/components/user/user-avatar.vue';
 
 const emits = defineEmits(['change-status', 'view', 'edit', 'quit']);
 const props = defineProps({
