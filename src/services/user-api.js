@@ -363,6 +363,15 @@ const updateAvatar = async (imageId) => {
     }
 }
 
+const activateAccount = async (token) => {
+    try{
+        return axios.get(`/user/activate_account/${token}`);
+    }catch (error) {
+        console.error('Error during requesting activate account: ', error.message);
+        throw error;
+    }
+}
+
 export default {
     getUserProfile,
     updateUserProfile,
@@ -381,5 +390,6 @@ export default {
     unfollowUser,
     searchUser,
     getUserInformation,
-    updateAvatar
+    updateAvatar,
+    activateAccount
 }

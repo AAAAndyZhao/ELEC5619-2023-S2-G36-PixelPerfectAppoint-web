@@ -32,7 +32,7 @@ import { Search } from '@element-plus/icons-vue'
 const props = defineProps({
     data: {
         type: Object,
-        default: () => { }
+        default: () => {}
     }
 });
 const emits = defineEmits(['data-update']);
@@ -76,7 +76,6 @@ const triggerSearchBoxAutocompletion = () => {
 
 const placesChanged = () => {
     const places = searchBox.getPlaces();
-    console.log(places)
 
     if (places.length == 0) {
         return;
@@ -117,7 +116,6 @@ const placesChanged = () => {
         // update google map place id
         selectedLocation.value.googleMapPlaceId = firstPlace.place_id;
     }
-    console.log(selectedLocation.value)
 }
 const syncDataToParent = () => {
     emits('data-update', 'location', { ...selectedLocation.value });
@@ -134,8 +132,7 @@ watchEffect(() => {
 });
 
 onMounted(async () => {
-    await GoogleMapLoader.load()
-    const { Map } = await google.maps.importLibrary("maps");
+    const { Map } = await GoogleMapLoader.importLibrary('maps');
     map = new Map(mapContainer.value, {
         center: { lat: -34.397, lng: 150.644 },
         zoom: 8,
