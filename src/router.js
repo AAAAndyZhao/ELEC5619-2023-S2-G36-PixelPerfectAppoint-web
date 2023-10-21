@@ -182,6 +182,21 @@ const routes = [
                 }
             }
         ]
+    },
+    {
+        path:'/portfolio',
+        component: MainPage,
+        children: [
+            {
+                path:'create',
+                name:'PortfolioCreatePage',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/portfolio/portfolio-create.vue'),
+                    side: () => import('./components/main-side.vue')
+                }
+            }
+        ]
     }
 ]
 
