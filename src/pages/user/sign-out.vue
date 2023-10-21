@@ -62,10 +62,6 @@ const signOut = async () => {
     }finally{
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
-        // remove uid from cookie
-        document.cookie = "uid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        // remove user token from cookie
-        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         setTimeout(() => {
             loading.value = false;
         }, 500);
