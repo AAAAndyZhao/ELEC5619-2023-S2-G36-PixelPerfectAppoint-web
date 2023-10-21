@@ -213,6 +213,10 @@ router.beforeEach(async (to, from, next) => {
             if (isLogin == false) {
                 localStorage.removeItem('token');
                 localStorage.removeItem('userId');
+                // remove uid from cookie
+                document.cookie = "uid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                // remove user token from cookie
+                document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
             }
         }catch (error) {
             console.error('Error during user login verification: ', error);

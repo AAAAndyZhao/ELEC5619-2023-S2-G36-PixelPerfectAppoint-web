@@ -83,6 +83,11 @@ const submitForm = async () => {
             const userId = userloginStatus.data[0].id;
             localStorage.setItem('token', usertoken);
             localStorage.setItem('userId', userId);
+            // write uid to cookie
+            document.cookie = `uid=${userId};path=/`;
+            // write token to cookie
+            document.cookie = `token=${usertoken};path=/`;
+
             if (needRedirect){
                 setTimeout(() => {
                     window.location.href = props.redirect;
