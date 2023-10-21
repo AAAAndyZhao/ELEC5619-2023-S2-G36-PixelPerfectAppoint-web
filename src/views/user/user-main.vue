@@ -1,6 +1,6 @@
 <template>
     <el-container id="app-user-profile-container">
-        <el-tabs v-model="activeTab" class="app-user-profile-tabs" @tab-click="handleClick" stretch>
+        <el-tabs v-model="activeTab" class="app-user-profile-tabs" @tab-change="handleTabChange" stretch>
             <el-tab-pane label="Information" name="information">
                 <UserInformationView/>
             </el-tab-pane>
@@ -13,7 +13,9 @@
             <el-tab-pane label="Portfolio/Photos" name="portfolio" lazy>
                 <PortfolioPhoto />
             </el-tab-pane>
-            <el-tab-pane label="Reviews" name="fifth" lazy>Reviews</el-tab-pane>
+            <el-tab-pane label="Appointment" name="appointment" lazy>
+                <UserAppointmentView />
+            </el-tab-pane>
         </el-tabs>
     </el-container>
 </template>
@@ -23,12 +25,15 @@ import { ref, onMounted } from 'vue';
 import UserInformationView from '@/views/user/user-information/index.vue';
 import UserFollowingView from '@/views/user/user-following-follower/index.vue';
 import UserPostsView from '@/views/user/user-post/index.vue';
+import UserAppointmentView from '@/views/user/user-appointment/index.vue';
 import router from '@/router.js';
 
 
 const activeTab = ref('information');
-const handleClick = (tab) => {
-    activeTab.value = tab.name;
+const handleTabChange = (name) => {
+    activeTab.value = name;
+    // change query string
+    router.push({ query: { tab: name } });
 };
 
 const changeTabByRoute = () => {

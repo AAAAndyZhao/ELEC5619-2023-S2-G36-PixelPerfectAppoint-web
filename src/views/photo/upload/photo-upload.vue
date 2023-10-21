@@ -201,7 +201,7 @@ const isFormValid = (photoItem) => {
     //     console.error('lens', photoItem.lens)
     //     return false;
     // }
-    const focalLengthRegex = /^\d{1,4}$/;
+    const focalLengthRegex = /^\d{1,4}\.?\d{0,2}$/;
     const exposureTimeRegex = /^1\/\d{1,4}$|^1$|^\d{1,5}$/;
     const fNumberRegex = /^\d{1,2}\.?\d{0,2}$/;
     const isoRegex = /^\d{1,4}$/;
