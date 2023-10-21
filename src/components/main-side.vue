@@ -24,21 +24,21 @@
                 <el-icon size="30px" color="#928f8f" class="app-side-search-icon" style="margin: 20px; margin-left: 50px;">
                     <Search />
                 </el-icon>
-                <span style="margin: 10px; font-weight: 600;">Search</span>
+                <span style="margin: 10px; font-weight: 600;" @click="goToSearchPage">Search</span>
             </el-menu-item>
             <el-menu-item index="5">
                 <el-icon size="30px" color="#928f8f" class="app-side-appointment-icon"
                     style="margin: 20px; margin-left: 50px;">
                     <Connection />
                 </el-icon>
-                <span style="margin: 10px; font-weight: 600;">Appointment</span>
+                <span style="margin: 10px; font-weight: 600;" @click="goToAppointmentPage">Appointment</span>
             </el-menu-item>
             <el-menu-item index="6">
                 <el-icon size="30px" color="#928f8f" class="app-side-profolio-icon"
                     style="margin: 20px; margin-left: 50px;">
                     <Compass />
                 </el-icon>
-                <span style="margin: 10px; font-weight: 600;" @click="goToUserProfolio">Profolio</span>
+                <span style="margin: 10px; font-weight: 600;" @click="goToUserProfolio">Portfolio</span>
             </el-menu-item>
             <el-menu-item index="7">
                 <el-icon size="30px" color="#928f8f" class="app-side-setting-icon" style="margin: 20px; margin-left: 50px;">
@@ -132,6 +132,14 @@ const goToUserProfolio = () => {
 
 const goToLogIn = () => {
     router.push('/sign-in')
+}
+
+const goToSearchPage = () => {
+    router.push('/search')
+}
+
+const goToAppointmentPage = () => {
+    router.push('/appointment/create')
 }
 
 const logOutCurrentAccount = () => {
