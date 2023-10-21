@@ -8,7 +8,7 @@
                 <el-steps :active="currentStep">
                     <el-step title="Basic Information" :icon="Edit" />
                     <el-step title="Location" :icon="MapLocation" />
-                    <el-step title="Step 3" :icon="User" />
+                    <el-step title="Participants" :icon="User" />
                 </el-steps>
             </div>
             <div class="app-create-form">

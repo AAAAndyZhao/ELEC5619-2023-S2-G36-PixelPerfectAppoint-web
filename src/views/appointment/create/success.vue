@@ -4,7 +4,7 @@
         <h1>You have successfully create an appointment!</h1>
         <h3>Confirmation emails have been sent to other participants</h3>
         <h3>You can check it in your appointment list</h3>
-        <router-link to="/user/profile">Check</router-link>
+        <router-link to="/user/profile?tab=appointment">Check</router-link>
     </div>
 </template>
 
