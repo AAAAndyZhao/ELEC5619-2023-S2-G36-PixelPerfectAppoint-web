@@ -30,7 +30,7 @@
         </div>
         <el-divider></el-divider>
         <div class="app-posts-container" v-loading="loading">
-            <PostsList :data="postData" @remove="handleRemovePost"/>
+            <PostsList :data="postData" @remove="handleRemovePost" @edit="handleEditPost"/>
             <el-pagination layout="prev, pager, next"
             :total="postsPaginationProps.total"
             :current-page="postsPaginationProps.currentPage"
@@ -45,7 +45,8 @@ import { ref, onMounted } from 'vue';
 import { Search } from '@icon-park/vue-next';
 import PostsList from './posts-list.vue';
 import postApi from '@/services/post-api';
-import { ElMessage, dayjs } from 'element-plus';
+import { ElMessage } from 'element-plus';
+import dayjs from 'dayjs';
 
 const loading = ref(false);
 const postData = ref([]);
@@ -108,7 +109,7 @@ const postsPaginationProps = ref({
     pageSize: 30,
     total: 0,
     handleCurrentPageChange: (page) => {
-        postsPaginationProps.currentPage = page;
+        postsPaginationProps.value.currentPage = page;
         fetchPostsData();
     }
 });
@@ -116,7 +117,7 @@ const postsPaginationProps = ref({
 const fetchPostsData = async (isReload = false) => {
     loading.value = true;
     if (isReload){
-        postsPaginationProps.currentPage = 1;
+        postsPaginationProps.value.currentPage = 1;
     }
     const sortedOption = sortOptions.value.find(item => item.value === filterProps.value.sortedBy);
     let startDateStr;
@@ -142,6 +143,8 @@ const fetchPostsData = async (isReload = false) => {
             postsPaginationProps.total = res.totalCount;
         }else{
             ElMessage.error('Failed to get posts data: ' + res.msg);
+            postData.value = [];
+            postsPaginationProps.total = 0;
         }
     }catch(err){
         console.error(err);
@@ -172,6 +175,10 @@ const handleRemovePost = async (postId) => {
         console.error(err);
         ElMessage.error('Failed to delete post');
     }
+}
+
+const handleEditPost = (postId) => {
+    // todo: to edit post page
 }
 
 onMounted(() => {
