@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-import { ref, onBeforeUnmount , onMounted } from 'vue';
+import { ref, onBeforeUnmount , onMounted, watch } from 'vue';
 import axios from '@/utils/axios';
 const props = defineProps({
     src: {
@@ -134,6 +134,10 @@ const fetchImage = async () => {
         return '';
     }
 }
+
+watch(() => props.src, () => {
+    fetchImage();
+})
 
 onBeforeUnmount (() => {
     URL.revokeObjectURL(imageSrc.value);
