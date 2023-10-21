@@ -1,10 +1,9 @@
 <template>
-    <el-image :src="imageSrc" :alt="alt" :style="style"
-    :fit="fit" :hide-on-click-modal="hideOnClickModal" :loading="loading"
-    :lazy="lazy" :scroll-container="scrollContainer" :referrerpolicy="referrerpolicy"
-    :preview-src-list="previewSrcList" :z-index="zIndex" :initial-index="initialIndex"
-    :close-on-press-escape="closeOnPressEscape" :preview-teleported="previewTeleported"
-    :infinite="infinite" :zoom-rate="zoomRate" :min-scale="minScale" :max-scale="maxScale">
+    <el-image :src="imageSrc" :alt="alt" :style="style" :fit="fit" :hide-on-click-modal="hideOnClickModal"
+        :loading="loading" :lazy="lazy" :scroll-container="scrollContainer" :referrerpolicy="referrerpolicy"
+        :preview-src-list="previewSrcList" :z-index="zIndex" :initial-index="initialIndex"
+        :close-on-press-escape="closeOnPressEscape" :preview-teleported="previewTeleported" :infinite="infinite"
+        :zoom-rate="zoomRate" :min-scale="minScale" :max-scale="maxScale">
         <!-- pass templates to el-image -->
         <template #error>
             <slot name="error">
@@ -22,7 +21,7 @@
 </template>
 
 <script setup>
-import { ref, onBeforeUnmount , onMounted } from 'vue';
+import { ref, onBeforeUnmount, onMounted, watchEffect } from 'vue';
 import axios from '@/utils/axios';
 const props = defineProps({
     src: {
@@ -134,8 +133,14 @@ const fetchImage = async () => {
         return '';
     }
 }
+// watchEffect src change, fetch image
+watchEffect(() => {
+    if (props.src !== '') {
+        fetchImage();
+    }
+})
 
-onBeforeUnmount (() => {
+onBeforeUnmount(() => {
     URL.revokeObjectURL(imageSrc.value);
 })
 
