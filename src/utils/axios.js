@@ -42,6 +42,10 @@ axios.interceptors.request.use((request) => {
 
 
 axios.interceptors.response.use((response) => {
+    // if response is blob type, return response directly
+    if (response.data instanceof Blob) {
+        return response.status === 200 ? response : Promise.reject(response);
+    }
     return response.status === 200 ? response.data : Promise.reject(response);
 }, (error) => {
     const { response } = error;
