@@ -60,7 +60,7 @@
                 <el-button type="primary"
                     style="margin: auto 10px auto 30px; width: 30px; border-radius: 30px; background-color: #fff; border: #fff;">
                     <!-- <el-icon class="el-icon--right"><arrow-down /></el-icon> -->
-                    <el-icon style="transform: rotate(90deg); transition: all 0.3s;" color="#409EFF" size="20px" v-if="!isRotated">
+                    <el-icon style="transform: rotate(90deg); transition: transform 2s ease;" color="#409EFF" size="20px" v-if="!isRotated">
                         <More />
                     </el-icon>
                     <el-icon color="#409EFF" size="20px" v-if="isRotated">

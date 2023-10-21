@@ -37,7 +37,50 @@ $MENU = {
     }, {
         code: 2,
         value: 'Portrait'
+    }, {
+        code: 3,
+        value: 'Wildlife'
+    }, {
+        code: 4,
+        value: 'Urban'
+    }, {
+        code: 5,
+        value: 'Sports'
+    }, {
+        code: 6,
+        value: 'Still Life'
+    }, {
+        code: 7,
+        value: 'Abstract'
+    }, {
+        code: 8,
+        value: 'Macro'
+    }, {
+        code: 9,
+        value: 'Fashion'
+    }, {
+        code: 10,
+        value: 'Wedding'
+    }, {
+        code: 11,
+        value: 'Event'
+    }, {
+        code: 12,
+        value: 'Aerial'
+    }, {
+        code: 13,
+        value: 'Food'
+    }, {
+        code: 14,
+        value: 'Architecture'
+    }, {
+        code: 15,
+        value: 'Night'
+    }, {
+        code: 16,
+        value: 'Black and White'
     }],
+
     "CAM_MAKER": [{
         code: 0,
         value: 'Canon'

@@ -107,8 +107,23 @@ const searchPhotos = async (
     }
 }
 
+const getPhotoByOwnerId = async (userId) => {
+    if (!userId) {
+        throw new Error("No userId, please login first.")
+    } else {
+        try {
+            let userId = localStorage.getItem("userId")
+            return axios.get(`/photo/all/${userId}`)
+        } catch (error) {
+            console.error("Error during getting photos by owner id: ", error.message)
+            throw error
+        }
+    } 
+}
+
 export default {
     uploadPhoto,
     uploadPhotoList,
-    searchPhotos
+    searchPhotos,
+    getPhotoByOwnerId
 }
