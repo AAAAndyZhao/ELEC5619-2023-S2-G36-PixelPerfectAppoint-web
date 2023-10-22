@@ -157,7 +157,6 @@ const handleClickPhotoItem = (event) => {
         const src = image.src;
         for (const photo of photoList.value) {
             if (photo.url === src) {
-                console.log(photo)
                 cover_image_url.value = photo.url
                 ElMessage.success('cover image changed');
                 postInfo.cover_image_id = photo.imageId
@@ -165,6 +164,7 @@ const handleClickPhotoItem = (event) => {
             }
         }
     }
+    console.log("fileList", fileList);
 }
 const receiveData = (updatedPhotoForm) => {
 

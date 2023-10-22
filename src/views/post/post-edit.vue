@@ -10,7 +10,8 @@
                         Photos{{ fileList.length > 0 ? ` (${fileList.length})` : ' ' }}
                     </div>
                     <div class="app-container-tips">
-                        (By default the latest uploaded photo will be used as the cover, if you want to change the cover, please click on the uploaded photo)
+                        (By default the latest uploaded photo will be used as the cover, if you want to change the cover,
+                        please click on the uploaded photo)
                     </div>
                 </template>
                 <el-upload class="app-upload" method="post" :accept="acceptFileTypes" v-model:file-list="fileList"
@@ -26,20 +27,20 @@
                 <el-card class="app-post-info-form-container">
                     <template #header>
                         <div class="app-container-header">
-                            Post Information {{ photoUploaded === null ? '(please add photos first)' : `` }}{{ title }}
+                            Post Information {{ photoUploaded === null ? '(please add photos first)' : `` }}
                         </div>
                     </template>
-                    <PostInfoForm :photo="photoUploaded" @update:postInfo="receiveData" />
+                    <PostInfoForm :photo="photoUploaded" @update:postInfo="receiveData" :postData="importPostInfo" />
                     <div class="app-container-footer">
                         Cover Image:
-                        <el-image style="width: 100px; height: 100px" :src="cover_image_url" fit="fill" size=""/>
+                        <el-image style="width: 100px; height: 100px" :src="cover_image_url" fit="fill" size="" />
                     </div>
 
 
 
                 </el-card>
                 <div class="app-upload-buttons-container">
-                    <el-button type="primary" size="large" @click="handleSubmitPostUploads"
+                    <el-button type="primary" size="large" @click="handleSubmitPostUpdate"
                         :disabled="photoList.length === 0">Submit</el-button>
                     <el-button size="large" @click="handleReset">Reset</el-button>
                 </div>
@@ -52,9 +53,11 @@
 import { ref, onMounted, nextTick } from 'vue'
 import axios from '@/utils/axios.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import PostInfoForm from '../../components/post/post-info-form.vue'
+import PostInfoForm from '../../components/post/edit-post-info-form.vue'
 import postApi from '@/services/post-api'
 import { OneThirdRotation } from '@icon-park/vue-next'
+import router from '../../router'
+
 
 
 const loading = ref(false)
@@ -85,7 +88,7 @@ const handleRemove = (file, fileList) => {
             break;
         }
     }
-    photoUploaded.value = null;
+
 }
 
 const uploadImageSuccessHandler = (response, file, fileList) => {
@@ -185,13 +188,11 @@ const isFormValid = (title, description) => {
     }
     return true;
 }
-const handleSubmitPostUploads = async () => {
+const handleSubmitPostUpdate = async () => {
     let allValid = true;
     for (const photo of photoList.value) {
         postInfo.image_ids.push(photo.imageId);
     }
-    console.log("postInfo", postInfo);
-
 
     if (!isFormValid(postInfo.title, postInfo.text)) {
         allValid = false;
@@ -204,7 +205,8 @@ const handleSubmitPostUploads = async () => {
     // submit photoList to backend
     try {
         loading.value = true;
-        const res = await postApi.uploadPost(postInfo);
+        const res = await postApi.updatePostDetail(postId, postInfo);
+        console.log('postInfo', postInfo)
 
         if (res.code === 0) {
             ElMessage.success('Submit successfully');
@@ -214,6 +216,7 @@ const handleSubmitPostUploads = async () => {
             photoUploaded.value = null;
             cover_image_url.value = ''
             photoUploaded.value = null;
+            router.push('/user/profile?tab=posts')
         } else {
             ElMessage.error(`Submit failed, ${failureCount} photos failed to upload`);
             postInfo.image_ids = [];
@@ -258,9 +261,51 @@ const handleReset = () => {
         // do nothing
     });
 }
+let path = window.location.pathname;
+let parts = path.split('/');
+let postId = parts[parts.length - 1];
+const importPostInfo = ref({
+
+    title: '',
+    text: '',
+
+})
+
+
+const fetchData = async () => {
+    try {
+        const res = await postApi.getPostDetail(postId);
+
+        if (res.code === 0) {
+            console.log(res.data[0])
+
+            for (const photo of res.data[0].photos) {
+
+                const newItme = {
+                    url: photo.url, // used for click event finding the selected photo
+                    imageId: photo.id
+                }
+                console.log('zheshixinsiphoto)', photo)
+                fileList.value.push(photo)
+                photoList.value.push(newItme)
+                console.log('fileList', fileList.value)
+                selectPhoto(photo);
+            }
+            postInfo.cover_image_id = res.data[0].coverPhoto.id
+            cover_image_url.value = res.data[0].coverPhoto.url
+            importPostInfo.value.text = res.data[0].text
+            importPostInfo.value.title = res.data[0].title
+        } else {
+            ElMessage.error('获取数据失败。');
+        }
+    } catch (error) {
+        ElMessage.error('获取数据时出错。');
+    }
+}
 
 onMounted(() => {
     document.addEventListener('click', handleClickPhotoItem);
+    fetchData()
 })
 </script>
 
@@ -282,14 +327,14 @@ onMounted(() => {
 }
 
 .app-post-photo-upload-content {
-    height: 100% ;
+    height: 100%;
     width: 100%;
     box-sizing: border-box;
     padding: 30px 0;
 }
 
 .app-post-photo-upload-content {
-   
+
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -304,10 +349,12 @@ onMounted(() => {
     padding: 10px;
     text-align: left;
 }
-.app-container-tips{
+
+.app-container-tips {
     font-size: 15px;
     color: #909399;
-    margin-top: 6px;}
+    margin-top: 6px;
+}
 
 .app-post-photo-upload-content>.app-info-container {
     height: 100%;
@@ -345,7 +392,7 @@ onMounted(() => {
 }
 
 .app-post-photo-upload-content .app-container-footer {
-   
+
     text-align: left;
     display: flex;
     flex-direction: row;
