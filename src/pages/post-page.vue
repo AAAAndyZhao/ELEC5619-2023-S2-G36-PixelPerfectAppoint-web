@@ -59,7 +59,7 @@ const getPostDetail = async () => {
             userInfo.value=res.data[0].author;
             postInfo.value = res.data[0];
             console.log('userInfo',userInfo.value)
-            console.log('postInfo',res.data[0].photos)
+            console.log('postInfo',res.data[0])
         }
 
     }

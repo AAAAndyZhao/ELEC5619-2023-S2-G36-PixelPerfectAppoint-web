@@ -1,9 +1,9 @@
 <template>
-    <div class="app-post-upload" v-loading="loading">
-        <div class="app-post-upload-title">
-            <h2>Upload Post</h2>
+    <div class="app-post-update" v-loading="loading">
+        <div class="app-post-update-title">
+            <h2>Edit Post</h2>
         </div>
-        <div class="app-post-photo-upload-content">
+        <div class="app-post-photo-update-content">
             <el-card class="app-photos-container">
                 <template #header>
                     <div class="app-container-header">
@@ -39,10 +39,10 @@
 
 
                 </el-card>
-                <div class="app-upload-buttons-container">
+                <div class="app-update-buttons-container">
                     <el-button type="primary" size="large" @click="handleSubmitPostUpdate"
-                        :disabled="photoList.length === 0">Submit</el-button>
-                    <el-button size="large" @click="handleReset">Reset</el-button>
+                        :disabled="photoList.length === 0">update</el-button>
+                    <el-button size="large" @click="handleCancel">cancel</el-button>
                 </div>
             </div>
         </div>
@@ -81,6 +81,7 @@ const handlePictureCardPreview = (file) => {
     console.log(file)
 }
 const handleRemove = (file, fileList) => {
+    console.log('filelist info', fileList)
     // remove the file from photoList
     for (const photo of photoList.value) {
         if (photo.url === file.url) {
@@ -88,9 +89,23 @@ const handleRemove = (file, fileList) => {
             break;
         }
     }
-
+    if (fileList.length === 0) {
+        postInfo.cover_image_id = ''
+        cover_image_url.value = null
+    }else{
+        if(fileList[0].id){
+            // existing photo
+            postInfo.cover_image_id = fileList[0].id
+        }else{
+            const res = fileList[0].response;
+            // new added image, id is in response
+            if (res.code === 0 && res.data.length > 0){
+                postInfo.cover_image_id = res.data[0].id
+            }
+        }
+        cover_image_url.value = fileList[0].url
+    }
 }
-
 const uploadImageSuccessHandler = (response, file, fileList) => {
     if (response.code === 0) {
         ElMessage.success('Upload successfully!');
@@ -238,25 +253,17 @@ const handleSubmitPostUpdate = async () => {
     }
 }
 
-const handleReset = () => {
+const handleCancel = () => {
     ElMessageBox.confirm(
-        `Are you sure to reset the whole work?`,
+        `Are you sure to cancel update?`,
         'Warning',
         {
-            confirmButtonText: 'OK',
-            cancelButtonText: 'Cancel',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'no',
             type: 'warning',
         }
     ).then(async () => {
-        loading.value = true;
-        photoList.value = [];
-        fileList.value = [];
-        photoUploaded.value = null;
-        cover_image_url.value = ''
-        setTimeout(() => {
-            loading.value = false;
-            ElMessage.success('Reset successfully');
-        }, 1000);
+        router.push('/user/profile?tab=posts')
     }).catch(() => {
         // do nothing
     });
@@ -310,30 +317,30 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.app-post-upload {
+.app-post-update {
     height: 100%;
     width: 100%;
     box-sizing: border-box;
     padding: 20px;
 }
 
-.app-post-upload-title {
+.app-post-update-title {
     height: 36px;
 }
 
-.app-post-upload-title h2 {
+.app-post-update-title h2 {
     text-align: left;
     margin-block-start: 0;
 }
 
-.app-post-photo-upload-content {
+.app-post-photo-update-content {
     height: 100%;
     width: 100%;
     box-sizing: border-box;
     padding: 30px 0;
 }
 
-.app-post-photo-upload-content {
+.app-post-photo-update-content {
 
     display: flex;
     flex-direction: column;
@@ -342,7 +349,7 @@ onMounted(() => {
 }
 
 
-.app-post-photo-upload-content>.app-photos-container {
+.app-post-photo-update-content>.app-photos-container {
     height: 100%;
     width: 100%;
     box-sizing: border-box;
@@ -356,7 +363,7 @@ onMounted(() => {
     margin-top: 6px;
 }
 
-.app-post-photo-upload-content>.app-info-container {
+.app-post-photo-update-content>.app-info-container {
     height: 100%;
     width: 100%;
     box-sizing: border-box;
@@ -367,14 +374,14 @@ onMounted(() => {
     align-items: flex-start;
 }
 
-.app-post-photo-upload-content>.app-info-container>.app-post-info-form-container {
+.app-post-photo-update-content>.app-info-container>.app-post-info-form-container {
     height: calc(100% - 50px);
     width: 100%;
     box-sizing: border-box;
     padding: 10px;
 }
 
-.app-post-photo-upload-content>.app-info-container>.app-upload-buttons-container {
+.app-post-photo-update-content>.app-info-container>.app-update-buttons-container {
     height: 100px;
     width: 100%;
     box-sizing: border-box;
@@ -385,13 +392,13 @@ onMounted(() => {
     flex-direction: row;
 }
 
-.app-post-photo-upload-content .app-container-header {
+.app-post-photo-update-content .app-container-header {
     font-weight: bold;
     font-size: 18px;
     text-align: left;
 }
 
-.app-post-photo-upload-content .app-container-footer {
+.app-post-photo-update-content .app-container-footer {
 
     text-align: left;
     display: flex;
@@ -401,7 +408,7 @@ onMounted(() => {
     align-items: center;
 }
 
-:deep(.app-post-photo-upload-content .el-card__body) {
+:deep(.app-post-photo-update-content .el-card__body) {
 
     width: 100%;
     box-sizing: border-box;
@@ -411,7 +418,7 @@ onMounted(() => {
     margin-bottom: 30px;
 }
 
-.app-upload-buttons-container .el-button {
+.app-update-buttons-container .el-button {
     width: 200px;
 }
 </style>
