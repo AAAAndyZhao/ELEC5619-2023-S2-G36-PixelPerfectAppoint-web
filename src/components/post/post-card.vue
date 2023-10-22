@@ -1,13 +1,13 @@
 <template>
     <el-card class="app-post-card" body-class="app-post-card-body">
         <div class="app-post-card-img">
-            <el-image v-if="post.coverPhoto.thumbnailUrl" :src="post.coverPhoto.thumbnailUrl">
+            <photo-image v-if="post.coverPhoto.thumbnailUrl" :src="post.coverPhoto.thumbnailUrl">
                 <template #error>
                     <el-icon>
                         <Picture />
                     </el-icon>
                 </template>
-            </el-image>
+            </photo-image>
             <el-icon v-else>
                 <Picture />
             </el-icon>
@@ -59,6 +59,7 @@
 
 <script setup>
 import { computed } from 'vue';
+import PhotoImage from '@/components/photo/photo-image.vue';
 const props = defineProps({
     post: {
         type: Object,
