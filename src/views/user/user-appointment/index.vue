@@ -208,6 +208,9 @@ const handleChangeAppointmentStatus = (appointment, statusCode) => {
 }
 const handleViewAppointmentDetail = (appointment) => {
     console.log('handleViewAppointmentDetail', appointment);
+    router.push({
+        path: '/appointment/' + appointment.id
+    })
 }
 const handleEditAppointment = (appointment) => {
     console.log('handleEditAppointment', appointment);
