@@ -5,6 +5,11 @@ import Postpage from './pages/post-page.vue'
 
 const routes = [
     {
+        path: '/404',
+        name: '404',
+        component: () => import('./pages/404.vue')
+    },
+    {
         path: '/sign-up',
         name: 'SignUpPage',
         component: () => import('./pages/user/sign-up.vue')
@@ -74,7 +79,7 @@ const routes = [
                     title: () => import('./components/title/title.vue'),
                     header: () => import('./components/main-header.vue'),
                     content: () => import('./views/post/post-detail.vue'),
-                    info: () => import('./components/user-info/user-info-detail.vue'),
+                    info: () => import('./components/user/user-info-detail.vue'),
                     description: () => import('./components/description/description.vue'),
                     comment: () => import('./views/comment/comment.vue')
                     
@@ -177,6 +182,11 @@ const routes = [
                     content: () => import('./views/appointment/detail/index.vue'),
                     side: () => import('./components/main-side.vue')
                 },
+                props: {
+                    content: (route) => ({ 
+                        appointmentId: route.params.id 
+                    })
+                }
             }
         ]
     },

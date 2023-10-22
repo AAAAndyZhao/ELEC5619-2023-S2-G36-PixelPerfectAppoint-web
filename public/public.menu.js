@@ -146,5 +146,35 @@ $MENU = {
         code: 3,
         value: 'CANCELLED',
         tagType: 'info'
+    }],
+    "APPOINTMENT_PARTICIPANT_STATUS": [{
+        code: 0,
+        value: 'PENDING',
+        tagType: ''
+    }, {
+        code: 1,
+        value: 'ACCEPTED',
+        tagType: 'success'
+    }, {
+        code: 2,
+        value: 'REJECTED',
+        tagType: 'danger'
+    }],
+    "APPOINTMENT_PARTICIPANT_ROLE": [{
+        code: 0,
+        value: 'Role Not Assigned',
+        tagType: 'info'
+    }, {
+        code: 1,
+        value: 'Photographer',
+        tagType: ''
+    }, {
+        code: 2,
+        value: 'Model',
+        tagType: 'success'
+    }, {
+        code: 3,
+        value: 'Helper',
+        tagType: 'warning'
     }]
 }
