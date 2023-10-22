@@ -1,9 +1,9 @@
 <template>
-    <div class="app-portfolio-create-container">
-        <el-page-header @back="goBack" id="app-portfolio-create-header">
+    <div class="app-portfolio-update-container">
+        <el-page-header @back="goBack" id="app-portfolio-update-header">
             <template #content>
                 <span class="text-large font-600 mr-3">
-                    Create portfolio
+                    Update Portfolio
                 </span>
             </template>
         </el-page-header>
@@ -22,8 +22,8 @@
                         :value="category.code"></el-option>
                 </el-select>
             </el-form-item>
-            <div id="app-portfolio-create-photo-select-area-container">
-                <div class="app-portfolio-create-photo-select-area-table">
+            <div id="app-portfolio-update-photo-select-area-container">
+                <div class="app-portfolio-update-photo-select-area-table">
                     <el-table :data="photos" ref="photoSourceTable">
                         <el-table-column type="selection" width="55"></el-table-column>
                         <el-table-column label="Photo" width="180" align="center">
@@ -43,7 +43,7 @@
                         </el-table-column>
                     </el-table>
                 </div>
-                <div class="app-portfolio-create-photo-select-control-area">
+                <div class="app-portfolio-update-photo-select-control-area">
                     <!-- add and remove button -->
                     <el-button type="primary" @click="handleAdd">Add</el-button>
                     <el-button type="danger" @click="handleRemove" style="margin-left: 0px;">Remove</el-button>
@@ -52,9 +52,9 @@
                     <el-text>Cover photo</el-text>
                     <el-switch id="app-portfolio-private-select-btn" v-model="form.isPublic" active-color="#13ce66"
                         active-text="Public" inactive-text="Private" />
-                    <el-button type="primary" @click="handleCreate">Create</el-button>
+                    <el-button type="primary" @click="handleUpdate">Update</el-button>
                 </div>
-                <div class="app-portfolio-create-photo-select-ready-area">
+                <div class="app-portfolio-update-photo-select-ready-area">
                     <el-table :data="selectedPhotos" ref="photoTargetTable">
                         <el-table-column type="selection" width="55"></el-table-column>
                         <el-table-column label="Photo" width="180" align="center">
@@ -76,7 +76,7 @@
                         <el-table-column label="Cover Set" align="center">
                             <!-- provide button to choose the coverPhoto -->
                             <template #default="{ row }">
-                                <el-button class="app-portfolio-create-photo-select-cover-button" type="primary"
+                                <el-button class="app-portfolio-update-photo-select-cover-button" type="primary"
                                     @click="handleCoverSelect(row)">Set</el-button>
                             </template>
                         </el-table-column>
@@ -102,12 +102,7 @@ import { Windows } from '@icon-park/vue-next';
 
 const photos = ref([])
 const selectedPhotos = ref([])
-const coverPhoto = ref({
-    id: 'Fuji-X100V',
-    name: 'Camera',
-    description: 'a camera',
-    thumbnailUrl: ''
-})
+const coverPhoto = ref({})
 const photoSourceTable = ref(null)
 const photoTargetTable = ref(null)
 
@@ -115,11 +110,9 @@ const photoTargetTable = ref(null)
 const fetchPhotos = async () => {
     try {
         let userId = localStorage.getItem('userId')
-        let token = localStorage.getItem('token')
-        const response = await photoApi.getPhotoByOwnerId(userId, token)
+        const response = await photoApi.getPhotoByOwnerId(userId)
         if (response.code === 0) {
             photos.value = response.data
-            console.log(response)
         } else {
             console.log(response.msg)
         }
@@ -163,7 +156,7 @@ const handleCoverSelect = (row) => {
     coverPhoto.value = row
 }
 
-const handleCreate = async () => {
+const handleUpdate = async () => {
     try {
         const portfolioData = {
             title: form.title,
@@ -173,25 +166,27 @@ const handleCreate = async () => {
             photoIds: selectedPhotos.value.map(photo => photo.id),
             coverPhotoId: coverPhoto.value.id
         }
-        const response = await portfolioApi.createPortfolio(portfolioData);
+        const portfolioId = router.currentRoute.value.params.id
+        const response = await portfolioApi.updatePortfolio(portfolioData, portfolioId);
+        // TODO: this should change the api to update portfolio
         if (response.code === 0) {
-            ElMessage.success('Create portfolio successfully!')
+            ElMessage.success('Update portfolio successfully!')
             openSuccessMessage()
             console.log(response)
         } else {
             console.log(response.msg)
             if (response.msg == "user not found") {
-                ElMessage.error(`Failed to create portfolio: ${response.msg}, please login first`)
+                ElMessage.error(`Failed to update portfolio: ${response.msg}, please login first`)
                 router.push('/sign-in')
             } else if (response.msg == "fail to find user") {
-                ElMessage.error(`Failed to create portfolio: ${response.msg}, please login first`)
+                ElMessage.error(`Failed to update portfolio: ${response.msg}, please login first`)
                 router.push('/sign-in')
             } else if (response.msg == "invalid category code") {
-                ElMessage.error(`Failed to create portfolio: ${response.msg}`)
+                ElMessage.error(`Failed to update portfolio: ${response.msg}`)
             } else if (response.msg == "some photo not found or not belong to the user") {
-                ElMessage.error(`Failed to create portfolio: ${response.msg}`)
+                ElMessage.error(`Failed to update portfolio: ${response.msg}`)
             } else if (response.msg == "fail to add portfolio") {
-                ElMessage.error(`Failed to create portfolio: ${response.msg}`)
+                ElMessage.error(`Failed to update portfolio: ${response.msg}`)
                 Windows.location.reload()
             }
         }
@@ -200,9 +195,29 @@ const handleCreate = async () => {
     }
 }
 
+const fetchTargetPhotos = async () => {
+    try {
+        const portfolioId = router.currentRoute.value.params.id
+        const response = await portfolioApi.getPortfolioById(portfolioId)
+        if (response.code === 0) {
+            const portfolio = response.data[0]
+            form.title = portfolio.title
+            form.description = portfolio.description
+            form.category = portfolio.categoryCode
+            form.isPublic = portfolio.isPublic
+            selectedPhotos.value = portfolio.photos
+            coverPhoto.value = portfolio.coverPhoto
+        } else {
+            console.log(response.msg)
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 const openSuccessMessage = () => {
     ElMessageBox.confirm(
-        'Successfully Create the Portfolio!',
+        'Successfully update the Portfolio!',
         'Congrats!',
         {
             confirmButtonText: 'To Check',
@@ -223,12 +238,13 @@ const openSuccessMessage = () => {
 
 onMounted(() => {
     fetchPhotos()
+    fetchTargetPhotos()
 })
 
 </script>
 
 <style scoped>
-.app-portfolio-create-container {
+.app-portfolio-update-container {
     display: flex;
     flex-direction: column;
     min-width: calc(100vh - 300px);
@@ -237,11 +253,11 @@ onMounted(() => {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-#app-portfolio-create-header {
+#app-portfolio-update-header {
     margin: 20px;
 }
 
-#app-portfolio-create-photo-select-area-container {
+#app-portfolio-update-photo-select-area-container {
     display: flex;
     flex-direction: row;
     justify-content: left;
@@ -249,8 +265,8 @@ onMounted(() => {
     gap: 10px;
 }
 
-.app-portfolio-create-photo-select-area-table,
-.app-portfolio-create-photo-select-ready-area {
+.app-portfolio-update-photo-select-area-table,
+.app-portfolio-update-photo-select-ready-area {
     min-width: 600px;
     width: 40%;
     display: flex;
@@ -262,7 +278,7 @@ onMounted(() => {
     margin: 20px;
 }
 
-.app-portfolio-create-photo-select-control-area {
+.app-portfolio-update-photo-select-control-area {
     width: 8%;
     margin: 20px;
     display: flex;
@@ -271,7 +287,7 @@ onMounted(() => {
     gap: 10px;
 }
 
-.app-portfolio-create-photo-select-cover-button {
+.app-portfolio-update-photo-select-cover-button {
     width: 80px;
 }
 
