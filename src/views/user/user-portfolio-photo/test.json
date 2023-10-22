@@ -1,0 +1,416 @@
+{
+    "code": 0,
+    "msg": "success",
+    "data": [
+        {
+            "id": "3355965c-1977-4809-adfc-e134cb0413cd",
+            "owner": null,
+            "title": "cmh-USYD-2023-10-15 Copy",
+            "description": "",
+            "createDatetime": "2023-10-15 21:36:15",
+            "updateDatetime": "2023-10-15 21:36:15",
+            "coverPhoto": {
+                "id": "e337f30f-a93b-4982-bf1f-8baaa4b53f86",
+                "owner": null,
+                "name": "DSC_6007.JPG",
+                "description": "DSC_6007.JPG",
+                "uploadDatetime": "2023-10-15 21:17:54",
+                "location": null,
+                "hidden": false,
+                "url": "http://152.67.96.80:9090/image/get/e337f30f-a93b-4982-bf1f-8baaa4b53f86",
+                "thumbnailUrl": "http://152.67.96.80:9090/image/get/e337f30f-a93b-4982-bf1f-8baaa4b53f86_thumbnail",
+                "photoCategory": {
+                    "code": 2,
+                    "name": "Portrait"
+                },
+                "photoParam": {
+                    "id": "7e6e5a31-be52-4fdd-b2eb-77934e08bef5",
+                    "camMaker": "NIKON CORPORATION",
+                    "camModel": "NIKON Z 6_2",
+                    "lens": "NIKKOR Z 85mm f/1.8 S",
+                    "focalLength": "85",
+                    "exposureTime": "1/125",
+                    "iso": "320",
+                    "resolutionX": 0,
+                    "resolutionY": 0,
+                    "fNumber": "1.8"
+                }
+            },
+            "hidden": false,
+            "category": {
+                "code": 2,
+                "name": "Portrait"
+            },
+            "photos": [
+                {
+                    "id": "05d2cb85-d88a-48a9-9754-e5dcb767c45d",
+                    "owner": null,
+                    "name": "DSC_3029.JPG",
+                    "description": "DSC_3029.JPG",
+                    "uploadDatetime": "2023-10-15 21:17:54",
+                    "location": null,
+                    "hidden": false,
+                    "url": "http://152.67.96.80:9090/image/get/05d2cb85-d88a-48a9-9754-e5dcb767c45d",
+                    "thumbnailUrl": "http://152.67.96.80:9090/image/get/05d2cb85-d88a-48a9-9754-e5dcb767c45d_thumbnail",
+                    "photoCategory": {
+                        "code": 2,
+                        "name": "Portrait"
+                    },
+                    "photoParam": {
+                        "id": "7b5fac6b-34dc-4914-979d-e733824e4a6d",
+                        "camMaker": "NIKON CORPORATION",
+                        "camModel": "NIKON Z 7_2",
+                        "lens": "NIKKOR Z 24-70mm f/2.8 S",
+                        "focalLength": "24",
+                        "exposureTime": "1/160",
+                        "iso": "64",
+                        "resolutionX": 0,
+                        "resolutionY": 0,
+                        "fNumber": "3.2"
+                    }
+                },
+                {
+                    "id": "6066bbbe-603f-45a8-91ee-80dee58fee48",
+                    "owner": null,
+                    "name": "DSC_3126.JPG",
+                    "description": "DSC_3126.JPG",
+                    "uploadDatetime": "2023-10-15 21:17:54",
+                    "location": null,
+                    "hidden": false,
+                    "url": "http://152.67.96.80:9090/image/get/6066bbbe-603f-45a8-91ee-80dee58fee48",
+                    "thumbnailUrl": "http://152.67.96.80:9090/image/get/6066bbbe-603f-45a8-91ee-80dee58fee48_thumbnail",
+                    "photoCategory": {
+                        "code": 2,
+                        "name": "Portrait"
+                    },
+                    "photoParam": {
+                        "id": "709800e3-2bdf-44b9-837b-ba746c53baa5",
+                        "camMaker": "NIKON CORPORATION",
+                        "camModel": "NIKON Z 7_2",
+                        "lens": "NIKKOR Z 24-70mm f/2.8 S",
+                        "focalLength": "33",
+                        "exposureTime": "1/400",
+                        "iso": "64",
+                        "resolutionX": 0,
+                        "resolutionY": 0,
+                        "fNumber": "2.8"
+                    }
+                },
+                {
+                    "id": "77b5aa3d-5902-43f3-8930-7e884e769080",
+                    "owner": null,
+                    "name": "DSC_3408.JPG",
+                    "description": "DSC_3408.JPG",
+                    "uploadDatetime": "2023-10-15 21:17:59",
+                    "location": null,
+                    "hidden": false,
+                    "url": "http://152.67.96.80:9090/image/get/77b5aa3d-5902-43f3-8930-7e884e769080",
+                    "thumbnailUrl": "http://152.67.96.80:9090/image/get/77b5aa3d-5902-43f3-8930-7e884e769080_thumbnail",
+                    "photoCategory": {
+                        "code": 2,
+                        "name": "Portrait"
+                    },
+                    "photoParam": {
+                        "id": "64ff3288-c690-4410-b1fc-c49c446e9ea4",
+                        "camMaker": "NIKON CORPORATION",
+                        "camModel": "NIKON Z 7_2",
+                        "lens": "NIKKOR Z 24-70mm f/2.8 S",
+                        "focalLength": "28",
+                        "exposureTime": "1/250",
+                        "iso": "64",
+                        "resolutionX": 0,
+                        "resolutionY": 0,
+                        "fNumber": "2.8"
+                    }
+                },
+                {
+                    "id": "8e8ef32f-5390-43b5-a267-9689ac0372c1",
+                    "owner": null,
+                    "name": "DSC_6055.JPG",
+                    "description": "DSC_6055.JPG",
+                    "uploadDatetime": "2023-10-15 21:17:54",
+                    "location": null,
+                    "hidden": false,
+                    "url": "http://152.67.96.80:9090/image/get/8e8ef32f-5390-43b5-a267-9689ac0372c1",
+                    "thumbnailUrl": "http://152.67.96.80:9090/image/get/8e8ef32f-5390-43b5-a267-9689ac0372c1_thumbnail",
+                    "photoCategory": {
+                        "code": 2,
+                        "name": "Portrait"
+                    },
+                    "photoParam": {
+                        "id": "e252f12c-7b39-4c74-a2c0-4a7ddee31276",
+                        "camMaker": "NIKON CORPORATION",
+                        "camModel": "NIKON Z 6_2",
+                        "lens": "NIKKOR Z 85mm f/1.8 S",
+                        "focalLength": "85",
+                        "exposureTime": "1/250",
+                        "iso": "500",
+                        "resolutionX": 0,
+                        "resolutionY": 0,
+                        "fNumber": "1.8"
+                    }
+                },
+                {
+                    "id": "99567051-3338-47bf-a75b-b4b1e5f2b299",
+                    "owner": null,
+                    "name": "DSC_3339.JPG",
+                    "description": "DSC_3339.JPG",
+                    "uploadDatetime": "2023-10-15 21:17:54",
+                    "location": null,
+                    "hidden": false,
+                    "url": "http://152.67.96.80:9090/image/get/99567051-3338-47bf-a75b-b4b1e5f2b299",
+                    "thumbnailUrl": "http://152.67.96.80:9090/image/get/99567051-3338-47bf-a75b-b4b1e5f2b299_thumbnail",
+                    "photoCategory": {
+                        "code": 2,
+                        "name": "Portrait"
+                    },
+                    "photoParam": {
+                        "id": "79049c3f-d636-4024-8444-103eea93c522",
+                        "camMaker": "NIKON CORPORATION",
+                        "camModel": "NIKON Z 7_2",
+                        "lens": "NIKKOR Z 24-70mm f/2.8 S",
+                        "focalLength": "70",
+                        "exposureTime": "1/125",
+                        "iso": "800",
+                        "resolutionX": 0,
+                        "resolutionY": 0,
+                        "fNumber": "2.8"
+                    }
+                },
+                {
+                    "id": "e337f30f-a93b-4982-bf1f-8baaa4b53f86",
+                    "owner": null,
+                    "name": "DSC_6007.JPG",
+                    "description": "DSC_6007.JPG",
+                    "uploadDatetime": "2023-10-15 21:17:54",
+                    "location": null,
+                    "hidden": false,
+                    "url": "http://152.67.96.80:9090/image/get/e337f30f-a93b-4982-bf1f-8baaa4b53f86",
+                    "thumbnailUrl": "http://152.67.96.80:9090/image/get/e337f30f-a93b-4982-bf1f-8baaa4b53f86_thumbnail",
+                    "photoCategory": {
+                        "code": 2,
+                        "name": "Portrait"
+                    },
+                    "photoParam": {
+                        "id": "7e6e5a31-be52-4fdd-b2eb-77934e08bef5",
+                        "camMaker": "NIKON CORPORATION",
+                        "camModel": "NIKON Z 6_2",
+                        "lens": "NIKKOR Z 85mm f/1.8 S",
+                        "focalLength": "85",
+                        "exposureTime": "1/125",
+                        "iso": "320",
+                        "resolutionX": 0,
+                        "resolutionY": 0,
+                        "fNumber": "1.8"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "fb996858-4941-4c8f-9488-8951fc9e055a",
+            "owner": null,
+            "title": "cmh-USYD-2023-10-15",
+            "description": "",
+            "createDatetime": "2023-10-15 21:34:05",
+            "updateDatetime": "2023-10-15 21:34:05",
+            "coverPhoto": {
+                "id": "05d2cb85-d88a-48a9-9754-e5dcb767c45d",
+                "owner": null,
+                "name": "DSC_3029.JPG",
+                "description": "DSC_3029.JPG",
+                "uploadDatetime": "2023-10-15 21:17:54",
+                "location": null,
+                "hidden": false,
+                "url": "http://152.67.96.80:9090/image/get/05d2cb85-d88a-48a9-9754-e5dcb767c45d",
+                "thumbnailUrl": "http://152.67.96.80:9090/image/get/05d2cb85-d88a-48a9-9754-e5dcb767c45d_thumbnail",
+                "photoCategory": {
+                    "code": 2,
+                    "name": "Portrait"
+                },
+                "photoParam": {
+                    "id": "7b5fac6b-34dc-4914-979d-e733824e4a6d",
+                    "camMaker": "NIKON CORPORATION",
+                    "camModel": "NIKON Z 7_2",
+                    "lens": "NIKKOR Z 24-70mm f/2.8 S",
+                    "focalLength": "24",
+                    "exposureTime": "1/160",
+                    "iso": "64",
+                    "resolutionX": 0,
+                    "resolutionY": 0,
+                    "fNumber": "3.2"
+                }
+            },
+            "hidden": false,
+            "category": {
+                "code": 2,
+                "name": "Portrait"
+            },
+            "photos": [
+                {
+                    "id": "05d2cb85-d88a-48a9-9754-e5dcb767c45d",
+                    "owner": null,
+                    "name": "DSC_3029.JPG",
+                    "description": "DSC_3029.JPG",
+                    "uploadDatetime": "2023-10-15 21:17:54",
+                    "location": null,
+                    "hidden": false,
+                    "url": "http://152.67.96.80:9090/image/get/05d2cb85-d88a-48a9-9754-e5dcb767c45d",
+                    "thumbnailUrl": "http://152.67.96.80:9090/image/get/05d2cb85-d88a-48a9-9754-e5dcb767c45d_thumbnail",
+                    "photoCategory": {
+                        "code": 2,
+                        "name": "Portrait"
+                    },
+                    "photoParam": {
+                        "id": "7b5fac6b-34dc-4914-979d-e733824e4a6d",
+                        "camMaker": "NIKON CORPORATION",
+                        "camModel": "NIKON Z 7_2",
+                        "lens": "NIKKOR Z 24-70mm f/2.8 S",
+                        "focalLength": "24",
+                        "exposureTime": "1/160",
+                        "iso": "64",
+                        "resolutionX": 0,
+                        "resolutionY": 0,
+                        "fNumber": "3.2"
+                    }
+                },
+                {
+                    "id": "6066bbbe-603f-45a8-91ee-80dee58fee48",
+                    "owner": null,
+                    "name": "DSC_3126.JPG",
+                    "description": "DSC_3126.JPG",
+                    "uploadDatetime": "2023-10-15 21:17:54",
+                    "location": null,
+                    "hidden": false,
+                    "url": "http://152.67.96.80:9090/image/get/6066bbbe-603f-45a8-91ee-80dee58fee48",
+                    "thumbnailUrl": "http://152.67.96.80:9090/image/get/6066bbbe-603f-45a8-91ee-80dee58fee48_thumbnail",
+                    "photoCategory": {
+                        "code": 2,
+                        "name": "Portrait"
+                    },
+                    "photoParam": {
+                        "id": "709800e3-2bdf-44b9-837b-ba746c53baa5",
+                        "camMaker": "NIKON CORPORATION",
+                        "camModel": "NIKON Z 7_2",
+                        "lens": "NIKKOR Z 24-70mm f/2.8 S",
+                        "focalLength": "33",
+                        "exposureTime": "1/400",
+                        "iso": "64",
+                        "resolutionX": 0,
+                        "resolutionY": 0,
+                        "fNumber": "2.8"
+                    }
+                },
+                {
+                    "id": "77b5aa3d-5902-43f3-8930-7e884e769080",
+                    "owner": null,
+                    "name": "DSC_3408.JPG",
+                    "description": "DSC_3408.JPG",
+                    "uploadDatetime": "2023-10-15 21:17:59",
+                    "location": null,
+                    "hidden": false,
+                    "url": "http://152.67.96.80:9090/image/get/77b5aa3d-5902-43f3-8930-7e884e769080",
+                    "thumbnailUrl": "http://152.67.96.80:9090/image/get/77b5aa3d-5902-43f3-8930-7e884e769080_thumbnail",
+                    "photoCategory": {
+                        "code": 2,
+                        "name": "Portrait"
+                    },
+                    "photoParam": {
+                        "id": "64ff3288-c690-4410-b1fc-c49c446e9ea4",
+                        "camMaker": "NIKON CORPORATION",
+                        "camModel": "NIKON Z 7_2",
+                        "lens": "NIKKOR Z 24-70mm f/2.8 S",
+                        "focalLength": "28",
+                        "exposureTime": "1/250",
+                        "iso": "64",
+                        "resolutionX": 0,
+                        "resolutionY": 0,
+                        "fNumber": "2.8"
+                    }
+                },
+                {
+                    "id": "8e8ef32f-5390-43b5-a267-9689ac0372c1",
+                    "owner": null,
+                    "name": "DSC_6055.JPG",
+                    "description": "DSC_6055.JPG",
+                    "uploadDatetime": "2023-10-15 21:17:54",
+                    "location": null,
+                    "hidden": false,
+                    "url": "http://152.67.96.80:9090/image/get/8e8ef32f-5390-43b5-a267-9689ac0372c1",
+                    "thumbnailUrl": "http://152.67.96.80:9090/image/get/8e8ef32f-5390-43b5-a267-9689ac0372c1_thumbnail",
+                    "photoCategory": {
+                        "code": 2,
+                        "name": "Portrait"
+                    },
+                    "photoParam": {
+                        "id": "e252f12c-7b39-4c74-a2c0-4a7ddee31276",
+                        "camMaker": "NIKON CORPORATION",
+                        "camModel": "NIKON Z 6_2",
+                        "lens": "NIKKOR Z 85mm f/1.8 S",
+                        "focalLength": "85",
+                        "exposureTime": "1/250",
+                        "iso": "500",
+                        "resolutionX": 0,
+                        "resolutionY": 0,
+                        "fNumber": "1.8"
+                    }
+                },
+                {
+                    "id": "99567051-3338-47bf-a75b-b4b1e5f2b299",
+                    "owner": null,
+                    "name": "DSC_3339.JPG",
+                    "description": "DSC_3339.JPG",
+                    "uploadDatetime": "2023-10-15 21:17:54",
+                    "location": null,
+                    "hidden": false,
+                    "url": "http://152.67.96.80:9090/image/get/99567051-3338-47bf-a75b-b4b1e5f2b299",
+                    "thumbnailUrl": "http://152.67.96.80:9090/image/get/99567051-3338-47bf-a75b-b4b1e5f2b299_thumbnail",
+                    "photoCategory": {
+                        "code": 2,
+                        "name": "Portrait"
+                    },
+                    "photoParam": {
+                        "id": "79049c3f-d636-4024-8444-103eea93c522",
+                        "camMaker": "NIKON CORPORATION",
+                        "camModel": "NIKON Z 7_2",
+                        "lens": "NIKKOR Z 24-70mm f/2.8 S",
+                        "focalLength": "70",
+                        "exposureTime": "1/125",
+                        "iso": "800",
+                        "resolutionX": 0,
+                        "resolutionY": 0,
+                        "fNumber": "2.8"
+                    }
+                },
+                {
+                    "id": "e337f30f-a93b-4982-bf1f-8baaa4b53f86",
+                    "owner": null,
+                    "name": "DSC_6007.JPG",
+                    "description": "DSC_6007.JPG",
+                    "uploadDatetime": "2023-10-15 21:17:54",
+                    "location": null,
+                    "hidden": false,
+                    "url": "http://152.67.96.80:9090/image/get/e337f30f-a93b-4982-bf1f-8baaa4b53f86",
+                    "thumbnailUrl": "http://152.67.96.80:9090/image/get/e337f30f-a93b-4982-bf1f-8baaa4b53f86_thumbnail",
+                    "photoCategory": {
+                        "code": 2,
+                        "name": "Portrait"
+                    },
+                    "photoParam": {
+                        "id": "7e6e5a31-be52-4fdd-b2eb-77934e08bef5",
+                        "camMaker": "NIKON CORPORATION",
+                        "camModel": "NIKON Z 6_2",
+                        "lens": "NIKKOR Z 85mm f/1.8 S",
+                        "focalLength": "85",
+                        "exposureTime": "1/125",
+                        "iso": "320",
+                        "resolutionX": 0,
+                        "resolutionY": 0,
+                        "fNumber": "1.8"
+                    }
+                }
+            ]
+        }
+    ],
+    "totalCount": 0,
+    "totalPages": 0
+}
