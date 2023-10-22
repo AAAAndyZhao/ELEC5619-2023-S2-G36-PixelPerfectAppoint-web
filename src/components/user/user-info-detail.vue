@@ -1,20 +1,10 @@
 <template>
     <div class="app-user-info-container">
-        <el-avatar :size="70">
-            <photo-image
-                v-if="user?.avatarUrl"
-                :src="user?.avatarUrl">
-                <template #error>
-                    <el-icon>
-                        <Avatar />
-                    </el-icon>
-                </template>
-            </photo-image>
-        </el-avatar>
+        <user-avatar :user="user" :size="70"></user-avatar>
         <div class="app-user-info-detail">
             <div class="app-user-alias">
                 <el-link :underline="false">{{ user?.alias }}</el-link>
-                <el-link class="app-message-button" icon="ChatDotSquare" @click="sendMessage">message</el-link>
+                <el-link v-if="!isSelf" class="app-message-button" icon="ChatDotSquare" @click="sendMessage">message</el-link>
             </div>
             <div class="app-user-name">
                 <el-text>@{{ user?.userName }}</el-text>
@@ -31,11 +21,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import { ElLoading, ElMessage } from 'element-plus';
 import PhotoImage from '@/components/photo/photo-image.vue';
 import UserFollowOperation from '@/components/user/user-follow-operation.vue';
 import userApi from '@/services/user-api';
+import UserAvatar from '@/components/user/user-avatar.vue';
 
 const props = defineProps({
     user: {
@@ -47,6 +38,10 @@ const userFollowingRelationship = ref({
     following: false,
     followed: false,
     targetUserFollowerCount: 0
+})
+
+const isSelf = computed(() => {
+    return localStorage.getItem('userId') === props.user?.id;
 })
 
 const getUserFollowingRelationship = async () => {
