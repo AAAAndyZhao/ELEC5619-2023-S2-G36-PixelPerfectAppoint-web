@@ -147,10 +147,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
 }
-.app-user-name {
-    /* display: flex;
-    align-items: center; */
-}
+
 .app-message-button{
     margin-left: 10px;
 }

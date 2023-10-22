@@ -1,16 +1,17 @@
 <template>
     <div class="description">
-        <p class="description-detail"> {{ description.descriptionDetail }} </p>
+        <p class="description-detail"> {{ postInfo?.text }} </p>
     </div>
 </template>
 
-<script setup lang = 'ts'>
+<script setup >
 import { ref } from 'vue'
-interface description {
-    descriptionDetail: string;
-}
-const description = ref<description>({
-    descriptionDetail: 'This is a description',
+const props = defineProps({
+    postInfo: {
+        type: Object,
+        required: false
+    },
+   
 });
 </script>
 
