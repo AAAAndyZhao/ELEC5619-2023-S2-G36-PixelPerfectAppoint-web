@@ -28,7 +28,7 @@
             </el-dropdown-menu>
         </template>
     </el-dropdown>
-    <el-button v-else type="primary" @click="handleFollowButtonClick(userId)" size="large">Follow</el-button>
+    <el-button v-else v-if="!isSelf" type="primary" @click="handleFollowButtonClick(userId)" size="large">Follow</el-button>
 </template>
 
 <script setup>
