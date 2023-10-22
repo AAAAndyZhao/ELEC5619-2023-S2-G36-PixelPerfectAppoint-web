@@ -29,7 +29,9 @@
                         @keyup.enter.native="fetchFollowingData(true)"></el-input>
                     </div>
                     <div class="app-container-content">
-                        <UserFollowingsList :data="followingData" @unfollow-user="handleUnfollowUser"/>
+                        <UserFollowingsList
+                        :data="followingData"
+                        @unfollow-user="handleUnfollowUser"/>
                         <el-pagination layout="prev, pager, next"
                         :total="followingProps.total"
                         :current-page="followingProps.currentPage"
@@ -59,7 +61,7 @@ const followerProps = ref({
     pageSize: 30,
     total: 0,
     handleCurrentPageChange: (page) => {
-        followerProps.currentPage = page;
+        followerProps.value.currentPage = page;
         fetchFollowerData();
     }
 });
@@ -69,7 +71,7 @@ const followingProps = ref({
     pageSize: 30,
     total: 0,    
     handleCurrentPageChange: (page) => {
-        followingProps.currentPage = page;
+        followingProps.value.currentPage = page;
         fetchFollowingData();
     }
 });
@@ -82,7 +84,7 @@ const fetchFollowerData = async (isReload = false) => {
         return;
     }
     if (isReload){
-        followerProps.currentPage = 1;
+        followerProps.value.currentPage = 1;
     }
     try{
         const res = await userApi.getUserFollowers(
@@ -115,7 +117,7 @@ const fetchFollowingData = async (isReload = false) => {
         return;
     }
     if (isReload){
-        followingProps.currentPage = 1;
+        followingProps.value.currentPage = 1;
     }
     try{
         const res = await userApi.getUserFollowings(

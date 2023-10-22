@@ -1,10 +1,7 @@
 <template>
     <el-card class="app-user-card" body-class="app-user-card-body">
         <div class="app-user-card-avatar">
-            <img :src="user.avatar" alt="avatar" v-if="user.avatar"/>
-            <el-icon v-else>
-                <Avatar />
-            </el-icon>
+            <UserAvatar :user="user" :size="60" />
         </div>
         <div class="app-user-card-info">
             <div v-if="display.includes('alias')" class="app-user-alias">{{ user.alias }}</div>
@@ -26,6 +23,7 @@
 </template>
 
 <script setup>
+import UserAvatar from '@/components/user/user-avatar.vue';
 defineProps({
     user: {
         type: Object,
@@ -83,6 +81,7 @@ const shortenFollowerCount = (count) => {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
 .app-user-card-avatar img,
 .app-user-card-avatar .el-icon,

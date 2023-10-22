@@ -50,8 +50,7 @@ const handleRemove = (post) => {
     });
 }
 const handleEdit = (post) => {
-    // todo
-    console.log('edit post', post);
+    emits('edit', post.id);
 }
 </script>
 
