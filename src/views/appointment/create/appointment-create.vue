@@ -8,7 +8,7 @@
                 <el-steps :active="currentStep">
                     <el-step title="Basic Information" :icon="Edit" />
                     <el-step title="Location" :icon="MapLocation" />
-                    <el-step title="Step 3" :icon="User" />
+                    <el-step title="Participants" :icon="User" />
                 </el-steps>
             </div>
             <div class="app-create-form">
@@ -162,7 +162,7 @@ onMounted(() => {
 .app-appointment-create {
     width: 100%;
     /* height is the whole view - header height */
-    height: calc(100vh - 100px);
+    min-height: calc(100vh - 100px);
     box-sizing: border-box;
     padding: 0 20px;
 }

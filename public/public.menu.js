@@ -18,7 +18,16 @@ $MENU = {
         code: 2,
         value: 'Others'
     }],
-
+    "USER_GENDER": [{
+        code: 0,
+        value: 'Male'
+    }, {
+        code: 1,
+        value: 'Female'
+    }, {
+        code: 2,
+        value: 'Prefer not to disclose'
+    }],
     "PHOTO_CATEGORY": [{
         code: 0,
         value: 'Uncategorized'
@@ -78,4 +87,21 @@ $MENU = {
         code: 15,
         value: 'Other'
     }],
+    "APPOINTMENT_STATUS": [{
+        code: 0,
+        value: 'CREATED',
+        tagType: ''
+    }, {
+        code: 1,
+        value: 'ALL ACCEPTED',
+        tagType: ''
+    }, {
+        code: 2,
+        value: 'COMPLETED',
+        tagType: 'success'
+    }, {
+        code: 3,
+        value: 'CANCELLED',
+        tagType: 'info'
+    }]
 }

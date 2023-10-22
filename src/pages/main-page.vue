@@ -1,14 +1,14 @@
 <template>
     <el-container class="app-container">
         <el-header class="app-header">
-            <router-view name="header"/>
+            <router-view name="header" />
         </el-header>
         <el-container class="app-inner-container">
             <el-aside class="app-aside">
-                <router-view name="side"/>
+                <router-view name="side" />
             </el-aside>
             <el-main class="app-main">
-                <router-view name="content"/>
+                <router-view name="content" />
             </el-main>
         </el-container>
     </el-container>
@@ -18,11 +18,13 @@
     display: block;
     height: 100%;
 }
-.app-inner-container{
+
+.app-inner-container {
     display: flex;
     min-height: calc(100% - 60px);
 }
-.app-main{
+
+.app-main {
     height: 100%;
     width: 100%;
     box-sizing: border-box;

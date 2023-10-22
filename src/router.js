@@ -42,7 +42,10 @@ const routes = [
     {
         path: '/activate-account',
         name: 'ActivateAccount',
-        component: () => import('./pages/user/account-activation.vue')
+        component: () => import('./pages/user/account-activation.vue'),
+        props: (route) => ({
+            token: route.query.token
+        })
     },
     {
         path: '/',
@@ -138,6 +141,7 @@ const routes = [
         children: [
             {
                 path: 'create',
+                redirect: '/appointment/create/information',
                 components: {
                     header: () => import('./components/main-header.vue'),
                     content: () => import('./views/appointment/create/appointment-create.vue'),
@@ -163,6 +167,14 @@ const routes = [
                 components: {
                     header: () => import('./components/main-header.vue'),
                     content: () => import('./views/appointment/create/success.vue'),
+                    side: () => import('./components/main-side.vue')
+                },
+            },
+            {
+                path: ':id',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/appointment/detail/index.vue'),
                     side: () => import('./components/main-side.vue')
                 },
             }

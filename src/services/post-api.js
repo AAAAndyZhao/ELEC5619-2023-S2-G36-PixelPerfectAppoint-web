@@ -91,8 +91,12 @@ const deletePosts = async (postIds) => {
 
 export default {
     getUserPosts,
+<<<<<<<<< Temporary merge branch 1
+    uploadPost,
+    searchPosts
+=========
     searchPosts,
     deleteSinglePost,
     deletePosts
-
+>>>>>>>>> Temporary merge branch 2
 }
