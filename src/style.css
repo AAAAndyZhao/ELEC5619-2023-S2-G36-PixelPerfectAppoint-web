@@ -121,3 +121,7 @@ div#app {
         background-color: #1a1a1a;
     }
 }
+
+.pac-container {
+    z-index: 10000 !important;
+}

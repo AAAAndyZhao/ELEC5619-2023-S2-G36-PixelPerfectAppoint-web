@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-import { ref, onBeforeUnmount, onMounted, watchEffect } from 'vue';
+import { ref, onBeforeUnmount, onMounted, watchEffect, watch } from 'vue';
 import axios from '@/utils/axios';
 const props = defineProps({
     src: {
@@ -133,6 +133,10 @@ const fetchImage = async () => {
         return '';
     }
 }
+
+watch(() => props.src, () => {
+    fetchImage();
+})
 // watchEffect src change, fetch image
 watchEffect(() => {
     if (props.src !== '') {

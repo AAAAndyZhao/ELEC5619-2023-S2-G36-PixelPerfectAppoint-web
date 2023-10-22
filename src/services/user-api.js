@@ -372,6 +372,31 @@ const activateAccount = async (token) => {
     }
 }
 
+const getUserFollowStatus = async (targetUserId) => {
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    if (token === null
+        || token === undefined
+        || token === '') {
+        throw new Error('User token is invalid');
+    }
+    try{
+        return await axios.get(`/user/follow_status?uid=${userId}&target=${targetUserId}`, {
+            headers: {
+                authorization: token
+            },
+        });
+    }catch (error) {
+        console.error('Error during requesting get user follow status: ', error.message);
+        throw error;
+    }
+}
+
 export default {
     getUserProfile,
     updateUserProfile,
@@ -391,5 +416,6 @@ export default {
     searchUser,
     getUserInformation,
     updateAvatar,
-    activateAccount
+    activateAccount,
+    getUserFollowStatus
 }

@@ -15,7 +15,7 @@
             <el-table-column
                 prop="title"
                 label="Title"
-                width="300">
+                width="200">
                 <template #default="scope">
                     <el-link @click="handleView(scope.row)">{{ scope.row.title }}</el-link>
                 </template>
@@ -23,11 +23,11 @@
             <el-table-column
                 prop="appointDatetime"
                 label="Appointment Datetime"
-                width="250" />
+                width="190" />
             <el-table-column
                 prop="estimateDuration"
                 label="Estimate Duration"
-                width="150"
+                width="90"
                 :formatter="(row, column, cellValue, index) => `${cellValue} mins`" />
             <el-table-column
                 prop="location"
@@ -43,7 +43,7 @@
             <el-table-column
                 prop="creator"
                 label="Creator"
-                width="300">
+                width="190">
                 <template #default="scope">
                     <div style="display: flex; align-items: center;">
                         <UserAvatar :user="scope.row.creator" :size="40"/>
@@ -69,7 +69,10 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column>
+            <el-table-column
+                prop="status"
+                label="Status"
+                width="260">
                 <template #default="scope">
                     <div class="app-appointment-operation">
                         <el-button type="primary" size="default" @click="handleView(scope.row)">View</el-button>

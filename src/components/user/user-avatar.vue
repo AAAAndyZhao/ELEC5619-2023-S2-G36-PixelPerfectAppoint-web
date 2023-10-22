@@ -1,5 +1,5 @@
 <template>
-    <el-avatar :size="size" :src="user.avatarUrl">
+    <el-avatar :size="size" :src="user?.avatarUrl">
         <el-avatar :size="size">{{ nameAbbreviation }}</el-avatar>
     </el-avatar>
 </template>

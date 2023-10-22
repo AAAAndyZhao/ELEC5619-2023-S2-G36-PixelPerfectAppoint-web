@@ -217,9 +217,34 @@ const quitAppointment = async (appointmentId) => {
     }
 }
 
+const getAppointmentById = async (appointmentId) => {
+    if (appointmentId === null
+        || appointmentId === undefined
+        || appointmentId === '') {
+        throw new Error('Appointment id is invalid');
+    }
+    const token = localStorage.getItem('token');
+    if (token === null
+        || token === undefined
+        || token === '') {
+        throw new Error('User token is invalid');
+    }
+    try{
+        return await axios.get(`/appointment/get/${appointmentId}`, {
+            headers: {
+                authorization: token
+            }
+        });
+    }catch (error) {
+        console.error('Error during requesting get appointment by id: ', error.message);
+        throw error;
+    }
+}
+
 export default {
     createAppointment,
     getAppointmentByUser,
     changeAppointmentStatusByCreator,
-    quitAppointment
+    quitAppointment,
+    getAppointmentById
 }
