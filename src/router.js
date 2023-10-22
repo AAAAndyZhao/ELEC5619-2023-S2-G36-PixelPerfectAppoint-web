@@ -207,6 +207,15 @@ const routes = [
                     content: () => import('./views/portfolio/portfolio-create.vue'),
                     side: () => import('./components/main-side.vue')
                 }
+            },
+            {
+                path:'update/:id',
+                name:'PortfolioUpdatePage',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/portfolio/portfolio-edit.vue'),
+                    side: () => import('./components/main-side.vue')
+                }
             }
         ]
     }
