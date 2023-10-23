@@ -4,7 +4,7 @@
             <router-view name="header" />
         </el-header>
         <el-container class="app-inner-container">
-            <el-aside class="app-aside">
+            <el-aside v-if="showSideView" class="app-aside">
                 <router-view name="side" />
             </el-aside>
             <el-main class="app-main">
@@ -13,6 +13,19 @@
         </el-container>
     </el-container>
 </template>
+
+<script setup>
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+const showSideView = computed(() => {
+    // if router-view named side has no component, it will return false
+    // if router-view named side has component, it will return true
+    return route.matched.some(match => match.components.side);
+})
+</script>
+
 <style scoped>
 .app-container {
     display: block;

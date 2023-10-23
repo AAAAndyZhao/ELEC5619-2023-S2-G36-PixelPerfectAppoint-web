@@ -4,13 +4,14 @@
         <div class="app-user-info-detail">
             <div class="app-user-alias">
                 <el-link :underline="false">{{ user?.alias }}</el-link>
-                <el-link v-if="!isSelf" class="app-message-button" icon="ChatDotSquare" @click="sendMessage">message</el-link>
+                <el-link v-if="showMessageButton && !isSelf" class="app-message-button" icon="ChatDotSquare" @click="sendMessage">message</el-link>
             </div>
             <div class="app-user-name">
                 <el-text>@{{ user?.userName }}</el-text>
             </div>
         </div>
         <user-follow-operation
+            v-if="showFollowOption && !isSelf"
             :user-id="user?.id"
             :is-following="userFollowingRelationship.following"
             :is-followed="userFollowingRelationship.followed"
@@ -33,6 +34,16 @@ const props = defineProps({
         type: Object,
         required: true
     },
+    showMessageButton: {
+        type: Boolean,
+        required: false,
+        default: true
+    },
+    showFollowOption: {
+        type: Boolean,
+        required: false,
+        default: true
+    }
 })
 const userFollowingRelationship = ref({
     following: false,
