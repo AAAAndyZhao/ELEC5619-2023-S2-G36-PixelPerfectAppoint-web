@@ -33,6 +33,7 @@ const getUserPortfolio = async (userId, token, page, size) => {
         throw error;
     }
 }
+
 const changePortfolioVisibility = async (uid, token, portfolioId, hidden, syncAll) => {
     if (!uid) {
         throw new Error('User id is invalid');
@@ -62,6 +63,22 @@ const changePortfolioVisibility = async (uid, token, portfolioId, hidden, syncAl
         });
     } catch (error) {
         console.error('Error during changing portfolio visibility: ', error);
+        throw error;
+    }
+}
+const deletePortfolio = async (portfolioId, token) => {
+    if (!token) {
+        throw new Error("No token, please login first.");
+    }
+    try {
+        return axios.get(`/portfolio/delete/${portfolioId}`, {
+            headers: {
+                'authorization': token
+            }
+        })
+
+    } catch (error) {
+        console.error('Error during deleting portfolio: ', error);
         throw error;
     }
 }
@@ -135,4 +152,5 @@ export default {
     updatePortfolio,
     getUserPortfolio,
     changePortfolioVisibility,
+    deletePortfolio,
 }

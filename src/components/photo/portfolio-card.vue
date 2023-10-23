@@ -1,12 +1,17 @@
 <template>
     <el-card class="app-portfolio-card" body-class="app-portfolio-card-body" shadow="hover">
-        <div class="app-portfolio-card-cover-pics" @click="openPortfolio">
-            <div class="app-portfolio-cover-pic-main">
-                <PhotoImage v-if="portfolio.coverPhoto && portfolio.coverPhoto.url" :src="portfolio.coverPhoto.url" alt="cover"
-                    style="height: 100%;width: 100%;object-fit: cover;" />
+        <div class="app-portfolio-card-cover-pics" >
+            <div class="app-portfolio-cover-pic-main-container">
+                <PhotoImage class="app-portfolio-cover-img" 
+                    v-if="portfolio.coverPhoto && portfolio.coverPhoto.thumbnailUrl"
+                    @click="openPortfolio"
+                    :src="portfolio.coverPhoto.thumbnailUrl" alt="cover image" fit="cover" />
+                <el-empty class="app-portfolio-cover-empty" v-else>
+                    <el-button type="primary" @click="jumpToPortfolioEdit">Edit</el-button>
+                </el-empty>
             </div>
-            <el-divider direction="vertical" style="margin: 0 2px;height: 100%;" />
-            <div class="app-portfolio-cover-pic-subs"></div>
+            <!-- <el-divider direction="vertical" style="margin: 0 2px;height: 100%;" />
+            <div class="app-portfolio-cover-pic-subs"></div> -->
         </div>
         <el-divider style="margin: 2px 0;" />
         <div class="app-portfolio-info">
@@ -36,8 +41,10 @@
 import { watch, computed, ref, reactive } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import PhotoImage from '@/components/photo/photo-image.vue';
+import { Windows } from '@icon-park/vue-next';
+import router from '@/router';
 
-const emits = defineEmits(['customClick']);
+const emits = defineEmits(['customClick', 'delectPortfolio']);
 const props = defineProps({
     portfolio: {
         type: Object,
@@ -59,9 +66,6 @@ const props = defineProps({
     },
 
 });
-const openPortfolio = () => {
-    emits('customClick');
-}
 
 const toggleVisibility = () => {
     const message = props.portfolio.hidden
@@ -73,12 +77,9 @@ const toggleVisibility = () => {
         type: 'warning'
     }).then(() => {
         props.portfolio.hidden = !props.portfolio.hidden;
-        // ElMessage({
-        //     type: 'success',
-        //     message: 'Change visibility successfully!'
-        // });
+
         console.log(props.portfolio.hidden);
-        emits('customClick', { id: props.portfolio.id , hidden: props.portfolio.hidden });
+        emits('customClick', { id: props.portfolio.id, hidden: props.portfolio.hidden });
     }).catch(() => {
         // do nothing
     });
@@ -89,12 +90,24 @@ const delectPortfolio = () => {
         cancelButtonText: 'Cancel',
         type: 'warning'
     }).then(() => {
-        ElMessage({
-            type: 'success',
-            message: 'Delete successfully!'
-        });
+        emits('delectPortfolio', { id: props.portfolio.id });
     }).catch(() => {
         // do nothing
+    });
+}
+
+const jumpToPortfolioEdit = () => {
+    router.push({
+        path: `../portfolio/update/${props.portfolio.id}`,
+        
+    }).then(() => {
+        Windows.location.reload();
+    });
+}
+
+const openPortfolio = () => {
+    router.push({
+        path: `../portfolio/photos-inside/${props.portfolio.id}`,
     });
 }
 
@@ -124,18 +137,22 @@ const delectPortfolio = () => {
     background-repeat: no-repeat;
 }
 
-.app-portfolio-cover-pic-main {
+.app-portfolio-cover-pic-main-container {
     height: 100%;
-    width: 67%;
+    width: 100%;
     box-sizing: border-box;
-    /* background-color: rgb(87, 10, 243); */
+}
+.app-portfolio-cover-empty{
+    width: 100%;
+    height: 100%;
+    transform: scale(0.5);
+    transform-origin: center;
 }
 
 .app-portfolio-cover-pic-subs {
     height: 100%;
     box-sizing: border-box;
     flex: 1;
-    /* background-color: rgb(243, 10, 10); */
 }
 
 .app-portfolio-info {
@@ -175,6 +192,13 @@ const delectPortfolio = () => {
     align-items: center;
     width: 100%;
     height: 21px;
+    position: relative;
+}
+
+.app-portfolio-cover-img {
+    height: 100%;
+    width: 100%;
+    object-position: center;
 }
 
 .app-portfolio-publish-date {
