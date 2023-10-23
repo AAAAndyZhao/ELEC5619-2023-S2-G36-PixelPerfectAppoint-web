@@ -1,5 +1,5 @@
 <template>
-    <el-avatar :size="size" :src="user?.avatarUrl">
+    <el-avatar :size="size" :src="user.avatarUrl">
         <el-avatar :size="size">{{ nameAbbreviation }}</el-avatar>
     </el-avatar>
 </template>
@@ -17,8 +17,9 @@ const props = defineProps({
     }
 })
 const nameAbbreviation = computed(() => {
-    if (props.user && props.user.firstName && props.user.lastName) {
-        return props.user.firstName[0] + props.user.lastName[0];
+    if (props.user && props.user.alias) {
+        // Uppercase the first letter of the alias
+        return props.user.alias.charAt(0).toUpperCase();
     }
     return '';
 })
