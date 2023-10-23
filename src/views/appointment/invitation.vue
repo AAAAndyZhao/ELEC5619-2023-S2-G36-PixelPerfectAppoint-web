@@ -254,19 +254,12 @@ onMounted(async () => {
 }
 .accept-animate-enter-active, .accept-animate-leave-active {
     transition: transform 2s;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
 }
 .accept-animate-enter-to /* .accept-animate-enter-active.accept-animate-enter-to in <2.1.8 */ {
-    transform: translate(-50%, -50%) scale(3);
+    transform: translate(0%, 50%) scale(2);
 }
 
 .app-animate-button{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(3);
+    transform: translate(0%, 50%)  scale(2);
 }
 </style>
