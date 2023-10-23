@@ -6,7 +6,7 @@
                     <div class="app-container-header">
                         <div class="app-container-header-title">My Portfolios</div>
                     </div>
-                    <UserPortfolioList :data="portfolioData"  @customClickFromB="updatePortfolioVisibility"/>
+                    <UserPortfolioList :data="portfolioData"  @customClickFromB="updatePortfolioVisibility" @delectPortfolio="delectPortfolio"/>
                     <div>
                         <div class="app-container-content">
 
@@ -117,6 +117,30 @@ const updatePortfolioVisibility = async (portfolioData) => {
         ElMessage.error('Failed to update portfolio visibility');
     }
 }
+
+const delectPortfolio = async (portfolioData) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        ElMessage.error('Please login first');
+        return;
+    }
+    try {
+        const response = await portfolioApi.deletePortfolio(
+            portfolioData.id,
+            token,
+        );
+        if (response.code === 0) { 
+            ElMessage.success('Portfolio deleted successfully!');
+            fetchPortfolioData(true);
+        } else {
+            ElMessage.error('Failed to delete portfolio');
+        }
+    } catch (err) {
+        console.log(err);
+        ElMessage.error('Failed to delete portfolio');
+    }
+}
+
 onMounted(() => {
     fetchPortfolioData(true);
     const path = router.currentRoute.value.path;

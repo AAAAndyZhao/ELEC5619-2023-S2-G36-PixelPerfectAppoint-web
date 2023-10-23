@@ -1,7 +1,7 @@
 <template>
     <div class="app-user-portfolios-list">
         <PortfolioCard v-for="portfolio in data" :key="portfolio.id" :portfolio="portfolio"
-            @customClick="handleCustomClick"></PortfolioCard>
+            @customClick="handleCustomClick" @delectPortfolio="handleDeletePortfolio"></PortfolioCard>
 
 
     </div>
@@ -24,6 +24,9 @@ const props = defineProps({
 
 const handleCustomClick = (portfolioData) => {
     emits('customClickFromB', portfolioData);
+}
+const handleDeletePortfolio = (portfolioData) =>{
+    emits('delectPortfolio', portfolioData);
 }
 
 </script>

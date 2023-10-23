@@ -226,6 +226,15 @@ const routes = [
                     content: () => import('./views/portfolio/portfolio-edit.vue'),
                     side: () => import('./components/main-side.vue')
                 }
+            },
+            {
+                path:'photos-inside/:id',
+                name:'PortfolioPhotosInsidePage',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/portfolio/portfolio-content.vue'),
+                    side: () => import('./components/main-side.vue')
+                }
             }
         ]
     }
