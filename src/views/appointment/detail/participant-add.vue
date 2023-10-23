@@ -12,9 +12,7 @@
             </template>
         </el-input>
         <div class="app-user-table-wrapper">
-            <el-table class="app-user-table"
-            :data="userData"
-            show-overflow-tooltip>
+            <el-table class="app-user-table" :data="userData" show-overflow-tooltip>
                 <el-table-column prop="avatar" width="70">
                     <template #default="{ row }">
                         <user-avatar :user="row" :size="40"></user-avatar>
@@ -27,18 +25,22 @@
                         <el-tag v-if="row.isSelf" type="info">You</el-tag>
                         <div v-else-if="row.isParticipant" class="app-participant-operation-container">
                             <transition name="slide-fade">
-                                <el-tag class="app-participant-operation" v-if="showParticipantTag" :type="row.appointmentStatus.tagType"
-                                @mouseenter="handleMouseEnterParticipantTag(row.appointmentStatus.code)">{{ row.appointmentStatus.value }}</el-tag>
+                                <el-tag class="app-participant-operation" v-if="showParticipantTag"
+                                    :type="row.appointmentStatus.tagType"
+                                    @mouseenter="handleMouseEnterParticipantTag(row.appointmentStatus.code)">{{
+                                        row.appointmentStatus.value }}</el-tag>
                             </transition>
                             <transition name="slide-fade">
-                                <el-button class="app-participant-operation" v-if="showInviteAgainTag && row.appointmentStatus.code !== 1"
-                                type="primary" size="small" @click="handleInviteUserAsParticipant(row)"
-                                @mouseleave="hanldeMouseLeaveInviteAgainButton">
+                                <el-button class="app-participant-operation"
+                                    v-if="showInviteAgainTag && row.appointmentStatus.code !== 1" type="primary"
+                                    size="small" @click="handleInviteUserAsParticipant(row)"
+                                    @mouseleave="hanldeMouseLeaveInviteAgainButton">
                                     Invite Again
                                 </el-button>
                             </transition>
                         </div>
-                        <el-button v-else type="primary" size="small" @click="handleInviteUserAsParticipant(row)">Invite</el-button>
+                        <el-button v-else type="primary" size="small"
+                            @click="handleInviteUserAsParticipant(row)">Invite</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -90,7 +92,7 @@ const searchUser = async () => {
                 console.log(participant)
                 if (res.data.find(user => user.id === participant.user.id)) {
                     res.data.find(user => user.id === participant.user.id).isParticipant = true;
-                    res.data.find(user => user.id === participant.user.id).appointmentStatus = 
+                    res.data.find(user => user.id === participant.user.id).appointmentStatus =
                         MenuUtils.getSingleMenuSelectedValue(statusMenu, participant.status);
                 }
                 if (res.data.find(user => user.id === selfUserId)) {
@@ -113,7 +115,7 @@ const handleInviteUserAsParticipant = async (user) => {
 }
 
 const handleMouseEnterParticipantTag = (status) => {
-    if (status === 1){
+    if (status === 1) {
         return;
     }
     showInviteAgainTag.value = true;
@@ -145,30 +147,36 @@ watch(() => props.participants, () => {
     width: 100%;
     height: calc(100% - 32px);
 }
-.app-participant-operation-container{
+
+.app-participant-operation-container {
     display: flex;
     align-items: center;
     justify-content: flex-start;
 }
-.app-participant-operation-container>.app-participant-operation{
+
+.app-participant-operation-container>.app-participant-operation {
     /* all elements are in the same position */
     position: absolute;
 
 }
 
-.slide-fade-enter-active, .slide-fade-leave-active {
-  transition: transform 0.5s, opacity 0.5s;
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+    transition: transform 0.5s, opacity 0.5s;
 }
-.slide-fade-enter-from, .slide-fade-leave-to {
-  transform: translateX(100%);
-  opacity: 0;
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+    transform: translateX(100%);
+    opacity: 0;
 }
-.slide-fade-enter-to, .slide-fade-leave-from {
-  transform: translateX(0);
-  opacity: 1;
+
+.slide-fade-enter-to,
+.slide-fade-leave-from {
+    transform: translateX(0);
+    opacity: 1;
 }
 
 .el-pagination {
     justify-content: center
-}
-</style>
+}</style>
