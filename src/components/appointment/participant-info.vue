@@ -11,7 +11,18 @@
             </div>
         </div>
         <div class="app-role-info">
-            <el-tag :type="participantRole.tagType">{{ participantRole.value }}</el-tag>
+            <el-dropdown v-if="isSelf" class="app-role-dropdown">
+                <el-tag :type="participantRole.tagType">{{ participantRole.value }}</el-tag>
+                <template #dropdown>
+                    <el-dropdown-menu>
+                        <el-dropdown-item @click="handleChangeRole"
+                        class="app-creator-dropdown-item">
+                            <el-icon><Edit /></el-icon>Change role
+                        </el-dropdown-item>
+                    </el-dropdown-menu>
+                </template>
+            </el-dropdown>
+            <el-tag v-else :type="participantRole.tagType">{{ participantRole.value }}</el-tag>
         </div>
         <div class="app-status-info">
             <el-tag round effect="dark" :type="participantStatus.tagType">{{ participantStatus.value }}</el-tag>
@@ -44,6 +55,7 @@ const props = defineProps({
         default: 0
     }
 })
+const emits = defineEmits(['role-change']);
 const roleMenu = $MENU["APPOINTMENT_PARTICIPANT_ROLE"];
 const statusMenu = $MENU["APPOINTMENT_PARTICIPANT_STATUS"];
 const isSelf = computed(() => {
@@ -69,7 +81,9 @@ const participantStatus = computed(() => {
     }
     return result;
 })
-
+const handleChangeRole = () => {
+    emits('role-change', props.user.id)
+}
 const sendMessage = () => {
     ElMessage.info("not implemented yet")
 }
@@ -95,10 +109,6 @@ const sendMessage = () => {
     display: flex;
     align-items: center;
 }
-.app-user-name {
-    /* display: flex;
-    align-items: center; */
-}
 .app-message-button{
     margin-left: 10px;
 }
@@ -109,5 +119,9 @@ const sendMessage = () => {
 .app-status-info,
 .app-role-info{
     margin-right: 10px;
+}
+
+.app-role-dropdown .el-tag:focus-visible{
+    outline: none;
 }
 </style>

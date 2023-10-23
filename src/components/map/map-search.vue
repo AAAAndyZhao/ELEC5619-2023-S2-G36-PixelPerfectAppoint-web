@@ -63,7 +63,6 @@ const selectedDisplayedLocation = computed(() => {
 })
 
 const markerPositionInMapFromLocation = async (location) => {
-    console.log('markerPositionInMapFromLocation', location)
     // check if google is defined
     if (!map){
         return
