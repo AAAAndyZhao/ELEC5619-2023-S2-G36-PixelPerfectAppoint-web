@@ -322,6 +322,56 @@ const updateAppointmentFunctionMap = {
             || token === '') {
             throw new Error('User token is invalid');
         }
+        if (location.streetName === null
+            || location.streetName === undefined
+            || location.streetName === '') {
+            throw new Error('Appointment streetName is wrong');
+        }
+        if (location.city === null
+            || location.city === undefined
+            || location.city === '') {
+            throw new Error('Appointment city is wrong');
+        }
+        if (location.state === null
+            || location.state === undefined
+            || location.state === '') {
+            throw new Error('Appointment state is wrong');
+        }
+        if (location.stateCode === null
+            || location.stateCode === undefined
+            || location.stateCode === '') {
+            throw new Error('Appointment stateCode is wrong');
+        }
+        if (location.country === null
+            || location.country === undefined
+            || location.country === '') {
+            throw new Error('Appointment country is wrong');
+        }
+        if (location.countryCode === null
+            || location.countryCode === undefined
+            || location.countryCode === '') {
+            throw new Error('Appointment countryCode is wrong');
+        }
+        if (location.zipCode === null
+            || location.zipCode === undefined
+            || location.zipCode === '') {
+            throw new Error('Appointment zipCode is wrong');
+        }
+        if (location.latitude === null
+            || location.latitude === undefined
+            || location.latitude === '') {
+            throw new Error('Appointment latitude is wrong');
+        }
+        if (location.longitude === null
+            || location.longitude === undefined
+            || location.longitude === '') {
+            throw new Error('Appointment longitude is wrong');
+        }
+        if (location.googleMapPlaceId === null
+            || location.googleMapPlaceId === undefined
+            || location.googleMapPlaceId === '') {
+            throw new Error('Appointment googleMapPlaceId is empty');
+        }
         try {
             return await axios.post(`/appointment/update/location/${appointmentId}`, {
                 apartment_no: location.apartmentNo,
