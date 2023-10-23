@@ -217,13 +217,13 @@ const quitAppointment = async (appointmentId) => {
     }
 }
 
-const getAppointmentById = async (appointmentId) => {
+const getAppointmentById = async (appointmentId, token) => {
     if (appointmentId === null
         || appointmentId === undefined
         || appointmentId === '') {
         throw new Error('Appointment id is invalid');
     }
-    const token = localStorage.getItem('token');
+    token = token || localStorage.getItem('token');
     if (token === null
         || token === undefined
         || token === '') {
@@ -241,10 +241,267 @@ const getAppointmentById = async (appointmentId) => {
     }
 }
 
+const updateAppointmentFunctionMap = {
+    title: async (appointmentId, value) => {
+        if (!appointmentId || typeof appointmentId !== 'string') {
+            throw new Error('Appointment id is invalid');
+        }
+        const token = localStorage.getItem('token');
+        if (token === null
+            || token === undefined
+            || token === '') {
+            throw new Error('User token is invalid');
+        }
+        try {
+            return await axios.post(`/appointment/update/title/${appointmentId}`, {
+                title: value
+            }, {
+                headers: {
+                    authorization: token
+                }
+            });
+        } catch (error) {
+            console.error('Error during requesting update appointment title: ', error.message);
+            throw error;
+        }
+    },
+    description: async (appointmentId, value) => {
+        if (!appointmentId || typeof appointmentId !== 'string') {
+            throw new Error('Appointment id is invalid');
+        }
+        const token = localStorage.getItem('token');
+        if (token === null
+            || token === undefined
+            || token === '') {
+            throw new Error('User token is invalid');
+        }
+        try {
+            return await axios.post(`/appointment/update/desc/${appointmentId}`, {
+                description: value
+            }, {
+                headers: {
+                    authorization: token
+                }
+            });
+        } catch (error) {
+            console.error('Error during requesting update appointment title: ', error.message);
+            throw error;
+        }
+    },
+    time: async (appointmentId, appointDatetime, estimatedDuration) => {
+        if (!appointmentId || typeof appointmentId !== 'string') {
+            throw new Error('Appointment id is invalid');
+        }
+        const token = localStorage.getItem('token');
+        if (token === null
+            || token === undefined
+            || token === '') {
+            throw new Error('User token is invalid');
+        }
+        try {
+            return await axios.post(`/appointment/update/time/${appointmentId}`, {
+                appoint_datetime: appointDatetime,
+                estimate_duration: estimatedDuration
+            }, {
+                headers: {
+                    authorization: token
+                }
+            });
+        } catch (error) {
+            console.error('Error during requesting update appointment title: ', error.message);
+            throw error;
+        }
+    },
+    location: async (appointmentId, location) => {
+        if (!appointmentId || typeof appointmentId !== 'string') {
+            throw new Error('Appointment id is invalid');
+        }
+        const token = localStorage.getItem('token');
+        if (token === null
+            || token === undefined
+            || token === '') {
+            throw new Error('User token is invalid');
+        }
+        if (location.streetName === null
+            || location.streetName === undefined
+            || location.streetName === '') {
+            throw new Error('Appointment streetName is wrong');
+        }
+        if (location.city === null
+            || location.city === undefined
+            || location.city === '') {
+            throw new Error('Appointment city is wrong');
+        }
+        if (location.state === null
+            || location.state === undefined
+            || location.state === '') {
+            throw new Error('Appointment state is wrong');
+        }
+        if (location.stateCode === null
+            || location.stateCode === undefined
+            || location.stateCode === '') {
+            throw new Error('Appointment stateCode is wrong');
+        }
+        if (location.country === null
+            || location.country === undefined
+            || location.country === '') {
+            throw new Error('Appointment country is wrong');
+        }
+        if (location.countryCode === null
+            || location.countryCode === undefined
+            || location.countryCode === '') {
+            throw new Error('Appointment countryCode is wrong');
+        }
+        if (location.zipCode === null
+            || location.zipCode === undefined
+            || location.zipCode === '') {
+            throw new Error('Appointment zipCode is wrong');
+        }
+        if (location.latitude === null
+            || location.latitude === undefined
+            || location.latitude === '') {
+            throw new Error('Appointment latitude is wrong');
+        }
+        if (location.longitude === null
+            || location.longitude === undefined
+            || location.longitude === '') {
+            throw new Error('Appointment longitude is wrong');
+        }
+        if (location.googleMapPlaceId === null
+            || location.googleMapPlaceId === undefined
+            || location.googleMapPlaceId === '') {
+            throw new Error('Appointment googleMapPlaceId is empty');
+        }
+        try {
+            return await axios.post(`/appointment/update/location/${appointmentId}`, {
+                apartment_no: location.apartmentNo,
+                street_no: location.streetNo,
+                street_name: location.streetName,
+                city: location.city,
+                state: location.state,
+                state_code: location.stateCode,
+                country: location.country,
+                country_code: location.countryCode,
+                zip_code: location.zipCode,
+                latitude: location.latitude,
+                longitude: location.longitude,
+                google_map_place_id: location.googleMapPlaceId
+            }, {
+                headers: {
+                    authorization: token
+                }
+            });
+        } catch (error) {
+            console.error('Error during requesting update appointment title: ', error.message);
+            throw error;
+        }
+        
+    },
+    participant: {
+        role: async (appointmentId, participantId, role) => {
+            const token = localStorage.getItem('token');
+            if (token === null
+                || token === undefined
+                || token === '') {
+                throw new Error('User token is invalid');
+            }
+            try{
+                return await axios.post(`/appointment/change_role`, {
+                    uid: participantId,
+                    appointment_id: appointmentId,
+                    role: role
+                }, {
+                    headers: {
+                        authorization: token
+                    }
+                });
+            }catch(error) {
+                console.error('Error during requesting update appointment title: ', error.message);
+                throw error;
+            }
+        }
+    },
+    all: async (appointment) => {
+
+    },
+}
+
+
+const removeParticipant = async (appointmentId, participantId) => {
+    try{
+        const token = localStorage.getItem('token');
+        if (token === null
+            || token === undefined
+            || token === '') {
+            throw new Error('User token is invalid');
+        }
+        return await axios.post(`/appointment/remove_participant`, {
+            participant_id: participantId,
+            appointment_id: appointmentId
+        }, {
+            headers: {
+                authorization: token
+            }
+        });
+    }catch(error) {
+        console.error('Error during requesting remove participant: ', error.message);
+        throw error;
+    }
+}
+
+const inviteParticipant = async (appointmentId, participantId) => {
+    try{
+        const token = localStorage.getItem('token');
+        if (token === null
+            || token === undefined
+            || token === '') {
+            throw new Error('User token is invalid');
+        }
+        return await axios.post(`/appointment/invite_participant`, {
+            participant_id: participantId,
+            appointment_id: appointmentId
+        }, {
+            headers: {
+                authorization: token
+            }
+        });
+    }catch(error) {
+        console.error('Error during requesting invite participant: ', error.message);
+        throw error;
+    }
+}
+
+const respondInvitation = async (appointmentId, token, isAccept) => {
+    if (appointmentId === null
+        || appointmentId === undefined
+        || appointmentId === '') {
+        throw new Error('Appointment id is invalid');
+    }
+    if (token === null
+        || token === undefined
+        || token === '') {
+        throw new Error('User token is invalid');
+    }
+    try{
+        return axios.get(`/appointment/${isAccept ? 'accept' : 'reject'}/${appointmentId}`, {
+            headers: {
+                authorization: token
+            }
+        });
+    }catch(error) {
+        console.error('Error during requesting accept invitation: ', error.message);
+        throw error;
+    }
+}
+
 export default {
     createAppointment,
     getAppointmentByUser,
     changeAppointmentStatusByCreator,
     quitAppointment,
-    getAppointmentById
+    getAppointmentById,
+    removeParticipant,
+    inviteParticipant,
+    updateAppointmentFunctionMap,
+    respondInvitation
 }

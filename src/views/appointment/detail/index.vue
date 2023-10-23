@@ -1,16 +1,31 @@
 <template>
     <div class="app-appointment-detail">
         <div class="app-title">
-            <h2>
-                <el-button v-if="isCreator" :icon="Edit" circle class="app-edit-button"
-                    @click="openDialog('title')"></el-button>
-                {{ appointmentData.title }}
-            </h2>
+            <el-button v-if="isCreator" :icon="Edit" circle class="app-edit-button" @click="openDialog('title')"
+                :disabled="disableEditing"></el-button>
+            <el-tag :type="appointmentStatus?.tagType">{{ appointmentStatus?.value }}</el-tag>
+            <h2>{{ appointmentData.title }}</h2>
+            <el-dropdown v-if="isCreator && !disableEditing" class="app-creator-operation-dropdown">
+                <el-button class="app-creator-button" readonly size="default">Creator Operations</el-button>
+                <template #dropdown>
+                    <el-dropdown-menu>
+                        <el-dropdown-item @click="handleCompleteAppointment" class="app-creator-dropdown-item">
+                            <el-icon color="#67C23A">
+                                <Check />
+                            </el-icon>Complete
+                        </el-dropdown-item>
+                        <el-dropdown-item @click="handleCancelAppointment" class="app-creator-dropdown-item">
+                            <el-icon color="#F56C6C">
+                                <Close />
+                            </el-icon>Cancel
+                        </el-dropdown-item>
+                    </el-dropdown-menu>
+                </template>
+            </el-dropdown>
         </div>
         <div class="app-content">
             <section class="app-creator-info">
-                <el-skeleton style="--el-skeleton-circle-size: 70px" animated
-                    :loading="skeletonLoading">
+                <el-skeleton style="--el-skeleton-circle-size: 70px" animated :loading="skeletonLoading">
                     <template #template>
                         <div class="app-creator-info-skeleton-template">
                             <el-skeleton-item variant="circle" />
@@ -18,16 +33,14 @@
                         </div>
                     </template>
                 </el-skeleton>
-                <user-info-detail
-                    v-if="appointmentData?.creator"
-                    :user="appointmentData?.creator"/>
+                <user-info-detail v-if="appointmentData?.creator" :user="appointmentData?.creator" />
             </section>
             <el-divider />
             <section class="app-description">
                 <h3>
                     Description
                     <el-button v-if="isCreator" :icon="Edit" circle class="app-edit-button"
-                    @click="openDialog('description')"></el-button>
+                        @click="openDialog('description')" :disabled="disableEditing"></el-button>
                 </h3>
                 <el-skeleton :rows="5" animated :loading="skeletonLoading">
                     <div class="app-description-text">{{ appointmentData?.description }}</div>
@@ -37,21 +50,27 @@
             <section class="app-time-info">
                 <h3>
                     Appointment Date & Time
-                    <el-button v-if="isCreator" :icon="Edit" circle class="app-edit-button"
-                    @click="openDialog('time')"></el-button>
+                    <el-button v-if="isCreator" :icon="Edit" circle class="app-edit-button" @click="openDialog('time')"
+                        :disabled="disableEditing"></el-button>
                 </h3>
                 <el-skeleton :rows="4" animated :loading="skeletonLoading">
                     <div class="app-time-info-content">
                         <div class="app-info-item">
-                            <el-icon :size="40"><Calendar /></el-icon>
+                            <el-icon :size="40">
+                                <Calendar />
+                            </el-icon>
                             <span>{{ dayjs(appointmentData?.appointDatetime).format('YYYY-MM-DD') }}</span>
                         </div>
                         <div class="app-info-item">
-                            <el-icon :size="40"><Timer /></el-icon>
+                            <el-icon :size="40">
+                                <Timer />
+                            </el-icon>
                             <span>{{ dayjs(appointmentData?.appointDatetime).format('HH:mm:ss') }} (24h)</span>
                         </div>
                         <div class="app-info-item">
-                            <el-icon :size="40"><Camera /></el-icon>
+                            <el-icon :size="40">
+                                <Camera />
+                            </el-icon>
                             <span>{{ appointmentData?.estimateDuration }} mins</span>
                         </div>
                     </div>
@@ -61,75 +80,93 @@
             <section class="app-location-info">
                 <h3>
                     Location
-                    <el-button v-if="isCreator" :icon="Edit" circle class="app-edit-button"
-                    @click="openDialog('location')"></el-button>
+                    <el-button v-if="isCreator" :icon="Edit" circle class="app-edit-button" @click="openDialog('location')"
+                        :disabled="disableEditing"></el-button>
                 </h3>
                 <el-skeleton :rows="1" animated :loading="skeletonLoading">
                     <el-link class="app-location-text">{{ locationStr }}</el-link>
-                    <MapShow :location="appointmentData?.location"/>
+                    <MapShow :location="appointmentData?.location" />
                 </el-skeleton>
             </section>
             <el-divider />
             <section class="app-participants">
-                <h3>Participants<el-button v-if="isCreator" :icon="Edit" circle class="app-edit-button"></el-button></h3>
+                <h3>
+                    Participants
+                    <el-button v-if="isCreator" :icon="Plus" circle class="app-edit-button"
+                    @click="openDialog('participants-add')"></el-button>
+                </h3>
                 <el-skeleton :rows="5" animated :loading="skeletonLoading">
                     <div class="app-participants-content">
-                        <participant-info
-                            v-for="participant in appointmentData?.participants"
-                            :key="participant.id"
-                            :user="participant.user"
-                            :role="participant.role"
-                            :status="participant.status">
-                            <el-button>tst</el-button>
+                        <participant-info v-for="participant in appointmentData?.participants" :key="participant.id"
+                            :user="participant.user" :role="participant.role" :status="participant.status"
+                            @role-change="handleChangeParticipantRole">
+                            <el-button v-if="isCreator && participant.user.id !== currentUserId" type="danger" size="small"
+                            @click="removeParticipant(participant)">Remove</el-button>
                         </participant-info>
                     </div>
                 </el-skeleton>
             </section>
             <el-divider />
         </div>
-        <el-dialog v-model="editDialogVisible.title" class="app-edit-dialog">
+        <el-dialog v-model="editDialogVisible.title" class="app-edit-dialog" destroy-on-close>
             <template #header>
                 <h3>Edit Title</h3>
             </template>
-            <title-edit v-model:title="editProps.title"/>
+            <title-edit v-model:title="editProps.title" />
             <template #footer>
                 <el-button @click="cancelUpdate.title">Cancel</el-button>
                 <el-button type="primary" @click="confirmUpdate.title">Confirm</el-button>
             </template>
         </el-dialog>
-        <el-dialog v-model="editDialogVisible.description" class="app-edit-dialog">
+        <el-dialog v-model="editDialogVisible.description" class="app-edit-dialog" destroy-on-close>
             <template #header>
                 <h3>Edit Description</h3>
             </template>
-            <description-edit v-model:description="editProps.description"/>
+            <description-edit v-model:description="editProps.description" />
             <template #footer>
                 <el-button @click="cancelUpdate.description">Cancel</el-button>
                 <el-button type="primary" @click="confirmUpdate.description">Confirm</el-button>
             </template>
         </el-dialog>
-        <el-dialog v-model="editDialogVisible.time" class="app-edit-dialog" width="500px">
+        <el-dialog v-model="editDialogVisible.time" class="app-edit-dialog" width="500px" destroy-on-close>
             <template #header>
                 <h3>Edit Date & Time</h3>
             </template>
-            <time-edit v-model:time="editProps.time"
-            @update:date="updateTime.date"
-            @update:start="updateTime.startTime"
-            @update:end="updateTime.endTime"
-            @update:tomorrow="updateTime.isTomorrow"/>
+            <time-edit v-model:time="editProps.time" @update:date="updateTime.date" @update:start="updateTime.startTime"
+                @update:end="updateTime.endTime" @update:tomorrow="updateTime.isTomorrow" />
             <template #footer>
                 <el-button @click="cancelUpdate.time">Cancel</el-button>
                 <el-button type="primary" @click="confirmUpdate.time">Confirm</el-button>
             </template>
         </el-dialog>
-        <el-dialog v-model="editDialogVisible.location" class="app-edit-dialog app-map-edit-dialog"
-        width="80vw">
+        <el-dialog v-model="editDialogVisible.location" class="app-edit-dialog app-map-edit-dialog" width="80vw"
+            destroy-on-close>
             <template #header>
                 <h3>Edit Location</h3>
             </template>
-            <location-edit :location="editProps.location" @update:location="updateLocation"/>
+            <location-edit :location="editProps.location" @update:location="updateLocation" />
             <template #footer>
                 <el-button @click="cancelUpdate.location">Cancel</el-button>
                 <el-button type="primary" @click="confirmUpdate.location">Confirm</el-button>
+            </template>
+        </el-dialog>
+        <el-dialog v-model="editDialogVisible.participants.role" class="app-edit-dialog" width="20vw" destroy-on-close>
+            <template #header>
+                <h3>Edit Role</h3>
+            </template>
+            <participant-edit-role :participant="editProps.currentParticipant" @update:role="updateRole" />
+            <template #footer>
+                <el-button @click="cancelUpdate.participants('role')">Cancel</el-button>
+                <el-button type="primary" @click="confirmUpdate.participants.role">Confirm</el-button>
+            </template>
+        </el-dialog>
+        <el-dialog v-model="editDialogVisible.participants.add" class="app-edit-dialog" width="50vw" destroy-on-close>
+            <template #header>
+                <h3>Invite Participant</h3>
+            </template>
+            <participant-add :participants="appointmentData.participants" @invite-user="inviteParticipant" />
+            <template #footer>
+                <el-button @click="cancelUpdate.participants('add')">Close</el-button>
             </template>
         </el-dialog>
     </div>
@@ -137,10 +174,12 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
+import { ElMessage, ElMessageBox } from 'element-plus';
 import dayjs from 'dayjs';
-import { Edit } from '@element-plus/icons-vue';
+import { Edit, Plus } from '@element-plus/icons-vue';
 import appointmentApi from '@/services/appointment-api';
 import router from '@/router';
+import MenuUtils from '@/utils/menu';
 import PhotoImage from '@/components/photo/photo-image.vue';
 import UserInfoDetail from '@/components/user/user-info-detail.vue';
 import MapShow from '@/components/map/map-show.vue';
@@ -149,6 +188,8 @@ import TitleEdit from '@/views/appointment/detail/title-edit.vue';
 import DescriptionEdit from '@/views/appointment/detail/desc-edit.vue';
 import TimeEdit from '@/views/appointment/detail/time-edit.vue';
 import LocationEdit from '@/views/appointment/detail/location-edit.vue';
+import ParticipantEditRole from '@/views/appointment/detail/participant-edit-role.vue';
+import ParticipantAdd from '@/views/appointment/detail/participant-add.vue';
 
 const props = defineProps({
     appointmentId: {
@@ -158,39 +199,53 @@ const props = defineProps({
 })
 const skeletonLoading = ref(true)
 const appointmentData = ref({})
+const appointmentStatusMenu = $MENU['APPOINTMENT_STATUS']
 const editDialogVisible = ref({
     title: false,
     description: false,
     time: false,
     location: false,
-    participants: false,
+    participants: {
+        role: false,
+        add: false
+    }
 })
 const editProps = ref({
     title: '',
     description: '',
     time: {},
     location: {},
-    participants: [],
+    currentParticipant: {},
 })
-
+const roleMenu = $MENU['APPOINTMENT_PARTICIPANT_ROLE']
+const currentUserId = localStorage.getItem('userId')
 const isCreator = computed(() => {
-    return localStorage.getItem('userId') === appointmentData.value?.creator?.id;
+    return currentUserId === appointmentData.value?.creator?.id;
 })
-
+const appointmentStatus = computed(() => {
+    if (!appointmentData.value) {
+        return 'No Status';
+    }
+    const status = MenuUtils.getSingleMenuSelectedValue(appointmentStatusMenu, appointmentData.value?.status);
+    return status
+})
+const disableEditing = computed(() => {
+    return appointmentData.value?.status === 2 || appointmentData.value?.status === 3;
+})
 const fetchAppointmentDetail = async () => {
-    try{
+    try {
         const res = await appointmentApi.getAppointmentById(props.appointmentId);
-        if (res.code === 0 && res.data.length > 0){
+        if (res.code === 0 && res.data.length > 0) {
             appointmentData.value = res.data[0]
             skeletonLoading.value = false
-        }else{
+        } else {
             // 404
             router.push('/404')
         }
         console.log(res)
-    }catch(error){
+    } catch (error) {
         console.error(error)
-    }finally{
+    } finally {
     }
 }
 const locationStr = computed(() => {
@@ -208,7 +263,7 @@ const locationStr = computed(() => {
     return locationArray.filter((item) => item).join(', ');
 })
 
-const openDialog = (propName) => {
+const openDialog = (propName, participantId) => {
     // copy value
     switch (propName) {
         case 'title':
@@ -226,14 +281,33 @@ const openDialog = (propName) => {
                 isTomorrow: false
             }
             break;
+        case 'participants-role':
+            Object.assign(editProps.value.currentParticipant, appointmentData.value.participants.find(participant => participant.user.id === participantId));
+            break;
+        case 'participants-add':
+            // do nothing
+            break;
         default:
             break;
     }
-    editDialogVisible.value[propName] = true;
+    if (propName === 'participants-role') {
+        editDialogVisible.value.participants.role = true;
+    } else if (propName === 'participants-add') {
+        editDialogVisible.value.participants.add = true;
+    } else {
+        editDialogVisible.value[propName] = true;
+    }
 }
 
 const closeDialog = (propName) => {
-    editDialogVisible.value[propName] = false;
+    if (propName === 'participants-role') {
+        editDialogVisible.value.participants.role = false;
+    } else if (propName === 'participants-add') {
+        editDialogVisible.value.participants.add = false;
+        fetchAppointmentDetail();
+    } else {
+        editDialogVisible.value[propName] = false;
+    }
 }
 
 const syncEstimatedDuration = (date) => {
@@ -268,28 +342,150 @@ const updateTime = {
 const updateLocation = (location) => {
     editProps.value.location = location;
 }
-
+const updateRole = (role) => {
+    editProps.value.currentParticipant.role = role;
+}
 const confirmUpdate = {
-    title: () => {
-        appointmentData.value.title = editProps.value.title;
-        closeDialog('title');
+    title: async () => {
+        try {
+            if (!editProps.value.title) {
+                ElMessage.error('title cannot be empty')
+                return
+            }
+            if (editProps.value.title.length > 50) {
+                ElMessage.error('title cannot be longer than 50 characters')
+                return
+            }
+            appointmentData.value.title = editProps.value.title;
+            closeDialog('title');
+            const res = await appointmentApi.updateAppointmentFunctionMap.title(appointmentData.value.id, editProps.value.title);
+            if (res.code === 0) {
+                ElMessage.success('update title success')
+            } else {
+                console.error('update title failed: ' + res.msg)
+                ElMessage.error('update title failed: ' + res.msg)
+                fetchAppointmentDetail()
+            }
+        } catch (error) {
+            console.error(error)
+            ElMessage.error('update title failed: ' + error.message)
+            fetchAppointmentDetail()
+        }
     },
-    description: () => {
-        appointmentData.value.description = editProps.value.description;
-        closeDialog('description');
+    description: async () => {
+        try {
+            if (!editProps.value.description) {
+                ElMessage.error('description cannot be empty')
+                return
+            }
+            if (editProps.value.description.length > 1000) {
+                ElMessage.error('description cannot be longer than 1000 characters')
+                return
+            }
+            appointmentData.value.description = editProps.value.description;
+            closeDialog('description');
+            const res = await appointmentApi.updateAppointmentFunctionMap.description(appointmentData.value.id, editProps.value.description);
+            if (res.code === 0) {
+                ElMessage.success('update description success')
+            } else {
+                console.error('update description failed: ' + res.msg)
+                ElMessage.error('update description failed: ' + res.msg)
+                fetchAppointmentDetail()
+            }
+        } catch (error) {
+            console.error(error)
+            ElMessage.error('update description failed: ' + error.message)
+            fetchAppointmentDetail()
+        }
     },
-    time: () => {
-        appointmentData.value.appointDatetime = dayjs(editProps.value.time.date).format('YYYY-MM-DD') + ' ' + dayjs(editProps.value.time.startTime).format('HH:mm:ss');
-        appointmentData.value.estimateDuration = editProps.value.time.duration;
-        closeDialog('time');
+    time: async () => {
+        try {
+            if (!editProps.value.time.date) {
+                ElMessage.error('date cannot be empty')
+                return
+            }
+            if (!editProps.value.time.startTime) {
+                ElMessage.error('start time cannot be empty')
+                return
+            }
+            if (!editProps.value.time.endTime) {
+                ElMessage.error('end time cannot be empty')
+                return
+            }
+            if (editProps.value.time.duration <= 0) {
+                ElMessage.error('duration must be greater than 0')
+                return
+            }
+
+            appointmentData.value.appointDatetime = dayjs(editProps.value.time.date).format('YYYY-MM-DD') + ' ' + dayjs(editProps.value.time.startTime).format('HH:mm:ss');
+            appointmentData.value.estimateDuration = editProps.value.time.duration;
+            closeDialog('time');
+            const res = await appointmentApi.updateAppointmentFunctionMap.time(appointmentData.value.id, appointmentData.value.appointDatetime, appointmentData.value.estimateDuration);
+            if (res.code === 0) {
+                ElMessage.success('update time success')
+            } else {
+                console.error('update time failed: ' + res.msg)
+                ElMessage.error('update time failed: ' + res.msg)
+                fetchAppointmentDetail()
+            }
+        } catch (error) {
+            console.error(error)
+            ElMessage.error('update time failed: ' + error.message)
+            fetchAppointmentDetail()
+        }
     },
-    location: () => {
-        appointmentData.value.location = editProps.value.location;
-        closeDialog('location');
+    location: async () => {
+        try {
+            if (!editProps.value.location) {
+                ElMessage.error('location cannot be empty')
+                return
+            }
+
+            appointmentData.value.location = editProps.value.location;
+            closeDialog('location');
+            const res = await appointmentApi.updateAppointmentFunctionMap.location(appointmentData.value.id, editProps.value.location);
+            if (res.code === 0) {
+                ElMessage.success('update location success')
+            } else {
+                console.error('update location failed: ' + res.msg)
+                ElMessage.error('update location failed: ' + res.msg)
+                fetchAppointmentDetail()
+            }
+        } catch (error) {
+            console.error(error)
+            ElMessage.error('update location failed: ' + error.message)
+            fetchAppointmentDetail()
+        }
     },
-    participants: () => {
-        appointmentData.value.participants = editProps.value.participants;
-        closeDialog('participants');
+    participants: {
+        role: async () => {
+            try {
+                if (editProps.value.currentParticipant.role === null
+                    && editProps.value.currentParticipant.role === undefined) {
+                    ElMessage.error('role cannot be empty')
+                    return
+                }
+                if (editProps.value.currentParticipant.role < roleMenu[0].code
+                    || editProps.value.currentParticipant.role > roleMenu[roleMenu.length - 1].code) {
+                    ElMessage.error('role is invalid')
+                    return
+                }
+                appointmentData.value.participants.find(participant => participant.user.id === editProps.value.currentParticipant.user.id).role = editProps.value.currentParticipant.role;
+                closeDialog('participants-role');
+                const res = await appointmentApi.updateAppointmentFunctionMap.participant.role(appointmentData.value.id, editProps.value.currentParticipant.user.id, editProps.value.currentParticipant.role);
+                if (res.code === 0) {
+                    ElMessage.success('update role success')
+                } else {
+                    console.error('update role failed: ' + res.msg)
+                    ElMessage.error('update role failed: ' + res.msg)
+                    fetchAppointmentDetail()
+                }
+            } catch (error) {
+                console.error(error)
+                ElMessage.error('update role failed: ' + error.message)
+                fetchAppointmentDetail()
+            }
+        }
     }
 }
 
@@ -310,16 +506,106 @@ const cancelUpdate = {
         editProps.value.location = {};
         closeDialog('location');
     },
-    participants: () => {
-        editProps.value.participants = [];
-        closeDialog('participants');
+    participants: (field) => {
+        editProps.value.participants = {};
+        if (field === 'role') {
+            closeDialog('participants-role');
+        } else if (field === 'add') {
+            closeDialog('participants-add');
+        }
+    }
+}
+const handleChangeAppointmentStatus = (appointment, statusCode) => {
+    let confirmText;
+    let confirmType;
+    if (statusCode === 2) {
+        // complete
+        confirmText = 'Are you sure to complete the appointment?';
+        confirmType = 'warning';
+    } else if (statusCode === 3) {
+        // cancel
+        confirmText = 'Are you sure to cancel the appointment?';
+        confirmType = 'error';
+    } else {
+        return;
+    }
+    ElMessageBox.confirm(confirmText, 'Warning', {
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        type: confirmType
+    }).then(async () => {
+        try {
+            const res = await appointmentApi.changeAppointmentStatusByCreator(appointment.id, statusCode);
+            if (res.code === 0) {
+                ElMessage.success('Change appointment status successfully');
+                fetchAppointmentDetail()
+            } else {
+                console.error(res.msg);
+                ElMessage.error('Failed to change appointment status: ' + res.msg);
+            }
+        } catch (e) {
+            console.error(e);
+            ElMessage.error('Failed to change appointment status');
+        }
+    }).catch(() => {
+        // do nothing
+    })
+}
+const handleCompleteAppointment = () => {
+    handleChangeAppointmentStatus(appointmentData.value, 2);
+}
+const handleCancelAppointment = () => {
+    handleChangeAppointmentStatus(appointmentData.value, 3);
+}
+const handleChangeParticipantRole = (userId) => {
+    openDialog('participants-role', userId)
+}
+const removeParticipant = (participant) => {
+    const confirmText = 'Are you sure to remove the participant from the appointment?';
+    const userId = participant.user.id;
+    ElMessageBox.confirm(confirmText, 'Warning', {
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        type: 'error'
+    }).then(async () => {
+        try {
+            const res = await appointmentApi.removeParticipant(appointmentData.value.id, participant.user.id);
+            if (res.code === 0){
+                ElMessage.success('Remove participant successfully');
+                fetchAppointmentDetail()
+            } else {
+                console.error(res.msg);
+                ElMessage.error('Failed to remove participant: ' + res.msg);
+            }
+        } catch (e) {
+            console.error(e);
+            ElMessage.error('Failed to remove participant');
+        }
+    }).catch(() => {
+        // do nothing
+    })
+}
+
+const inviteParticipant = async (participant) => {
+    try {
+        const res = await appointmentApi.inviteParticipant(appointmentData.value.id, participant.id);
+        if (res.code === 0){
+            ElMessage.success('Participant invited');
+            fetchAppointmentDetail()
+        } else {
+            console.error(res.msg);
+            ElMessage.error('Failed to invite participant: ' + res.msg);
+        }
+    } catch (e) {
+        console.error(e);
+        ElMessage.error('Failed to invite participant');
     }
 }
 
 onMounted(() => {
-    if (props.appointmentId){
+    if (props.appointmentId) {
         fetchAppointmentDetail()
-    }else{
+    } else {
         // 404
         router.push('/404')
     }
@@ -327,38 +613,64 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.app-appointment-detail{
+.app-appointment-detail {
     min-height: calc(100vh - 100px);
     width: 100%;
     box-sizing: border-box;
     padding: 0 20px;
 }
-.app-appointment-detail .app-title{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+
+.app-appointment-detail .app-title {
     margin-left: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: row;
+    gap: 20px;
 }
-.app-appointment-detail .app-content{
+
+.app-appointment-detail .app-title .app-creator-operation-dropdown {
+    flex: 1;
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-direction: row;
+}
+
+.app-creator-button,
+:deep(.app-creator-dropdown-item) {
+    width: 160px;
+}
+
+:deep(.app-creator-dropdown-item) {
+    width: 160px;
+    justify-content: left;
+    padding: 7px 19px;
+    box-sizing: border-box;
+    height: 30px;
+}
+
+.app-appointment-detail .app-content {
     width: 100%;
     box-sizing: border-box;
     padding: 20px;
     text-align: left;
 }
-.app-creator-info{
-    
-}
-.app-description-text{
+
+.app-description-text {
     /* allow line break */
     white-space: pre-wrap;
 }
-.app-time-info-content{
+
+.app-time-info-content {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
     gap: 35px;
-    .app-info-item{
+
+    .app-info-item {
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -366,7 +678,8 @@ onMounted(() => {
         gap: 10px;
     }
 }
-.app-creator-info-skeleton-template{
+
+.app-creator-info-skeleton-template {
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
@@ -374,14 +687,16 @@ onMounted(() => {
     justify-content: space-around;
     gap: 20px;
 }
-.app-location-text{
+
+.app-location-text {
     margin-bottom: 20px;
 }
 
-.app-edit-button{
+.app-edit-button {
     margin-left: 10px;
 }
-.app-edit-dialog h3{
+
+.app-edit-dialog h3 {
     margin: 0;
 }
 </style>
