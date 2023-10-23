@@ -397,11 +397,77 @@ const updateAppointmentFunctionMap = {
         }
         
     },
-    participants: async (appointmentId, value) => {
-        
+    participant: {
+        role: async (appointmentId, participantId, role) => {
+            const token = localStorage.getItem('token');
+            if (token === null
+                || token === undefined
+                || token === '') {
+                throw new Error('User token is invalid');
+            }
+            try{
+                return await axios.post(`/appointment/change_role`, {
+                    uid: participantId,
+                    appointment_id: appointmentId,
+                    role: role
+                }, {
+                    headers: {
+                        authorization: token
+                    }
+                });
+            }catch(error) {
+                console.error('Error during requesting update appointment title: ', error.message);
+                throw error;
+            }
+        }
     },
     all: async (appointment) => {
 
+    },
+}
+
+
+const removeParticipant = async (appointmentId, participantId) => {
+    try{
+        const token = localStorage.getItem('token');
+        if (token === null
+            || token === undefined
+            || token === '') {
+            throw new Error('User token is invalid');
+        }
+        return await axios.post(`/appointment/remove_participant`, {
+            participant_id: participantId,
+            appointment_id: appointmentId
+        }, {
+            headers: {
+                authorization: token
+            }
+        });
+    }catch(error) {
+        console.error('Error during requesting remove participant: ', error.message);
+        throw error;
+    }
+}
+
+const inviteParticipant = async (appointmentId, participantId) => {
+    try{
+        const token = localStorage.getItem('token');
+        if (token === null
+            || token === undefined
+            || token === '') {
+            throw new Error('User token is invalid');
+        }
+        return await axios.post(`/appointment/invite_participant`, {
+            participant_id: participantId,
+            appointment_id: appointmentId
+        }, {
+            headers: {
+                authorization: token
+            }
+        });
+    }catch(error) {
+        console.error('Error during requesting invite participant: ', error.message);
+        throw error;
     }
 }
 
@@ -411,5 +477,8 @@ export default {
     changeAppointmentStatusByCreator,
     quitAppointment,
     getAppointmentById,
-    updateAppointmentFunctionMap
+    removeParticipant,
+    inviteParticipant,
+    updateAppointmentFunctionMap,
+
 }
