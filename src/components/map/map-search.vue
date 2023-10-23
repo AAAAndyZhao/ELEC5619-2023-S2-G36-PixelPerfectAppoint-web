@@ -61,39 +61,52 @@ const selectedDisplayedLocation = computed(() => {
         + `${selectedLocation.value.streetName ? selectedLocation.value.streetName + ', ' : ''}`
         + `${selectedLocation.value.city}, ${selectedLocation.value.state} ${selectedLocation.value.zipCode}, ${selectedLocation.value.country}`;
 })
+
+const markerPositionInMapFromLocation = async (location) => {
+    // check if google is defined
+    if (!map){
+        return
+    }
+    const geocoder = new google.maps.Geocoder();
+    const { results } = await geocoder.geocode({
+        placeId: props.location.googleMapPlaceId
+    })
+    if (results.length > 0){
+        map.setCenter(results[0].geometry.location);
+        map.setZoom(17);
+        marker = new google.maps.Marker({map: map});
+        marker.setPlace({
+            placeId: props.location.googleMapPlaceId,
+            location: results[0].geometry.location
+        });
+        marker.setVisible(true);
+    }else{
+        ElMessage.error('No location found');
+    }
+}
+watchEffect(() => {
+    if (!props.location) return;
+    // sync selected location
+    selectedLocation.value = props.location;
+    if (props.location.googleMapPlaceId){
+        markerPositionInMapFromLocation()
+    }else{
+        // todo
+    }
+})
 onMounted(async () => {
     const { Map } = await GoogleMapLoader.importLibrary('maps');
     map = new Map(mapContainer.value, {
         center: { lat: -34.397, lng: 150.644 },
         zoom: 8,
     });
-    if (!props.location){
-        return
-    }
-    searchBox = new google.maps.places.SearchBox(searchInput.value);
-    searchBox.addListener('places_changed', placesChanged);
     if (props.location.googleMapPlaceId){
-        const geocoder = new google.maps.Geocoder();
-        const { results } = await geocoder.geocode({
-            placeId: props.location.googleMapPlaceId
-        })
-        if (results.length > 0){
-            map.setCenter(results[0].geometry.location);
-            map.setZoom(17);
-            marker = new google.maps.Marker({map: map});
-            marker.setPlace({
-                placeId: props.location.googleMapPlaceId,
-                location: results[0].geometry.location
-            });
-            marker.setVisible(true);
-        }else{
-            ElMessage.error('No location found');
-        }
+        markerPositionInMapFromLocation()
     }else{
         // todo
     }
-
-
+    searchBox = new google.maps.places.SearchBox(searchInput.value);
+    searchBox.addListener('places_changed', placesChanged);
 });
 
 const triggerSearchBoxAutocompletion = () => {
