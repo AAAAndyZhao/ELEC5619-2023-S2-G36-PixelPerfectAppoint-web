@@ -217,13 +217,13 @@ const quitAppointment = async (appointmentId) => {
     }
 }
 
-const getAppointmentById = async (appointmentId) => {
+const getAppointmentById = async (appointmentId, token) => {
     if (appointmentId === null
         || appointmentId === undefined
         || appointmentId === '') {
         throw new Error('Appointment id is invalid');
     }
-    const token = localStorage.getItem('token');
+    token = token || localStorage.getItem('token');
     if (token === null
         || token === undefined
         || token === '') {
@@ -471,6 +471,29 @@ const inviteParticipant = async (appointmentId, participantId) => {
     }
 }
 
+const respondInvitation = async (appointmentId, token, isAccept) => {
+    if (appointmentId === null
+        || appointmentId === undefined
+        || appointmentId === '') {
+        throw new Error('Appointment id is invalid');
+    }
+    if (token === null
+        || token === undefined
+        || token === '') {
+        throw new Error('User token is invalid');
+    }
+    try{
+        return axios.get(`/appointment/${isAccept ? 'accept' : 'reject'}/${appointmentId}`, {
+            headers: {
+                authorization: token
+            }
+        });
+    }catch(error) {
+        console.error('Error during requesting accept invitation: ', error.message);
+        throw error;
+    }
+}
+
 export default {
     createAppointment,
     getAppointmentByUser,
@@ -480,5 +503,5 @@ export default {
     removeParticipant,
     inviteParticipant,
     updateAppointmentFunctionMap,
-
+    respondInvitation
 }

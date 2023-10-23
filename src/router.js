@@ -191,6 +191,26 @@ const routes = [
         ]
     },
     {
+        path: '/appointment/invitation/:id',
+        component: MainPage,
+        children: [
+            {
+                path: '',
+                name: 'AppointmentInvitationPage',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/appointment/invitation.vue'),
+                },
+                props: {
+                    content: (route) => ({ 
+                        appointmentId: route.params.id,
+                        token: route.query.token
+                    })
+                }
+            }
+        ],
+    },
+    {
         path: '/search',
         component: MainPage,
         children: [
@@ -230,7 +250,8 @@ router.beforeEach(async (to, from, next) => {
     }
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
     if (requiresAuth && !isLogin) {
-        next(`/sign-in?redirect=${to.path}`)
+        // redirect=entire path and query string
+        next({ name: 'SignInPage', query: { redirect: to.fullPath } })
     } else {
         next()
     }
