@@ -273,7 +273,15 @@ const updateLocation = (location) => {
 const confirmUpdate = {
     title: async () => {
         try{
-            appointmentData.value.title = editProps.value.title;        
+            if (!editProps.value.title){
+                ElMessage.error('title cannot be empty')
+                return
+            }
+            if (editProps.value.title.length > 50){
+                ElMessage.error('title cannot be longer than 50 characters')
+                return
+            }
+            appointmentData.value.title = editProps.value.title;      
             closeDialog('title');
             const res = await appointmentApi.updateAppointmentFunctionMap.title(appointmentData.value.id, editProps.value.title);
             if (res.code === 0){
@@ -291,6 +299,14 @@ const confirmUpdate = {
     },
     description: async () => {
         try {
+            if (!editProps.value.description){
+                ElMessage.error('description cannot be empty')
+                return
+            }
+            if (editProps.value.description.length > 1000){
+                ElMessage.error('description cannot be longer than 1000 characters')
+                return
+            }
             appointmentData.value.description = editProps.value.description;
             closeDialog('description');
             const res = await appointmentApi.updateAppointmentFunctionMap.description(appointmentData.value.id, editProps.value.description);
@@ -309,6 +325,23 @@ const confirmUpdate = {
     },
     time: async () => {
         try{
+            if (!editProps.value.time.date){
+                ElMessage.error('date cannot be empty')
+                return
+            }
+            if (!editProps.value.time.startTime){
+                ElMessage.error('start time cannot be empty')
+                return
+            }
+            if (!editProps.value.time.endTime){
+                ElMessage.error('end time cannot be empty')
+                return
+            }
+            if (editProps.value.time.duration <= 0){
+                ElMessage.error('duration must be greater than 0')
+                return
+            }
+
             appointmentData.value.appointDatetime = dayjs(editProps.value.time.date).format('YYYY-MM-DD') + ' ' + dayjs(editProps.value.time.startTime).format('HH:mm:ss');
             appointmentData.value.estimateDuration = editProps.value.time.duration;
             closeDialog('time');
@@ -328,6 +361,11 @@ const confirmUpdate = {
     },
     location: async () => {
         try{
+            if (!editProps.value.location){
+                ElMessage.error('location cannot be empty')
+                return
+            }
+
             appointmentData.value.location = editProps.value.location;
             closeDialog('location');
             const res = await appointmentApi.updateAppointmentFunctionMap.location(appointmentData.value.id, editProps.value.location);
