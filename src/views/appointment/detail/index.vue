@@ -149,6 +149,7 @@ import TitleEdit from '@/views/appointment/detail/title-edit.vue';
 import DescriptionEdit from '@/views/appointment/detail/desc-edit.vue';
 import TimeEdit from '@/views/appointment/detail/time-edit.vue';
 import LocationEdit from '@/views/appointment/detail/location-edit.vue';
+import { ElMessage } from 'element-plus';
 
 const props = defineProps({
     appointmentId: {
@@ -270,26 +271,88 @@ const updateLocation = (location) => {
 }
 
 const confirmUpdate = {
-    title: () => {
-        appointmentData.value.title = editProps.value.title;
-        closeDialog('title');
+    title: async () => {
+        try{
+            appointmentData.value.title = editProps.value.title;        
+            closeDialog('title');
+            const res = await appointmentApi.updateAppointmentFunctionMap.title(appointmentData.value.id, editProps.value.title);
+            if (res.code === 0){
+                ElMessage.success('update title success')
+            }else{
+                console.error('update title failed: ' + res.msg)
+                ElMessage.error('update title failed: ' + res.msg)
+                fetchAppointmentDetail()
+            }
+        }catch(error){
+            console.error(error)
+            ElMessage.error('update title failed: ' + error.message)
+            fetchAppointmentDetail()
+        }
     },
-    description: () => {
-        appointmentData.value.description = editProps.value.description;
-        closeDialog('description');
+    description: async () => {
+        try {
+            appointmentData.value.description = editProps.value.description;
+            closeDialog('description');
+            const res = await appointmentApi.updateAppointmentFunctionMap.description(appointmentData.value.id, editProps.value.description);
+            if (res.code === 0){
+                ElMessage.success('update description success')
+            }else{
+                console.error('update description failed: ' + res.msg)
+                ElMessage.error('update description failed: ' + res.msg)
+                fetchAppointmentDetail()
+            }
+        }catch(error){
+            console.error(error)
+            ElMessage.error('update description failed: ' + error.message)
+            fetchAppointmentDetail()
+        }
     },
-    time: () => {
-        appointmentData.value.appointDatetime = dayjs(editProps.value.time.date).format('YYYY-MM-DD') + ' ' + dayjs(editProps.value.time.startTime).format('HH:mm:ss');
-        appointmentData.value.estimateDuration = editProps.value.time.duration;
-        closeDialog('time');
+    time: async () => {
+        try{
+            appointmentData.value.appointDatetime = dayjs(editProps.value.time.date).format('YYYY-MM-DD') + ' ' + dayjs(editProps.value.time.startTime).format('HH:mm:ss');
+            appointmentData.value.estimateDuration = editProps.value.time.duration;
+            closeDialog('time');
+            const res = await appointmentApi.updateAppointmentFunctionMap.time(appointmentData.value.id, appointmentData.value.appointDatetime, appointmentData.value.estimateDuration);
+            if (res.code === 0){
+                ElMessage.success('update time success')
+            }else{
+                console.error('update time failed: ' + res.msg)
+                ElMessage.error('update time failed: ' + res.msg)
+                fetchAppointmentDetail()
+            }
+        }catch(error){
+            console.error(error)
+            ElMessage.error('update time failed: ' + error.message)
+            fetchAppointmentDetail()
+        }
     },
-    location: () => {
-        appointmentData.value.location = editProps.value.location;
-        closeDialog('location');
+    location: async () => {
+        try{
+            appointmentData.value.location = editProps.value.location;
+            closeDialog('location');
+            const res = await appointmentApi.updateAppointmentFunctionMap.location(appointmentData.value.id, editProps.value.location);
+            if (res.code === 0){
+                ElMessage.success('update location success')
+            }else{
+                console.error('update location failed: ' + res.msg)
+                ElMessage.error('update location failed: ' + res.msg)
+                fetchAppointmentDetail()
+            }
+        }catch(error){
+            console.error(error)
+            ElMessage.error('update location failed: ' + error.message)
+            fetchAppointmentDetail()
+        }
     },
-    participants: () => {
-        appointmentData.value.participants = editProps.value.participants;
-        closeDialog('participants');
+    participants: async () => {
+        try{
+            appointmentData.value.participants = editProps.value.participants;
+            closeDialog('participants');
+        }catch(error){
+            console.error(error)
+            ElMessage.error('update participants failed: ' + error.message)
+            fetchAppointmentDetail()
+        }
     }
 }
 
@@ -344,9 +407,6 @@ onMounted(() => {
     box-sizing: border-box;
     padding: 20px;
     text-align: left;
-}
-.app-creator-info{
-    
 }
 .app-description-text{
     /* allow line break */

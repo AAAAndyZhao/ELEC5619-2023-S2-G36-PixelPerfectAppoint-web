@@ -241,10 +241,125 @@ const getAppointmentById = async (appointmentId) => {
     }
 }
 
+const updateAppointmentFunctionMap = {
+    title: async (appointmentId, value) => {
+        if (!appointmentId || typeof appointmentId !== 'string') {
+            throw new Error('Appointment id is invalid');
+        }
+        const token = localStorage.getItem('token');
+        if (token === null
+            || token === undefined
+            || token === '') {
+            throw new Error('User token is invalid');
+        }
+        try {
+            return await axios.post(`/appointment/update/title/${appointmentId}`, {
+                title: value
+            }, {
+                headers: {
+                    authorization: token
+                }
+            });
+        } catch (error) {
+            console.error('Error during requesting update appointment title: ', error.message);
+            throw error;
+        }
+    },
+    description: async (appointmentId, value) => {
+        if (!appointmentId || typeof appointmentId !== 'string') {
+            throw new Error('Appointment id is invalid');
+        }
+        const token = localStorage.getItem('token');
+        if (token === null
+            || token === undefined
+            || token === '') {
+            throw new Error('User token is invalid');
+        }
+        try {
+            return await axios.post(`/appointment/update/desc/${appointmentId}`, {
+                description: value
+            }, {
+                headers: {
+                    authorization: token
+                }
+            });
+        } catch (error) {
+            console.error('Error during requesting update appointment title: ', error.message);
+            throw error;
+        }
+    },
+    time: async (appointmentId, appointDatetime, estimatedDuration) => {
+        if (!appointmentId || typeof appointmentId !== 'string') {
+            throw new Error('Appointment id is invalid');
+        }
+        const token = localStorage.getItem('token');
+        if (token === null
+            || token === undefined
+            || token === '') {
+            throw new Error('User token is invalid');
+        }
+        try {
+            return await axios.post(`/appointment/update/time/${appointmentId}`, {
+                appoint_datetime: appointDatetime,
+                estimate_duration: estimatedDuration
+            }, {
+                headers: {
+                    authorization: token
+                }
+            });
+        } catch (error) {
+            console.error('Error during requesting update appointment title: ', error.message);
+            throw error;
+        }
+    },
+    location: async (appointmentId, location) => {
+        if (!appointmentId || typeof appointmentId !== 'string') {
+            throw new Error('Appointment id is invalid');
+        }
+        const token = localStorage.getItem('token');
+        if (token === null
+            || token === undefined
+            || token === '') {
+            throw new Error('User token is invalid');
+        }
+        try {
+            return await axios.post(`/appointment/update/location/${appointmentId}`, {
+                apartment_no: location.apartmentNo,
+                street_no: location.streetNo,
+                street_name: location.streetName,
+                city: location.city,
+                state: location.state,
+                state_code: location.stateCode,
+                country: location.country,
+                country_code: location.countryCode,
+                zip_code: location.zipCode,
+                latitude: location.latitude,
+                longitude: location.longitude,
+                google_map_place_id: location.googleMapPlaceId
+            }, {
+                headers: {
+                    authorization: token
+                }
+            });
+        } catch (error) {
+            console.error('Error during requesting update appointment title: ', error.message);
+            throw error;
+        }
+        
+    },
+    participants: async (appointmentId, value) => {
+        
+    },
+    all: async (appointment) => {
+
+    }
+}
+
 export default {
     createAppointment,
     getAppointmentByUser,
     changeAppointmentStatusByCreator,
     quitAppointment,
-    getAppointmentById
+    getAppointmentById,
+    updateAppointmentFunctionMap
 }
