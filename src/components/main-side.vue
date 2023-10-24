@@ -24,21 +24,21 @@
                 <el-icon size="30px" color="#928f8f" class="app-side-search-icon" style="margin: 20px; margin-left: 50px;">
                     <Search />
                 </el-icon>
-                <span style="margin: 10px; font-weight: 600;">Search</span>
+                <span style="margin: 10px; font-weight: 600;" @click="goToSearchPage">Search</span>
             </el-menu-item>
             <el-menu-item index="5">
                 <el-icon size="30px" color="#928f8f" class="app-side-appointment-icon"
                     style="margin: 20px; margin-left: 50px;">
                     <Connection />
                 </el-icon>
-                <span style="margin: 10px; font-weight: 600;">Appointment</span>
+                <span style="margin: 10px; font-weight: 600;" @click="goToAppointmentPage">Appointment</span>
             </el-menu-item>
             <el-menu-item index="6">
                 <el-icon size="30px" color="#928f8f" class="app-side-profolio-icon"
                     style="margin: 20px; margin-left: 50px;">
                     <Compass />
                 </el-icon>
-                <span style="margin: 10px; font-weight: 600;" @click="goToUserProfolio">Profolio</span>
+                <span style="margin: 10px; font-weight: 600;" @click="goToUserProfolio">Portfolio</span>
             </el-menu-item>
             <el-menu-item index="7">
                 <el-icon size="30px" color="#928f8f" class="app-side-setting-icon" style="margin: 20px; margin-left: 50px;">
@@ -51,16 +51,16 @@
             <div class="app-side-user-avatar">
                 <UserAvatar :user="user"/>
             </div>
-            <h3 style="margin: auto 30px;">
+            <h3 style="margin: auto 10px;">
                 <div class="app-user-alias">
                     <el-link href="/user">{{ user.alias }}</el-link>
                 </div>
             </h3>
             <el-dropdown trigger="click" @visible-change="clickIconTransition">
-                <el-button type="primary"
-                    style="margin: auto 10px auto 30px; width: 30px; border-radius: 30px; background-color: #fff; border: #fff;">
+                <el-button type="primary" class="app-side-user-dropdown-button"
+                    style="margin: auto 10px auto 10px; width: 30px; border-radius: 30px; background-color: #fff; border: #fff;">
                     <!-- <el-icon class="el-icon--right"><arrow-down /></el-icon> -->
-                    <el-icon style="transform: rotate(90deg); transition: all 0.3s;" color="#409EFF" size="20px" v-if="!isRotated">
+                    <el-icon style="transform: rotate(90deg); transition: transform 2s ease;" color="#409EFF" size="20px" v-if="!isRotated">
                         <More />
                     </el-icon>
                     <el-icon color="#409EFF" size="20px" v-if="isRotated">
@@ -109,29 +109,46 @@ const handleClose = (key, keyPath) => {
 const goToHomePage = () => {
     router.push('/').then(() => {
         window.location.reload()
+        openLoadingPage()
     })
 }
 
 const goToProfile = () => {
     router.push('/user/profile').then(() => {
         window.location.reload()
+        openLoadingPage()
     })
 }
 
 const goToFollowerTab = () => {
     router.push({ path: '/user/profile', query: { tab: 'follower' } }).then(() => {
         window.location.reload()
+        openLoadingPage()
     })
 }
 
 const goToUserProfolio = () => {
     router.push({ path: '/user/profile', query: { tab: 'portfolio' } }).then(() => {
         window.location.reload()
+        openLoadingPage()
     })
 }
 
 const goToLogIn = () => {
     router.push('/sign-in')
+    openLoadingPage()
+}
+
+const goToSearchPage = () => {
+    router.push('/search')
+    openLoadingPage()
+}
+
+const goToAppointmentPage = () => {
+    router.push({ path: '/user/profile', query: { tab: 'appointment' } }).then(() => {
+        window.location.reload()
+        openLoadingPage()
+    })
 }
 
 const logOutCurrentAccount = () => {
@@ -160,6 +177,15 @@ const getUserInfoForDisplay = async (userId) => {
     }
 }
 
+const openLoadingPage = () => {
+    ElLoading.service({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+    })
+}
+
 const clickIconTransition = () => {
     isRotated.value = !isRotated.value
 }
@@ -178,10 +204,11 @@ onMounted(() => {
     flex-direction: column;
     justify-content: space-between;
     height: calc(100vh - 60px);
+    width: 250px;
 }
 
+
 #app-side-user {
-    width: 100%;
     height: 10%;
     box-sizing: border-box;
     display: flex;
@@ -211,4 +238,5 @@ onMounted(() => {
     overflow: hidden;
     white-space: nowrap;
 }
+
 </style>

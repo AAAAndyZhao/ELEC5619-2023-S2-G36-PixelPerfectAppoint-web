@@ -107,8 +107,30 @@ const searchPhotos = async (
     }
 }
 
+const getPhotoByOwnerId = async () => {
+    if(!localStorage.getItem("userId")){
+        throw new Error("No userId, please login first.")
+    }
+    try {
+        let userId = localStorage.getItem("userId")
+        let token = localStorage.getItem("token")
+        const body = {
+            owner_id: userId
+        }
+        return axios.post("/photo/search", body, {
+            headers: {
+                "authorization": token
+            }
+        })
+    } catch (error) {
+        console.error("Error during getting photos by owner id: ", error.message)
+        throw error
+    }
+}
+
 export default {
     uploadPhoto,
     uploadPhotoList,
-    searchPhotos
+    searchPhotos,
+    getPhotoByOwnerId,
 }

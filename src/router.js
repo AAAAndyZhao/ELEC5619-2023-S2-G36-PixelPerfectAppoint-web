@@ -221,6 +221,44 @@ const routes = [
                     header: () => import('./components/main-header.vue'),
                     content: () => import('./views/search/search.vue'),
                     side: () => import('./components/main-side.vue')
+                },
+                props: {
+                    content: (route) => ({ 
+                        keyword: route.query.keyword 
+                    })
+                }
+            }
+        ]
+    },
+    {
+        path:'/portfolio',
+        component: MainPage,
+        children: [
+            {
+                path:'create',
+                name:'PortfolioCreatePage',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/portfolio/portfolio-create.vue'),
+                    side: () => import('./components/main-side.vue')
+                }
+            },
+            {
+                path:'update/:id',
+                name:'PortfolioUpdatePage',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/portfolio/portfolio-edit.vue'),
+                    side: () => import('./components/main-side.vue')
+                }
+            },
+            {
+                path:'photos-inside/:id',
+                name:'PortfolioPhotosInsidePage',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/portfolio/portfolio-content.vue'),
+                    side: () => import('./components/main-side.vue')
                 }
             }
         ]
