@@ -201,6 +201,11 @@ const routes = [
                     header: () => import('./components/main-header.vue'),
                     content: () => import('./views/search/search.vue'),
                     side: () => import('./components/main-side.vue')
+                },
+                props: {
+                    content: (route) => ({ 
+                        keyword: route.query.keyword 
+                    })
                 }
             }
         ]

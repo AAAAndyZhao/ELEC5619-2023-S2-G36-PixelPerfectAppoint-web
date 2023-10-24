@@ -6,7 +6,7 @@
         <div class="app-search-container">
             <div class="app-map-search">
                 <div class="app-place-search-input-wrapper">
-                    <input class="app-place-search-input" ref="searchInput" type="text" placeholder="Search location" />
+                    <input class="app-place-search-input" ref="searchInput" link placeholder="Search location" />
                 </div>
                 <el-button class="app-place-search-button" :icon="Search"
                     @click="triggerSearchBoxAutocompletion"></el-button>

@@ -36,20 +36,23 @@
                                 <span>{{ row.name }}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column label="Description" align="center">
-                            <template #default="{ row }">
-                                <span>{{ row.description }}</span>
-                            </template>
-                        </el-table-column>
                     </el-table>
                 </div>
                 <div class="app-portfolio-update-photo-select-control-area">
                     <!-- add and remove button -->
-                    <el-button type="primary" @click="handleAdd">Add</el-button>
-                    <el-button type="danger" @click="handleRemove" style="margin-left: 0px;">Remove</el-button>
+                    <el-button type="primary" @click="handleAdd">
+                        <el-icon>
+                            <DArrowRight size="20px" />
+                        </el-icon>
+                    </el-button>
+                    <el-button type="danger" @click="handleRemove" style="margin-left: 0px;">
+                        <el-icon>
+                            <DArrowLeft size="20px" />
+                        </el-icon>
+                    </el-button>
                     <PhotoImage class="app-portfolio-cover-photo" :src="coverPhoto.thumbnailUrl" :alt="coverPhoto.name"
                         fit="contain" v-if="coverPhoto" />
-                    <el-text>Cover photo</el-text>
+                    <el-text v-if="coverPhoto">{{ coverPhoto.name }}</el-text>
                     <el-switch id="app-portfolio-private-select-btn" v-model="form.isPublic" active-color="#13ce66"
                         active-text="Public" inactive-text="Private" />
                     <el-button type="primary" @click="handleUpdate">Update</el-button>
@@ -66,11 +69,6 @@
                         <el-table-column label="Name" align="center">
                             <template #default="{ row }">
                                 <span>{{ row.name }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="Description" align="center">
-                            <template #default="{ row }">
-                                <span>{{ row.description }}</span>
                             </template>
                         </el-table-column>
                         <el-table-column label="Cover Set" align="center">

@@ -1,10 +1,11 @@
 <template>
     <div v-show="visible" @click="closeClick" class="showPhoto">
-        <img class="img" :src="url" alt="Image failed to load!" />
+        <PhotoImage class="img" :src="url" alt="Image failed to load!" />
     </div>
 </template>
   
 <script >
+import PhotoImage from "@/components/photo/photo-image.vue";
 
 export default {
     props: {
@@ -22,6 +23,7 @@ export default {
             this.$emit("closeClick");
         },
     },
+    components: { PhotoImage }
 };
 </script>
 

@@ -64,6 +64,7 @@ import PhotoSearchResult from '@/views/search/photo-search-result.vue';
 import userApi from '@/services/user-api';
 import postApi from '@/services/post-api';
 import photoApi from '@/services/photo-api';
+import router from '@/router';
 
 const searchTypeToSortedByOptionsMap = {
     user: [{
@@ -123,6 +124,13 @@ const camMakerOptions = [{ code: $PUBLIC.INF_INT, value: 'All' }].concat($MENU['
 const userData = ref([]);
 const photoData = ref([]);
 const postData = ref([]);
+
+const props = defineProps({
+    keyword: {
+        type: String,
+        default: ''
+    }
+});
 
 const searchBoxPlaceHolder = computed(() => {
     switch (searchForm.value.searchType) {
@@ -263,7 +271,18 @@ watch(() => searchForm.value.searchType, () => {
     searchForm.value.sortedBy = searchTypeToSortedByOptionsMap[searchForm.value.searchType][0].value;
 })
 
-onMounted(() => {
+onMounted(async() => {
+    if(props.keyword) {
+        searchForm.value.searchText = props.keyword;
+        searchForm.value.searchType = 'photo';
+        searchForm.value.sortedBy = searchTypeToSortedByOptionsMap[searchForm.value.searchType][0].value;
+        searchForm.value.hasAdvancedParams = false;
+        searchForm.value.photoParams.camMaker = 'All';
+        searchForm.value.photoParams.camModel = '';
+        searchForm.value.photoParams.lens = '';
+        searchForm.value.onlyShowFollowing = false;
+        search(false);
+    }
     searchForm.value.sortedBy = searchTypeToSortedByOptionsMap[searchForm.value.searchType][0].value;
 })
 </script>

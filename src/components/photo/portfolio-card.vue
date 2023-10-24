@@ -16,16 +16,16 @@
         <el-divider style="margin: 2px 0;" />
         <div class="app-portfolio-info">
             <div class="app-portfolio-name">{{ portfolio.title }}</div>
-            <div class="app-portfolio-category">{{ portfolio.category.name }}</div>
+            <div class="app-portfolio-category" @click="openPortfolio">{{ portfolio.category.name }}</div>
             <div class="app-portfolio-date-button-container">
                 <div class="app-portfolio-publish-date">Created at: {{ portfolio.createDatetime }}</div>
                 <div class="app-portfolio-delete-hide-button">
-                    <el-button type="text" @click="delectPortfolio">
+                    <el-button link @click="delectPortfolio">
                         <el-icon size="medium">
                             <Delete />
                         </el-icon>
                     </el-button>
-                    <el-button type="text" @click="toggleVisibility">
+                    <el-button link @click="toggleVisibility">
                         <el-icon size="medium">
                             <Hide v-if="portfolio.hidden" />
                             <View v-else />
@@ -44,7 +44,7 @@ import PhotoImage from '@/components/photo/photo-image.vue';
 import { Windows } from '@icon-park/vue-next';
 import router from '@/router';
 
-const emits = defineEmits(['customClick', 'delectPortfolio']);
+const emits = defineEmits(['update-portfolio-visibility', 'delectPortfolio']);
 const props = defineProps({
     portfolio: {
         type: Object,
@@ -72,14 +72,22 @@ const toggleVisibility = () => {
         ? 'Do you want to change this portfolio to public?'
         : 'Do you want to change this portfolio to private?';
     ElMessageBox.confirm(message, 'Warning', {
+        distinguishCancelAndClose: true,
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel',
         type: 'warning'
     }).then(() => {
-        props.portfolio.hidden = !props.portfolio.hidden;
-
         console.log(props.portfolio.hidden);
-        emits('customClick', { id: props.portfolio.id, hidden: props.portfolio.hidden });
+        ElMessageBox.confirm('Do you want update with all the photos?', 'Warning', {
+            distinguishCancelAndClose: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            type: 'warning'
+        }).then(() => {
+            emits('update-portfolio-visibility', { id: props.portfolio.id, hidden: !props.portfolio.hidden, sync: true});
+        }).catch(() => {
+            emits('update-portfolio-visibility', { id: props.portfolio.id, hidden: !props.portfolio.hidden, sync: false});
+        })
     }).catch(() => {
         // do nothing
     });
@@ -99,7 +107,6 @@ const delectPortfolio = () => {
 const jumpToPortfolioEdit = () => {
     router.push({
         path: `../portfolio/update/${props.portfolio.id}`,
-        
     }).then(() => {
         Windows.location.reload();
     });
@@ -115,8 +122,7 @@ const openPortfolio = () => {
 
 <style scoped>
 .app-portfolio-card {
-    width: 30vh;
-    height: 30vh;
+    min-width: 220px;
     border-radius: 8px;
     box-sizing: border-box;
     margin: 0;
@@ -129,16 +135,16 @@ const openPortfolio = () => {
 .app-portfolio-card-cover-pics {
     display: flex;
     flex-direction: row;
-    width: 100%;
-    height: calc(100% /3 * 2);
+    width: 100%; 
     box-sizing: border-box;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    min-height: 140px;
 }
 
 .app-portfolio-cover-pic-main-container {
-    height: 100%;
+    height: 140px;
     width: 100%;
     box-sizing: border-box;
 }
