@@ -1,136 +1,127 @@
 <template>
-    <CommentBox></CommentBox>
+    <CommentBox :middleValue="parentData"></CommentBox>
     <div class="comment-list" v-for="comment in displayedComments" :key="comment.id">
         <div class="comment-list-root">
-            <CommentList  :comment="comment"></CommentList>
+            <CommentList :comment="comment"></CommentList>
         </div>
-        <div v-if="comment.subComments" class="sub-comment-list-root" v-for="subcomment in comment.displayedSubComments" :key="subcomment.id">
-            <CommentList  :comment="subcomment"></CommentList>
-        </div> 
+        <div v-if="comment.subComments" class="sub-comment-list-root" v-for="subcomment in comment.displayedSubComments"
+            :key="subcomment.id">
+            <CommentList :comment="subcomment"></CommentList>
+        </div>
         <div class="load-more-subComments">
-            <el-button v-if="comment.canLoadMoreSubComments" @click="loadMoreSubComments(comment)" text>load more replies</el-button>
-        </div> 
-        
+            <el-button v-if="comment.canLoadMoreSubComments" @click="loadMoreSubComments(comment)" text>load more
+                replies</el-button>
+        </div>
+
     </div>
     <div>
         <el-button v-if="canLoadMoreComment" @click="loadMoreComment">load more comments</el-button>
     </div>
 </template>
-<script setup lang = 'ts'>
-import{ref} from 'vue'
+<script setup >
+import { ref,defineProps,watch } from 'vue'
 import CommentBox from '../../components/comment/comment-box.vue'
 import CommentList from '../../components/comment/comment-item.vue'
-const initializeSubComments = (comment: Comment) => {
-    comment.displayedSubComments = comment.subComments?.splice(0, subCommentsPerPage);
-    comment.canLoadMoreSubComments = comment.subComments?.length! > 0;
+const props = defineProps(['parentData']);
+watch(() => props.parentData, (newValue, oldValue) => {
+  
+});
+const initializeSubComments = (comment) => {
+    if (comment.subComments) {
+        comment.displayedSubComments = comment.subComments.splice(0, subCommentsPerPage);
+        comment.canLoadMoreSubComments = comment.subComments.length > 0;
+    }
 };
 
-interface Comment {
-    id: number;
-    userName: string;
-    content: string;
-    avatar: string;
-    commentDate: string;
-    subComments?: subComment[];
-    displayedSubComments?: subComment[];
-    canLoadMoreSubComments?: boolean;
-}
 
-interface subComment{
-    id: number;
-    userName: string;
-    content: string;
-    avatar: string;
-    commentDate: string;
-}
 
-const comments = ref<Comment[]>([
-{
-    id: 1,
-    userName: 'John',
-    content: 'Hello World',
-    avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-    commentDate: '2021-07-01 12:00:00',
-    subComments: [
-        {
-            id: 1,
-            userName: 'John',
-            content: 'Hello World',
-            avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-            commentDate: '2021-07-01 12:00:00',
-        },
-        {
-            id: 2,
-            userName: 'John',
-            content: 'Hello World',
-            avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-            commentDate: '2021-07-01 12:00:00',
-        },
-        {
-            id: 3,
-            userName: 'John',
-            content: 'Hello World',
-            avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-            commentDate: '2021-07-01 12:00:00',
-        },
-    ]
-},
-{
-    id: 2,
-    userName: 'gongfan',
-    content: 'Hello World',
-    avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-    commentDate: '2021-07-01 12:00:00',
-    subComments: [
-        {
-            id: 1,
-            userName: 'John',
-            content: 'Hello World',
-            avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-            commentDate: '2021-07-01 12:00:00',
-        },
-        {
-            id: 2,
-            userName: 'John',
-            content: 'Hello World',
-            avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-            commentDate: '2021-07-01 12:00:00',
-        },
-        {
-            id: 3,
-            userName: 'John',
-            content: 'Hello World',
-            avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-            commentDate: '2021-07-01 12:00:00',
-        },
-        {
-            id: 4,
-            userName: 'John',
-            content: 'Hello World',
-            avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-            commentDate: '2021-07-01 12:00:00',
-        },
-    ]
-},
-{
-    id: 3,
-    userName: 'wulll',
-    content: 'Hello World',
-    avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-    commentDate: '2021-07-01 12:00:00',
-},
-{
-    id: 4,
-    userName: '?????',
-    content: 'Hello World',
-    avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-    commentDate: '2021-07-01 12:00:00',
-}
+const comments = ref([
+    {
+        id: 1,
+        userName: 'John',
+        content: 'Hello World',
+        avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
+        commentDate: '2021-07-01 12:00:00',
+        subComments: [
+            {
+                id: 1,
+                userName: 'John',
+                content: 'Hello World',
+                avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
+                commentDate: '2021-07-01 12:00:00',
+            },
+            {
+                id: 2,
+                userName: 'John',
+                content: 'Hello World',
+                avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
+                commentDate: '2021-07-01 12:00:00',
+            },
+            {
+                id: 3,
+                userName: 'John',
+                content: 'Hello World',
+                avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
+                commentDate: '2021-07-01 12:00:00',
+            },
+        ]
+    },
+    {
+        id: 2,
+        userName: 'gongfan',
+        content: 'Hello World',
+        avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
+        commentDate: '2021-07-01 12:00:00',
+        subComments: [
+            {
+                id: 1,
+                userName: 'John',
+                content: 'Hello World',
+                avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
+                commentDate: '2021-07-01 12:00:00',
+            },
+            {
+                id: 2,
+                userName: 'John',
+                content: 'Hello World',
+                avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
+                commentDate: '2021-07-01 12:00:00',
+            },
+            {
+                id: 3,
+                userName: 'John',
+                content: 'Hello World',
+                avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
+                commentDate: '2021-07-01 12:00:00',
+            },
+            {
+                id: 4,
+                userName: 'John',
+                content: 'Hello World',
+                avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
+                commentDate: '2021-07-01 12:00:00',
+            },
+        ]
+    },
+    {
+        id: 3,
+        userName: 'wulll',
+        content: 'Hello World',
+        avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
+        commentDate: '2021-07-01 12:00:00',
+    },
+    {
+        id: 4,
+        userName: '?????',
+        content: 'Hello World',
+        avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
+        commentDate: '2021-07-01 12:00:00',
+    }
 ])
 
 
 
-const displayedComments = ref<Comment[]>([]);
+const displayedComments = ref([]);
 const commentsPerPage = 1;
 const canLoadMoreComment = ref(comments.value.length > 0);
 const loadMoreComment = () => {
@@ -140,15 +131,16 @@ const loadMoreComment = () => {
     });
     displayedComments.value = [...displayedComments.value, ...moreComments];
     canLoadMoreComment.value = comments.value.length > 0;
-    }
-
+}
 
 const subCommentsPerPage = 2;
-const loadMoreSubComments = (comment: Comment) => {
-    const moreSubComments = comment.subComments?.splice(0, subCommentsPerPage);
-    if (moreSubComments) {
-        comment.displayedSubComments = [...comment.displayedSubComments!, ...moreSubComments];
-        comment.canLoadMoreSubComments = comment.subComments?.length! > 0;
+const loadMoreSubComments = (comment) => {
+    if (comment.subComments) {
+        const moreSubComments = comment.subComments.splice(0, subCommentsPerPage);
+        if (comment.displayedSubComments) {
+            comment.displayedSubComments = [...comment.displayedSubComments, ...moreSubComments];
+        }
+        comment.canLoadMoreSubComments = comment.subComments.length > 0;
     }
 }
 
@@ -158,15 +150,16 @@ loadMoreComment();
 </script>
 
 <style scoped>
-.comment-list{
+.comment-list {
     margin-top: 20px;
 }
-.sub-comment-list-root{
+
+.sub-comment-list-root {
     padding-left: 72px;
 }
-.load-more-subComments{
+
+.load-more-subComments {
     text-align: left;
     margin-left: 60px;
-    
-}
-</style>
+
+}</style>

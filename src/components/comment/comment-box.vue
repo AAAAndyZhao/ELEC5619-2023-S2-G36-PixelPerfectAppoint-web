@@ -2,7 +2,7 @@
     <div>
         <div class="post-comment">
             <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" :size="70"></el-avatar>
-            <el-input id="comment-input" v-model="inputContent" placeholder="Add a comment"
+            <el-input id="comment-input" v-model="inputContent" placeholder="Add a comment" ref="commentInput"
                 @focus="showButtons = true"></el-input>
         </div>
     </div>
@@ -15,15 +15,25 @@
         </el-button>
     </div>
 </template>
-<script setup lang = 'ts'>
-import { ref, } from 'vue'
+<script setup >
+import { ref, defineProps, computed, watch } from 'vue'
 const inputContent = ref('');
 const showButtons = ref(false);
+const commentInput = ref('');
+
+const props = defineProps(['middleValue']);
+watch(() => props.middleValue, (newValue, oldValue) => {
+    const innerValue = computed(() => props.middleValue);
+    if (innerValue.value) {
+        commentInput.value.focus();
+    }
+});
+
 const post = () => {
-    // 在此处执行发布内容的逻辑
+
     inputContent.value = '';
     showButtons.value = false;
-    console.log("发布内容:", inputContent.value);
+
 };
 
 const cancel = () => {
