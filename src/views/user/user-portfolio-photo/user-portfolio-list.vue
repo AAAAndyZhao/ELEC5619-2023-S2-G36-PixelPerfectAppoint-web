@@ -32,7 +32,6 @@ const handleDeletePortfolio = (portfolioData) => {
 
 <style scoped>
 .app-user-portfolios-list {
-    height: 600px;
     width: 100%;
     display: flex;
     gap: 10px;
