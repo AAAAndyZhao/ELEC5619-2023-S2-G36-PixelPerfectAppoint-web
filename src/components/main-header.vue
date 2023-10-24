@@ -7,7 +7,7 @@
                     <h3 style="margin-left: 10px; font-family: 'Bebas Neue', sans-serif; font-size: 25px;">Pixel Perfect Appoint</h3>
                 </el-menu-item>
             </router-link>
-            <el-input v-model="searchInput" placeholder="Press Enter to Search Beauty..." @keyup.enter.native="search"
+            <el-input v-if="!isSearchPage" v-model="searchInput" placeholder="Press Enter to Search Beauty..." @keyup.enter.native="search"
                 maxlength="50" @keydown.space.stop >
                 <template #append>
                     <el-button type="primary" icon="Search" @click="search"></el-button>
@@ -45,10 +45,15 @@ import { Plus, Picture, Camera } from '@icon-park/vue-next'
 import router from '../router.js'
 import '@icon-park/vue-next/styles/index.css'
 import userApi from '../services/user-api'
+import photoApi from '../services/photo-api'
 import { useStore } from 'vuex'
 
+const isSearchPage = computed(() => {
+    return router.currentRoute.value.name == 'SearchPage'
+})
 
 const visible = ref(false)
+const searchInput = ref('')
 
 let goToPostPage = () => {
     visible.value = false
@@ -58,11 +63,23 @@ let goToPhotoPage = () => {
     visible.value = false
 }
 
+const search = () => {
+    if(searchInput.value == '') {
+        ElMessage({
+            message: 'Please enter a keyword',
+            type: 'warning'
+        })
+    } else {
+        router.push({ name: 'SearchPage', query: { keyword: searchInput.value } })
+    }
+}
+
 </script>
 <script>
 export default {
     name: 'Header',
     props: {
+        msg: String
 
     },
     data() {

@@ -1,9 +1,8 @@
 <template>
     <div class="app-user-portfolios-list">
         <PortfolioCard v-for="portfolio in data" :key="portfolio.id" :portfolio="portfolio"
-            @customClick="handleCustomClick" @delectPortfolio="handleDeletePortfolio"></PortfolioCard>
-
-
+            @update-portfolio-visibility="updatePortfolioVisibility" 
+            @delectPortfolio="handleDeletePortfolio" ></PortfolioCard>
     </div>
 </template>
 <script setup>
@@ -13,7 +12,7 @@ import userApi from '@/services/user-api';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import PortfolioCard from '@/components/photo/portfolio-card.vue';
 
-const emits = defineEmits(['customClickFromB']);
+const emits = defineEmits(['update-portfolio-visibility', 'delectPortfolio']);
 const props = defineProps({
     data: {
         type: Array,
@@ -22,10 +21,10 @@ const props = defineProps({
     }
 })
 
-const handleCustomClick = (portfolioData) => {
-    emits('customClickFromB', portfolioData);
+const updatePortfolioVisibility = (portfolioData) => {
+    emits('update-portfolio-visibility', portfolioData);
 }
-const handleDeletePortfolio = (portfolioData) =>{
+const handleDeletePortfolio = (portfolioData) => {
     emits('delectPortfolio', portfolioData);
 }
 
@@ -33,7 +32,7 @@ const handleDeletePortfolio = (portfolioData) =>{
 
 <style scoped>
 .app-user-portfolios-list {
-    height: 100%;
+    height: 600px;
     width: 100%;
     display: flex;
     gap: 10px;
@@ -41,5 +40,6 @@ const handleDeletePortfolio = (portfolioData) =>{
     flex-wrap: wrap;
     justify-content: flex-start;
     align-content: flex-start;
+    min-height: 440px;
 }
 </style>
