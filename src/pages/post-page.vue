@@ -44,7 +44,7 @@
 import { ElCard } from 'element-plus';
 import router from '../router'
 import { Like, Comment, ThumbsUp, ShareThree } from '@icon-park/vue-next'
-import { ref, onMounted,watch } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import userApi from '../services/user-api';
 import postApi from '../services/post-api';
 
@@ -57,7 +57,7 @@ const focusOnNestedChildInput = () => {
     data.value = !data.value;
 };
 watch(data, (newValue, oldValue) => {
-  
+
 });
 const getPostDetail = async () => {
     let path = window.location.pathname;

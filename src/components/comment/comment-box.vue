@@ -30,7 +30,7 @@ watch(() => props.middleValue, (newValue, oldValue) => {
 });
 
 const post = () => {
-    // 在此处执行发布内容的逻辑
+
     inputContent.value = '';
     showButtons.value = false;
 
