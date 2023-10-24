@@ -104,6 +104,22 @@ const routes = [
         ]
     },
     {
+        path: '/post',
+        component: MainPage,
+        name: 'PostEditPage',
+        meta: { requiresAuth: true },
+        children: [
+            {
+                path: 'edit/:id',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/post/post-edit.vue'),
+                    side: () => import('./components/main-side.vue')
+                }
+            }
+        ]
+    },
+    {
         path: '/user',
         redirect: '/user/profile',
         component: MainPage,

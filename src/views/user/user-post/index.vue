@@ -47,6 +47,7 @@ import PostsList from './posts-list.vue';
 import postApi from '@/services/post-api';
 import { ElMessage } from 'element-plus';
 import dayjs from 'dayjs';
+import router from '../../../router';
 
 const loading = ref(false);
 const postData = ref([]);
@@ -178,7 +179,7 @@ const handleRemovePost = async (postId) => {
 }
 
 const handleEditPost = (postId) => {
-    // todo: to edit post page
+   router.push('/post/edit/' + postId);
 }
 
 onMounted(() => {
