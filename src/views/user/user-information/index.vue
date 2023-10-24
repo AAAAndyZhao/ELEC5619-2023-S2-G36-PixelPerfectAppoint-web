@@ -78,6 +78,7 @@
             </div>
         </div>
         <UserUploadAvatarDialog :show="showUploadAvatarDialog"
+        v-if="showUploadAvatarDialog"
         @upload-success="handleAvatarUploadSuccess"/>
         
     </div>
