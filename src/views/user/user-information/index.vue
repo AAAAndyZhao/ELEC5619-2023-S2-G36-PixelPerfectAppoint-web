@@ -311,7 +311,7 @@ onMounted(() => {
 
 .app-info-form{
     width: 30%;
-    min-width: 400px;
+    min-width: 600px;
 }
 .app-info-form .el-form-item {
     margin-top: 20px;
