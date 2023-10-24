@@ -240,7 +240,8 @@ const routes = [
                 },
                 props: {
                     content: (route) => ({ 
-                        keyword: route.query.keyword 
+                        keyword: route.query.keyword,
+                        searchType: route.query.type
                     })
                 }
             }
