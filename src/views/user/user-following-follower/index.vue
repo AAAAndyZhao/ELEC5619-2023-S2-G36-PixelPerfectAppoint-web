@@ -95,7 +95,7 @@ const fetchFollowerData = async (isReload = false) => {
         );
         if (res.code === 0){
             followerData.value = res.data;
-            followerProps.total = res.totalCount;
+            followerProps.value.total = res.totalCount;
         }else{
             ElMessage.error('Failed to get follower data');
         }
@@ -128,7 +128,7 @@ const fetchFollowingData = async (isReload = false) => {
         );
         if (res.code === 0){
             followingData.value = res.data;
-            followingProps.total = res.totalCount;
+            followingProps.value.total = res.totalCount;
         }else{
             ElMessage.error('Failed to get following data');
         }
