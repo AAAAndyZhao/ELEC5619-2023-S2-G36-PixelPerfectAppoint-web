@@ -32,7 +32,9 @@ const hasData = computed(() => {
 })
 watch(() => props.data, () => {
     nextTick(() => {
-        imagesLoaded(containerRef.value, doMasonryLayout);
+        if (containerRef.value) {
+            imagesLoaded(containerRef.value, doMasonryLayout);
+        }
     })
 })
 const doMasonryLayout = () => {
@@ -51,13 +53,11 @@ const doMasonryLayout = () => {
     console.log('layout created')
 }
 onMounted(() => {
-    nextTick(() => {
-        imagesLoaded(containerRef.value, doMasonryLayout);
-    })
+    
 })
 
 onBeforeUnmount(() => {
-    msnry.destroy();
+    msnry && msnry.destroy();
 })
 </script>
 
