@@ -372,6 +372,7 @@ onMounted(() => {
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
+    margin-top: 10px;
 }
 
 .app-post-photo-update-content>.app-info-container>.app-post-info-form-container {
