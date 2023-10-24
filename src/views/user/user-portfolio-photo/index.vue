@@ -2,15 +2,19 @@
     <div class="app-user-portfolio-photo" v-loading="loading">
         <el-tabs tab-position="left" class="app-portfolio-photo-tabs">
             <el-tab-pane label="Portfolios">
-                <div class="app-followers-container app-container">
+                <div class="app-container">
                     <div class="app-container-header">
                         <div class="app-container-header-title">My Portfolios</div>
-                    </div>
-                    <UserPortfolioList :data="portfolioData"  @customClickFromB="updatePortfolioVisibility" @delectPortfolio="delectPortfolio"/>
-                    <div>
-                        <div class="app-container-content">
-
+                        <div class="app-container-header-create-button">
+                            <el-button type="primary" @click="handleClickCreate">Create</el-button>
                         </div>
+                    </div>
+                    <UserPortfolioList :data="portfolioData" @update-portfolio-visibility="updatePortfolioVisibility"
+                        @delectPortfolio="delectPortfolio" class="app-portfolio-list" />
+                    <div>
+                        <el-pagination class="app-profile-portfolio-pagination-bar" background layout="prev, pager, next"
+                            :total="portfolioPageProps.total" v-model:current-page="currentPage"
+                            v-model:page-size="pageSize" @current-change="handleCurrentChange" />
                     </div>
                 </div>
             </el-tab-pane>
@@ -28,22 +32,21 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { Search } from '@icon-park/vue-next';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElMessage, ElMessageBox, ElPagination } from 'element-plus';
 import PortfolioCard from '@/components/photo/portfolio-card.vue';
 import UserPortfolioList from './user-portfolio-list.vue';
 import portfolioApi from '@/services/portfolio-api';
 import router from '@/router';
+import { reactive } from 'vue';
 
+const currentPage = ref(1);
+const pageSize = ref(10);
 const loading = ref(false);
 const portfolioData = ref([]);
 const portfolioPageProps = ref({
     currentPage: 1,
-    pageSize: 30,
-    total: 0,
-    handleCurrentPageChange: (page) => {
-        portfolioPageProps.currentPage = page;
-        fetchPortfolioData();
-    }
+    pageSize: 10,
+    total: 2,
 });
 const handleFinalClick = () => {
     emits('customClickFromB');
@@ -55,7 +58,7 @@ const fetchPortfolioData = async (isReload = false) => {
     loading.value = true;
     const userId = localStorage.getItem('userId');
     const token = localStorage.getItem('token');
-
+    portfolioPageProps.value.currentpage = currentPage.value;
     if (!userId) {
         ElMessage.error('Please login first');
         return;
@@ -64,20 +67,16 @@ const fetchPortfolioData = async (isReload = false) => {
         ElMessage.error('Please login first');
         return;
     }
-    if (isReload) {
-        portfolioPageProps.currentPage = 1;
-        portfolioPageProps.pageSize = 30;
-    }
     try {
         const res = await portfolioApi.getUserPortfolio(
             userId,
             token,
-            portfolioPageProps.value.currentPage,
+            currentPage.value,
             portfolioPageProps.value.pageSize,
         );
         if (res.code === 0) {
             portfolioData.value = res.data;
-            portfolioPageProps.total = res.totalCount;
+            portfolioPageProps.value.total = res.totalCount;
         } else {
             ElMessage.error('Failed to get portfolio data');
         }
@@ -91,6 +90,8 @@ const fetchPortfolioData = async (isReload = false) => {
         }, 1000);
     }
 }
+
+
 const updatePortfolioVisibility = async (portfolioData) => {
     const userId = localStorage.getItem('userId');
     const token = localStorage.getItem('token');
@@ -104,11 +105,12 @@ const updatePortfolioVisibility = async (portfolioData) => {
             token,
             portfolioData.id,
             portfolioData.hidden,
-            true 
+            portfolioData.sync,
         );
-
-        if (response.code === 0) { 
-            ElMessage.success('Visibility updated successfully!');
+        console.log(response);
+        if (response.code === 0) {
+            ElMessage.success('PortVisibility updated successfully!');
+            fetchPortfolioData();
         } else {
             ElMessage.error('Failed to update visibility');
         }
@@ -129,7 +131,7 @@ const delectPortfolio = async (portfolioData) => {
             portfolioData.id,
             token,
         );
-        if (response.code === 0) { 
+        if (response.code === 0) {
             ElMessage.success('Portfolio deleted successfully!');
             fetchPortfolioData(true);
         } else {
@@ -141,6 +143,18 @@ const delectPortfolio = async (portfolioData) => {
     }
 }
 
+const handleCurrentChange = (page) => {
+    currentPage.value = page;
+    console.log(currentPage.value);
+    fetchPortfolioData();
+}
+
+const handleClickCreate = () => {
+    router.push({
+        path: '../portfolio/create'
+    });
+}
+
 onMounted(() => {
     fetchPortfolioData(true);
     const path = router.currentRoute.value.path;
@@ -149,7 +163,7 @@ onMounted(() => {
 
 <style scoped>
 .app-user-portfolio-photo {
-    height: 100%;
+    min-height: 100%;
     width: 100%;
 }
 
@@ -160,6 +174,7 @@ onMounted(() => {
     justify-content: center;
     margin: 1%;
 }
+
 
 .user-portfolio-photo-switch-tab {
     width: 100%;
@@ -180,19 +195,21 @@ onMounted(() => {
 }
 
 .app-container {
-    height: 100%;
+    height: 1500px;
     width: 100%;
     box-sizing: border-box;
     padding: 0 20px;
     text-align: left;
+    display: flex;
+    flex-direction: column;
 }
 
 .app-container .app-container-header {
     height: 60px;
-    margin: 20px 0;
+    margin: 20px;
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -213,5 +230,23 @@ onMounted(() => {
 }
 
 .app-container .el-pagination {
-    justify-content: center
-}</style>
+    justify-content: center;
+    height: 50px;
+    width: 100%;
+}
+
+.app-container .app-container-content .app-container-content-item {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.app-portfolio-list {
+    height: 600px;
+    min-height: 400px;
+}
+</style>

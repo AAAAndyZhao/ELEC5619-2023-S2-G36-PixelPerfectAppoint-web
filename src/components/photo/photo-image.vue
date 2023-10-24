@@ -3,7 +3,8 @@
         :loading="loading" :lazy="lazy" :scroll-container="scrollContainer" :referrerpolicy="referrerpolicy"
         :preview-src-list="previewSrcList" :z-index="zIndex" :initial-index="initialIndex"
         :close-on-press-escape="closeOnPressEscape" :preview-teleported="previewTeleported" :infinite="infinite"
-        :zoom-rate="zoomRate" :min-scale="minScale" :max-scale="maxScale">
+        :zoom-rate="zoomRate" :min-scale="minScale" :max-scale="maxScale"
+        v-loading="imgLoading">
         <!-- pass templates to el-image -->
         <template #error>
             <slot name="error">
@@ -105,9 +106,13 @@ const emits = defineEmits([
     'show'
 ]);
 // emit all el-images events
-
+const imgLoading = ref(false);
 const imageSrc = ref('');
 const fetchImage = async () => {
+    if (!props.src) {
+        return;
+    }
+    imgLoading.value = true;
     try {
         const userId = localStorage.getItem('userId');
         const token = localStorage.getItem('token');
@@ -131,6 +136,8 @@ const fetchImage = async () => {
     } catch (error) {
         console.error(error);
         return '';
+    }finally {
+        imgLoading.value = false;
     }
 }
 
@@ -138,11 +145,11 @@ watch(() => props.src, () => {
     fetchImage();
 })
 // watchEffect src change, fetch image
-watchEffect(() => {
-    if (props.src !== '') {
-        fetchImage();
-    }
-})
+// watchEffect(() => {
+//     if (props.src !== '') {
+//         fetchImage();
+//     }
+// })
 
 onBeforeUnmount(() => {
     URL.revokeObjectURL(imageSrc.value);
