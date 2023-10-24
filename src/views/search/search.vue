@@ -380,6 +380,7 @@ onMounted(async() => {
 }
 
 .app-search-result .el-pagination {
+    margin-top: 20px;
     justify-content: center
 }
 </style>
