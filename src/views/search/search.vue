@@ -66,6 +66,17 @@ import postApi from '@/services/post-api';
 import photoApi from '@/services/photo-api';
 import router from '@/router';
 
+const props = defineProps({
+    keyword: {
+        type: String,
+        default: ''
+    },
+    searchType: {
+        type: String,
+        default: 'photo'
+    }
+});
+
 const searchTypeToSortedByOptionsMap = {
     user: [{
         label: 'Most relevance',
@@ -125,13 +136,6 @@ const userData = ref([]);
 const photoData = ref([]);
 const postData = ref([]);
 
-const props = defineProps({
-    keyword: {
-        type: String,
-        default: ''
-    }
-});
-
 const searchBoxPlaceHolder = computed(() => {
     switch (searchForm.value.searchType) {
         case 'user':
@@ -187,9 +191,19 @@ const search = (reload = false) => {
         }, 1000);
     }
 }
-
+const syncKeywordAndTypeToUrl = () => {
+    // add keyword and searchType to url but not reload
+    router.push({
+        path: '/search',
+        query: {
+            keyword: searchForm.value.searchText,
+            type: searchForm.value.searchType
+        }
+    }, undefined, { shallow: true });
+}
 const searchUser = async () => {
     switchResult('user');
+    syncKeywordAndTypeToUrl();
     try {
         const res = await userApi.searchUser(
             searchForm.value.searchText,
@@ -213,8 +227,7 @@ const searchUser = async () => {
 
 const searchPost = async () => {
     switchResult('post');
-    console.log(searchForm.value)
-    console.log(resultDisplayProps.value)
+    syncKeywordAndTypeToUrl();
     try {
         const res = await postApi.searchPosts(
             searchForm.value.searchText,
@@ -237,6 +250,7 @@ const searchPost = async () => {
 
 const searchPhoto = async () => {
     switchResult('photo');
+    syncKeywordAndTypeToUrl();
     try {
         const res = await photoApi.searchPhotos(
             searchForm.value.searchText,
@@ -274,16 +288,10 @@ watch(() => searchForm.value.searchType, () => {
 onMounted(async() => {
     if(props.keyword) {
         searchForm.value.searchText = props.keyword;
-        searchForm.value.searchType = 'photo';
+        searchForm.value.searchType = props.searchType;
         searchForm.value.sortedBy = searchTypeToSortedByOptionsMap[searchForm.value.searchType][0].value;
-        searchForm.value.hasAdvancedParams = false;
-        searchForm.value.photoParams.camMaker = 'All';
-        searchForm.value.photoParams.camModel = '';
-        searchForm.value.photoParams.lens = '';
-        searchForm.value.onlyShowFollowing = false;
-        search(false);
+        search(true);
     }
-    searchForm.value.sortedBy = searchTypeToSortedByOptionsMap[searchForm.value.searchType][0].value;
 })
 </script>
 
