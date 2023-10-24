@@ -11,7 +11,7 @@
                 <UserPostsView />
             </el-tab-pane>
             <el-tab-pane label="Portfolio/Photos" name="portfolio" lazy>
-                <PortfolioPhoto />
+                <UserPortfolioPhotoView />
             </el-tab-pane>
             <el-tab-pane label="Appointment" name="appointment" lazy>
                 <UserAppointmentView />
@@ -26,6 +26,7 @@ import UserInformationView from '@/views/user/user-information/index.vue';
 import UserFollowingView from '@/views/user/user-following-follower/index.vue';
 import UserPostsView from '@/views/user/user-post/index.vue';
 import UserAppointmentView from '@/views/user/user-appointment/index.vue';
+import UserPortfolioPhotoView from '@/views/user/user-portfolio-photo/index.vue';
 import router from '@/router.js';
 
 
