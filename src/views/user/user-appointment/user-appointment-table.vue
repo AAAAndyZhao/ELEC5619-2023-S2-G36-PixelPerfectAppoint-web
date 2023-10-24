@@ -55,7 +55,8 @@
                 label="Participants">
                 <template #default="scope">
                     <div style="display: flex; align-items: center; gap: 2px;">
-                        <UserAvatar v-for="participant in scope.row.participants" :key="participant.id" :user="participant.user" :size="40"/>
+                        <UserAvatar v-for="(participant, index) in scope.row.participants.slice(0, 2)" :key="participant.id" :user="participant.user" :size="40" class="participant-avatars"/>
+                        <span v-if="scope.row.participants.length > 2" class="participant-overlay">+{{ scope.row.participants.length - 2 }}</span>
                     </div>
                 </template>
             </el-table-column>
@@ -246,6 +247,18 @@ const handleComplete = (row) => {
     padding: 7px 19px;
     box-sizing: border-box;
     height: 30px;
+}
+
+.participant-avatars{
+    margin-right: -20px;
+}
+
+.participant-overlay {
+    margin-left: 28px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+    /* Provide the outside backgroun which can contain the span */
 }
 
 </style>
