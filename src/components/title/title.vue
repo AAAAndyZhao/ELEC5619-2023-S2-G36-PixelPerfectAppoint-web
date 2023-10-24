@@ -1,20 +1,24 @@
 <template>
     <div class="post-info">
-        <h1 class="post-title"> {{ postInfo.title }} </h1>
-        <p class="post-date"> {{ postInfo.createdate }} </p>
+        <h1 class="post-title"> {{ postInfo?.title }} </h1>
+        <p class="post-date"> {{ postInfo?.updateDatetime
+ }} </p>
     </div>
 </template>
 
-<script setup lang = 'ts'>
-import { ref } from 'vue'
-interface PostInfo {
-    title: string;
-    createdate: string;
-}
-const postInfo = ref<PostInfo>({
-    title: 'come on come on come on',
-    createdate: '2021-07-01 12:00:00',
+<script setup >
+import { ref} from 'vue'
+const props = defineProps({
+    postInfo: {
+        type: Object,
+        required: false
+    },
+   
 });
+
+
+
+
 </script>
 
 

@@ -1,16 +1,17 @@
 <template>
-    <div class="app-post-upload" v-loading="loading">
-        <div class="app-post-upload-title">
-            <h2>Upload Post</h2>
+    <div class="app-post-update" v-loading="loading">
+        <div class="app-post-update-title">
+            <h2>Edit Post</h2>
         </div>
-        <div class="app-post-photo-upload-content">
+        <div class="app-post-photo-update-content">
             <el-card class="app-photos-container">
                 <template #header>
                     <div class="app-container-header">
                         Photos{{ fileList.length > 0 ? ` (${fileList.length})` : ' ' }}
                     </div>
                     <div class="app-container-tips">
-                        (By default the latest uploaded photo will be used as the cover, if you want to change the cover, please click on the uploaded photo)
+                        (By default the latest uploaded photo will be used as the cover, if you want to change the cover,
+                        please click on the uploaded photo)
                     </div>
                 </template>
                 <el-upload class="app-upload" method="post" :accept="acceptFileTypes" v-model:file-list="fileList"
@@ -26,22 +27,22 @@
                 <el-card class="app-post-info-form-container">
                     <template #header>
                         <div class="app-container-header">
-                            Post Information {{ photoUploaded === null ? '(please add photos first)' : `` }}{{ title }}
+                            Post Information {{ photoUploaded === null ? '(please add photos first)' : `` }}
                         </div>
                     </template>
-                    <PostInfoForm :photo="photoUploaded" @update:postInfo="receiveData" />
+                    <PostInfoForm :photo="photoUploaded" @update:postInfo="receiveData" :postData="importPostInfo" />
                     <div class="app-container-footer">
                         Cover Image:
-                        <el-image style="width: 100px; height: 100px" :src="cover_image_url" fit="fill" size=""/>
+                        <el-image style="width: 100px; height: 100px" :src="cover_image_url" fit="fill" size="" />
                     </div>
 
 
 
                 </el-card>
-                <div class="app-upload-buttons-container">
-                    <el-button type="primary" size="large" @click="handleSubmitPostUploads"
-                        :disabled="photoList.length === 0">Submit</el-button>
-                    <el-button size="large" @click="handleReset">Reset</el-button>
+                <div class="app-update-buttons-container">
+                    <el-button type="primary" size="large" @click="handleSubmitPostUpdate"
+                        :disabled="photoList.length === 0">update</el-button>
+                    <el-button size="large" @click="handleCancel">cancel</el-button>
                 </div>
             </div>
         </div>
@@ -52,9 +53,11 @@
 import { ref, onMounted, nextTick } from 'vue'
 import axios from '@/utils/axios.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import PostInfoForm from '../../components/post/post-info-form.vue'
+import PostInfoForm from '../../components/post/edit-post-info-form.vue'
 import postApi from '@/services/post-api'
 import { OneThirdRotation } from '@icon-park/vue-next'
+import router from '../../router'
+
 
 
 const loading = ref(false)
@@ -78,6 +81,7 @@ const handlePictureCardPreview = (file) => {
     console.log(file)
 }
 const handleRemove = (file, fileList) => {
+    console.log('filelist info', fileList)
     // remove the file from photoList
     for (const photo of photoList.value) {
         if (photo.url === file.url) {
@@ -85,9 +89,23 @@ const handleRemove = (file, fileList) => {
             break;
         }
     }
-    photoUploaded.value = null;
+    if (fileList.length === 0) {
+        postInfo.cover_image_id = ''
+        cover_image_url.value = null
+    }else{
+        if(fileList[0].id){
+            // existing photo
+            postInfo.cover_image_id = fileList[0].id
+        }else{
+            const res = fileList[0].response;
+            // new added image, id is in response
+            if (res.code === 0 && res.data.length > 0){
+                postInfo.cover_image_id = res.data[0].id
+            }
+        }
+        cover_image_url.value = fileList[0].url
+    }
 }
-
 const uploadImageSuccessHandler = (response, file, fileList) => {
     if (response.code === 0) {
         ElMessage.success('Upload successfully!');
@@ -157,6 +175,7 @@ const handleClickPhotoItem = (event) => {
         const src = image.src;
         for (const photo of photoList.value) {
             if (photo.url === src) {
+                console.log(photo)
                 cover_image_url.value = photo.url
                 ElMessage.success('cover image changed');
                 postInfo.cover_image_id = photo.imageId
@@ -164,7 +183,6 @@ const handleClickPhotoItem = (event) => {
             }
         }
     }
-    console.log("fileList", fileList);
 }
 const receiveData = (updatedPhotoForm) => {
 
@@ -185,13 +203,11 @@ const isFormValid = (title, description) => {
     }
     return true;
 }
-const handleSubmitPostUploads = async () => {
+const handleSubmitPostUpdate = async () => {
     let allValid = true;
     for (const photo of photoList.value) {
         postInfo.image_ids.push(photo.imageId);
     }
-    console.log("postInfo", postInfo);
-
 
     if (!isFormValid(postInfo.title, postInfo.text)) {
         allValid = false;
@@ -204,7 +220,8 @@ const handleSubmitPostUploads = async () => {
     // submit photoList to backend
     try {
         loading.value = true;
-        const res = await postApi.uploadPost(postInfo);
+        const res = await postApi.updatePostDetail(postId, postInfo);
+        console.log('postInfo', postInfo)
 
         if (res.code === 0) {
             ElMessage.success('Submit successfully');
@@ -214,6 +231,7 @@ const handleSubmitPostUploads = async () => {
             photoUploaded.value = null;
             cover_image_url.value = ''
             photoUploaded.value = null;
+            router.push('/user/profile?tab=posts')
         } else {
             ElMessage.error(`Submit failed, ${failureCount} photos failed to upload`);
             postInfo.image_ids = [];
@@ -235,61 +253,95 @@ const handleSubmitPostUploads = async () => {
     }
 }
 
-const handleReset = () => {
+const handleCancel = () => {
     ElMessageBox.confirm(
-        `Are you sure to reset the whole work?`,
+        `Are you sure to cancel update?`,
         'Warning',
         {
-            confirmButtonText: 'OK',
-            cancelButtonText: 'Cancel',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'no',
             type: 'warning',
         }
     ).then(async () => {
-        loading.value = true;
-        photoList.value = [];
-        fileList.value = [];
-        photoUploaded.value = null;
-        cover_image_url.value = ''
-        setTimeout(() => {
-            loading.value = false;
-            ElMessage.success('Reset successfully');
-        }, 1000);
+        router.push('/user/profile?tab=posts')
     }).catch(() => {
         // do nothing
     });
 }
+let path = window.location.pathname;
+let parts = path.split('/');
+let postId = parts[parts.length - 1];
+const importPostInfo = ref({
+
+    title: '',
+    text: '',
+
+})
+
+
+const fetchData = async () => {
+    try {
+        const res = await postApi.getPostDetail(postId);
+
+        if (res.code === 0) {
+            console.log(res.data[0])
+
+            for (const photo of res.data[0].photos) {
+
+                const newItme = {
+                    url: photo.url, // used for click event finding the selected photo
+                    imageId: photo.id
+                }
+                console.log('zheshixinsiphoto)', photo)
+                fileList.value.push(photo)
+                photoList.value.push(newItme)
+                console.log('fileList', fileList.value)
+                selectPhoto(photo);
+            }
+            postInfo.cover_image_id = res.data[0].coverPhoto.id
+            cover_image_url.value = res.data[0].coverPhoto.url
+            importPostInfo.value.text = res.data[0].text
+            importPostInfo.value.title = res.data[0].title
+        } else {
+            ElMessage.error('获取数据失败。');
+        }
+    } catch (error) {
+        ElMessage.error('获取数据时出错。');
+    }
+}
 
 onMounted(() => {
     document.addEventListener('click', handleClickPhotoItem);
+    fetchData()
 })
 </script>
 
 <style scoped>
-.app-post-upload {
+.app-post-update {
     height: 100%;
     width: 100%;
     box-sizing: border-box;
     padding: 20px;
 }
 
-.app-post-upload-title {
+.app-post-update-title {
     height: 36px;
 }
 
-.app-post-upload-title h2 {
+.app-post-update-title h2 {
     text-align: left;
     margin-block-start: 0;
 }
 
-.app-post-photo-upload-content {
-    height: 100% ;
+.app-post-photo-update-content {
+    height: 100%;
     width: 100%;
     box-sizing: border-box;
     padding: 30px 0;
 }
 
-.app-post-photo-upload-content {
-   
+.app-post-photo-update-content {
+
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -297,19 +349,21 @@ onMounted(() => {
 }
 
 
-.app-post-photo-upload-content>.app-photos-container {
+.app-post-photo-update-content>.app-photos-container {
     height: 100%;
     width: 100%;
     box-sizing: border-box;
     padding: 10px;
     text-align: left;
 }
-.app-container-tips{
+
+.app-container-tips {
     font-size: 15px;
     color: #909399;
-    margin-top: 6px;}
+    margin-top: 6px;
+}
 
-.app-post-photo-upload-content>.app-info-container {
+.app-post-photo-update-content>.app-info-container {
     height: 100%;
     width: 100%;
     box-sizing: border-box;
@@ -318,16 +372,17 @@ onMounted(() => {
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
+    margin-top: 10px;
 }
 
-.app-post-photo-upload-content>.app-info-container>.app-post-info-form-container {
+.app-post-photo-update-content>.app-info-container>.app-post-info-form-container {
     height: calc(100% - 50px);
     width: 100%;
     box-sizing: border-box;
     padding: 10px;
 }
 
-.app-post-photo-upload-content>.app-info-container>.app-upload-buttons-container {
+.app-post-photo-update-content>.app-info-container>.app-update-buttons-container {
     height: 100px;
     width: 100%;
     box-sizing: border-box;
@@ -338,14 +393,14 @@ onMounted(() => {
     flex-direction: row;
 }
 
-.app-post-photo-upload-content .app-container-header {
+.app-post-photo-update-content .app-container-header {
     font-weight: bold;
     font-size: 18px;
     text-align: left;
 }
 
-.app-post-photo-upload-content .app-container-footer {
-   
+.app-post-photo-update-content .app-container-footer {
+
     text-align: left;
     display: flex;
     flex-direction: row;
@@ -354,7 +409,7 @@ onMounted(() => {
     align-items: center;
 }
 
-:deep(.app-post-photo-upload-content .el-card__body) {
+:deep(.app-post-photo-update-content .el-card__body) {
 
     width: 100%;
     box-sizing: border-box;
@@ -364,7 +419,7 @@ onMounted(() => {
     margin-bottom: 30px;
 }
 
-.app-upload-buttons-container .el-button {
+.app-update-buttons-container .el-button {
     width: 200px;
 }
 </style>

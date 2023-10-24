@@ -83,7 +83,7 @@ const props = defineProps({
         }
     }
 })
-
+const post = props.post;
 const shortenLikesNumber = (number) => {
     return $FUNC.shortenNumber(number);
 }
