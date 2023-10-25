@@ -1,19 +1,20 @@
 <template>
     <div v-show="visible" class="show-photo">
-        <div class="app-photo-mask-layer">
-            <el-icon class="close-btn" size="30" color="#ecf5ff" @click="closeClick">
-                <CircleCloseFilled />
-            </el-icon>
-        </div>
-        <PhotoImage class="img" :src="url" alt="Image failed to load!" />
-        <PhotoViewerOperationBar class="app-photo-operation-bar" :photoName="photoName" :creator="creator" :displayedPhotoParam="displayedPhotoParam"/>
+        <div class="app-photo-mask-layer"></div>
+        <ZoomablePhotoImage class="img" :src="url" alt="Image failed to load!" @keydown.esc="closeClick"/>
+        <PhotoViewerOperationBar class="app-photo-operation-bar" :photoName="photoName" :creator="creator"
+            :displayedPhotoParam="displayedPhotoParam" />
+        <el-icon class="close-btn" size="30" color="#ecf5ff" @click="closeClick">
+            <CircleCloseFilled />
+        </el-icon>
     </div>
 </template>
   
 <script >
 
-import { ref, onMounted, watchEffect, watch } from "vue";
-import PhotoImage from "@/components/photo/photo-image.vue";
+import { ref, onMounted, watchEffect, watch, onBeforeUnmount } from "vue";
+// import PhotoImage from "@/components/photo/photo-image.vue";
+import ZoomablePhotoImage from "./zoomable-photo-image.vue";
 import PhotoViewerOperationBar from "@/components/photo/photo-viewer-operation-bar.vue";
 
 export default {
@@ -43,11 +44,22 @@ export default {
         closeClick() {
             this.$emit("closeClick");
         },
+        handleKeydown(event) {
+            if (event.key === "Escape" || event.key === "Esc" || event.keyCode === 27) {
+                this.closeClick();
+            }
+        },
     },
     components: {
-        PhotoImage,
+        ZoomablePhotoImage,
         PhotoViewerOperationBar,
-    }
+    },
+    mounted() {
+        document.addEventListener("keydown", this.handleKeydown);
+    },
+    beforeUnmount() {
+        document.removeEventListener("keydown", this.handleKeydown);
+    },
 };
 </script>
 
@@ -85,11 +97,12 @@ export default {
 }
 
 .show-photo .close-btn {
-    position: absolute;
+    position: fixed;  /* Changed from absolute to fixed */
     top: 10px;
     right: 10px;
     padding: 5px 10px;
     border-radius: 5px;
+    z-index: 3;  /* Updated z-index to match operation bar layer */
 }
 
 .show-photo .img {
@@ -99,4 +112,11 @@ export default {
     max-height: 100%;
     object-fit: contain;
     z-index: 2;
-}</style>
+}
+
+/* provide transition for hover on close-btn with changing color*/
+.show-photo .close-btn:hover {
+    color: #fff;
+    transition: all 0.5s ease-in-out;
+}
+</style>
