@@ -1,9 +1,8 @@
 <template>
     <div>
         <div class="post-comment">
-            <el-avatar :src=userAvatarUrl :size="70"></el-avatar>
             <el-input id="comment-input" v-model="inputContent" placeholder="Add a comment" ref="commentInput"
-                @focus="showButtons = true"></el-input>
+                @focus="showButtons = true" ></el-input>
         </div>
     </div>
     <div v-if="showButtons" class="post-buttons">
@@ -19,18 +18,11 @@
 import { ref, defineProps, computed, watch, onMounted } from 'vue'
 import reviewApi from '../../services/review-api'
 import userApi from '../../services/user-api'
-const userAvatarUrl = ref('');
 const inputContent = ref('');
 const showButtons = ref(false);
 const commentInput = ref('');
 const emits = defineEmits(['data-uploaded']);
-const props = defineProps(['middleValue']);
-watch(() => props.middleValue, (newValue, oldValue) => {
-    const innerValue = computed(() => props.middleValue);
-    if (innerValue.value) {
-        commentInput.value.focus();
-    }
-});
+const props = defineProps(['replyTo']);
 
 const post = async () => {
     try {
@@ -42,9 +34,9 @@ const post = async () => {
             content: inputContent.value,
             post_id: postId,
             uid: userId,
-            reply_to: 0
+            reply_to: props.replyTo
         }
-        console.log(reviewData);
+        console.log("zhegeshi子评论发出的数据",reviewData);
         const response = await reviewApi.addReview(reviewData);
         if (response.code === 0) {
             inputContent.value = '';
@@ -63,17 +55,6 @@ const cancel = () => {
     inputContent.value = '';
     showButtons.value = false;
 };
-
-const getUserProfile = async () => {
-    const response = await userApi.getUserProfile();
-    if (response.code === 0) {
-        userAvatarUrl.value = response.data[0].avatarUrl;
-    }
-};
-onMounted(() => {
-    getUserProfile();
-
-});
 
 </script>
 
