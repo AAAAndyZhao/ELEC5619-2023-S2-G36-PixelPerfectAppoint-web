@@ -1,115 +1,125 @@
 <template>
     <CommentBox :middleValue="parentData" @data-uploaded="refreshCommentList"></CommentBox>
-    <div class="comment-list" v-for="comment in displayedComments" :key="comment.id">
+    <div class="comment-list" v-for="comment in comments" :key="comment.id">
         <div class="comment-list-root">
-            <CommentList :comment="comment" @data-uploaded="refreshCommentList" ></CommentList>
+            <CommentList :comment="comment" @data-uploaded="refreshCommentList"></CommentList>
         </div>
-        <div v-if="comment.subComments" class="sub-comment-list-root" v-for="subcomment in comment.displayedSubComments"
-            :key="subcomment.id" >
-            <CommentList :comment="subcomment" @data-uploaded="refreshCommentList" ></CommentList>
+        <div v-if="comment.subComments" class="sub-comment-list-root" v-for="subcomment in comment.subComments"
+            :key="subcomment.id">
+            <CommentList :comment="subcomment" @data-uploaded="refreshCommentList"></CommentList>
         </div>
         <div class="load-more-subComments">
-            <el-button v-if="comment.canLoadMoreSubComments" @click="loadMoreSubComments(comment)" text>load more
-                replies</el-button>
+            <el-button v-if="comment.hasMoreSubComments" @click="loadMoreSubComments(comment.reviewNo)"
+                class="load-more-subComments" text type="primary">Load more</el-button>
         </div>
-
     </div>
-    <div>
-        <el-button v-if="canLoadMoreComment" @click="loadMoreComment">load more comments</el-button>
-    </div>
+    <el-button v-if="hasMoreComments" @click="loadMoreComments" text type="primary">load more review</el-button>
+    <p v-else>All reviews have been loaded.</p>
 </template>
-<script setup >
-import { ref,defineProps,watch,onMounted } from 'vue'
-import CommentBox from '../../components/comment/comment-box.vue'
-import CommentList from '../../components/comment/comment-item.vue'
-import reviewApi from '../../services/review-api'
+
+<script setup>
+import { ref, defineProps, onMounted } from 'vue';
+import CommentBox from '../../components/comment/comment-box.vue';
+import CommentList from '../../components/comment/comment-item.vue';
+import reviewApi from '../../services/review-api';
+
 const props = defineProps(['parentData']);
-watch(() => props.parentData, (newValue, oldValue) => {
-  
-});
-const initializeSubComments = (comment) => {
-    if (comment.subComments) {
-        comment.displayedSubComments = comment.subComments.splice(0, subCommentsPerPage);
-        comment.canLoadMoreSubComments = comment.subComments.length > 0;
-    }
-};
+const comments = ref([]);
+const page = ref(1);
+const hasMoreComments = ref(true);
 
-
-
-const comments = ref([
-])
-
-
-
-const displayedComments = ref([]);
-const commentsPerPage = 5;
-const canLoadMoreComment = ref(comments.value.length > 0);
-const loadMoreComment = () => {
-    const moreComments = comments.value.splice(0, commentsPerPage);
-    moreComments.forEach(comment => {
-        initializeSubComments(comment);
-    });
-    displayedComments.value = [...displayedComments.value, ...moreComments];
-    canLoadMoreComment.value = comments.value.length > 0;
-}
-
-const subCommentsPerPage = 5;
-const loadMoreSubComments = (comment) => {
-    if (comment.subComments) {
-        const moreSubComments = comment.subComments.splice(0, subCommentsPerPage);
-        if (comment.displayedSubComments) {
-            comment.displayedSubComments = [...comment.displayedSubComments, ...moreSubComments];
-        }
-        comment.canLoadMoreSubComments = comment.subComments.length > 0;
-    }
-}
-const getCommentList = async () => {
+const getCommentList = async (loadMore = false) => {
     let path = window.location.pathname;
     let parts = path.split('/');
     let postId = parts[parts.length - 1];
     const reviewData = {
         post_id: postId,
-        reply_to: 0,
-        page: 1,
-        size: 10
+        parent_review_no: 0,
+        page: page.value,
+        size: 4
     };
+
     try {
         const mainCommentsRes = await reviewApi.getReviewList(reviewData);
         if (mainCommentsRes.code === 0) {
-            comments.value = mainCommentsRes.data;
+            if (loadMore) {
+                comments.value = [...comments.value, ...mainCommentsRes.data];
+            } else {
+                comments.value = mainCommentsRes.data;
+            }
 
-            // 使用Promise.all获取所有主评论的子评论
+            if (mainCommentsRes.data.length < reviewData.size) {
+                hasMoreComments.value = false;
+            } else {
+                hasMoreComments.value = true;
+            }
+
             const subCommentsPromises = comments.value.map(async (comment) => {
                 const subCommentsRes = await reviewApi.getReviewList({
                     post_id: postId,
-                    reply_to: comment.reviewNo,  // 使用正确的评论标识符
+                    parent_review_no: comment.reviewNo,
                     page: 1,
-                    size: 10
+                    size: 3
                 });
+
                 if (subCommentsRes.code === 0) {
                     comment.subComments = subCommentsRes.data;
+                    comment.hasMoreSubComments = subCommentsRes.data.length >= 3;
                 }
             });
-            
-            // 等待所有子评论的获取操作完成
-            await Promise.all(subCommentsPromises);
 
-            loadMoreComment();
+            await Promise.all(subCommentsPromises);
         }
     } catch (e) {
         console.log(e);
     }
 };
+const subCommentsPages = ref({});
 
+const loadMoreSubComments = async (parentReviewNo) => {
+    if (!subCommentsPages.value[parentReviewNo]) {
+        subCommentsPages.value[parentReviewNo] = 1; // 初始化子评论的分页信息
+    }
 
-loadMoreComment();
+    let path = window.location.pathname;
+    let parts = path.split('/');
+    let postId = parts[parts.length - 1];
+
+    const subCommentsRes = await reviewApi.getReviewList({
+        post_id: postId,
+        parent_review_no: parentReviewNo,
+        page: subCommentsPages.value[parentReviewNo] + 1, // 使用当前页+1来加载下一页的子评论
+        size: 3
+    });
+
+    if (subCommentsRes.code === 0) {
+        const mainComment = comments.value.find(comment => comment.reviewNo === parentReviewNo);
+        if (mainComment) {
+            mainComment.subComments = [...mainComment.subComments, ...subCommentsRes.data];
+
+            if (subCommentsRes.data.length < 10) {
+                mainComment.hasMoreSubComments = false;
+            } else {
+                mainComment.hasMoreSubComments = true;
+                subCommentsPages.value[parentReviewNo]++;
+            }
+        }
+    }
+}
+
 const refreshCommentList = () => {
-    displayedComments.value = [];
+    comments.value = [];
+    page.value = 1; // Reset page when refreshing the comments
     getCommentList();
 }
+
+const loadMoreComments = () => {
+    page.value++;
+    getCommentList(true);
+}
+
 onMounted(() => {
     getCommentList();
-
 });
 </script>
 
@@ -125,6 +135,6 @@ onMounted(() => {
 
 .load-more-subComments {
     text-align: left;
-    margin-left: 60px;
-
-}</style>
+    margin-left: 10px;
+}
+</style>

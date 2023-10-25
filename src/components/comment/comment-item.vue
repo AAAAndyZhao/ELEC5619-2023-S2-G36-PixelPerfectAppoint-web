@@ -3,14 +3,17 @@
         <el-avatar :src=comment?.author.avatarUrl :size="50"></el-avatar>
         <div class="comment-detail">
             <div class="comment-name">
-                <el-link :underline="false">{{ comment?.author.userName }}{{ comment?.reviewNo }}</el-link>
+                <el-link :underline="false">{{ comment?.author.userName }}</el-link>
+                <span v-if="comment?.replyToUser">
+                    @ <el-link :underline="false">{{ comment?.replyToUser.userName }}</el-link>
+                </span>
             </div>
             <div class="comment-comment">
                 <span>{{ comment?.content }}</span>
             </div>
             <div class="comment-info">
                 <div class="comment-info-time">
-                    <span>{{ comment?.createdAt}}</span>
+                    <span>{{ comment?.createdAt }}</span>
                 </div>
                 <div class="comment-info-reply">
                     <el-button text :underline="false" size="small" @click="clickReply">Reply</el-button>
@@ -23,7 +26,7 @@
 </template>
 
 <script setup >
-import { defineProps,ref } from 'vue';
+import { defineProps, ref } from 'vue';
 import CommentBox from '../../components/comment/sub-comment-box.vue'
 const emits = defineEmits(['data-uploaded']);
 const showSubCommentBox = ref(false);
