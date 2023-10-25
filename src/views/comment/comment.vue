@@ -78,7 +78,7 @@ const subCommentsPages = ref({});
 
 const loadMoreSubComments = async (parentReviewNo) => {
     if (!subCommentsPages.value[parentReviewNo]) {
-        subCommentsPages.value[parentReviewNo] = 1; // 初始化子评论的分页信息
+        subCommentsPages.value[parentReviewNo] = 1; 
     }
 
     let path = window.location.pathname;
@@ -88,7 +88,7 @@ const loadMoreSubComments = async (parentReviewNo) => {
     const subCommentsRes = await reviewApi.getReviewList({
         post_id: postId,
         parent_review_no: parentReviewNo,
-        page: subCommentsPages.value[parentReviewNo] + 1, // 使用当前页+1来加载下一页的子评论
+        page: subCommentsPages.value[parentReviewNo] + 1, 
         size: 3
     });
 
@@ -109,7 +109,7 @@ const loadMoreSubComments = async (parentReviewNo) => {
 
 const refreshCommentList = () => {
     comments.value = [];
-    page.value = 1; // Reset page when refreshing the comments
+    page.value = 1; 
     getCommentList();
 }
 
