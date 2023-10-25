@@ -12,7 +12,7 @@
                     <UserPortfolioList :data="portfolioData" @update-portfolio-visibility="updatePortfolioVisibility"
                         @delectPortfolio="delectPortfolio" class="app-portfolio-list" />
                     <div class="app-profile-portfolio-pagination-bar">
-                        <el-pagination background layout="prev, pager, next"
+                        <el-pagination layout="prev, pager, next"
                             :total="portfolioPageProps.total" v-model:current-page="currentPage"
                             v-model:page-size="pageSize" @current-change="handleCurrentChange" />
                     </div>

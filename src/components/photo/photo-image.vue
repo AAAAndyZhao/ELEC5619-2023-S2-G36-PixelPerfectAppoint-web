@@ -1,6 +1,6 @@
 <template>
-    <div v-loading="imgLoading">
-        <el-image :src="imageSrc" :alt="alt" :style="style" :fit="fit" :hide-on-click-modal="hideOnClickModal"
+    <div class="app-photo-image-container" v-loading="imgLoading">
+        <el-image v-bind:draggable.attr="false" :src="imageSrc" :alt="alt" :style="style" :fit="fit" :hide-on-click-modal="hideOnClickModal"
             :loading="loading" :lazy="lazy" :scroll-container="scrollContainer" :referrerpolicy="referrerpolicy"
             :preview-src-list="previewSrcList" :z-index="zIndex" :initial-index="initialIndex"
             :close-on-press-escape="closeOnPressEscape" :preview-teleported="previewTeleported" :infinite="infinite"
@@ -149,12 +149,6 @@ const fetchImage = async () => {
 watch(() => props.src, () => {
     fetchImage();
 })
-// watchEffect src change, fetch image
-// watchEffect(() => {
-//     if (props.src !== '') {
-//         fetchImage();
-//     }
-// })
 
 onBeforeUnmount(() => {
     URL.revokeObjectURL(imageSrc.value);
