@@ -120,6 +120,26 @@ const routes = [
         ]
     },
     {
+        path: '/other',
+        component: MainPage,
+        name: 'OtherPage',
+        children: [
+            {
+                path: ':id',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/other/index.vue'),
+                    side: () => import('./components/main-side.vue')
+                },
+                props: {
+                    content: (route) => ({ 
+                        userId: route.params.id 
+                    })
+                }
+            },
+        ]
+    },
+    {
         path: '/user',
         redirect: '/user/profile',
         component: MainPage,

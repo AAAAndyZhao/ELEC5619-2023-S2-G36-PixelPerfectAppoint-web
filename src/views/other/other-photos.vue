@@ -1,7 +1,7 @@
 <template>
-    <div ref="containerRef" class="app-photo-search-list">
+    <div ref="containerRef" class="app-photos-container">
         <PhotoCard v-for="photo in data" :key="photo.id" :photo="photo" v-if="hasData"
-        :display="['title', 'text', 'updateDatetime', 'author', 'likes']">
+            :display="['title', 'text', 'updateDatetime', 'author', 'likes']">
         </PhotoCard>
         <div v-else class="app-no-data-text">
             No photo found
@@ -10,14 +10,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick, watchEffect } from 'vue';
 import PhotoCard from '@/components/photo/photo-card.vue';
-import { ElMessage } from 'element-plus';
 import Masonry from 'masonry-layout';
 import imagesLoaded from 'imagesloaded';
-
-const containerRef = ref(null);
-let msnry;
 
 const props = defineProps({
     data: {
@@ -26,7 +22,8 @@ const props = defineProps({
         default: () => []
     }
 })
-
+const containerRef = ref(null);
+let msnry;
 const hasData = computed(() => {
     return props.data && props.data.length > 0;
 })
@@ -46,24 +43,22 @@ const doMasonryLayout = () => {
     console.log('layout created')
 }
 watch(() => props.data, () => {
+    if (containerRef.value) {
+        imagesLoaded(containerRef.value, doMasonryLayout);
+    }
+})
+watchEffect(() => {
     nextTick(() => {
         if (containerRef.value) {
             imagesLoaded(containerRef.value, doMasonryLayout);
         }
     })
 })
-onMounted(() => {
-    
-})
-
-onBeforeUnmount(() => {
-    msnry && msnry.destroy();
-})
 </script>
 
 <style scoped>
-.app-photo-search-list {
-    min-height: calc(100vh - 340px);
+.app-photos-container {
+    min-height: 770px;
     width: 100%;
     box-sizing: border-box;
     padding: 0 20px 0 0;
@@ -75,5 +70,4 @@ onBeforeUnmount(() => {
     text-align: center;
     margin-top: 20px;
 }
-
 </style>
