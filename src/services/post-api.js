@@ -4,8 +4,8 @@ All the api calls should be defined here.
 */
 import axios from "../utils/axios.js";
 
-const getUserPosts = async (page, limit, filterProps) => {
-    const userId = localStorage.getItem('userId');
+const getUserPosts = async (page, limit, filterProps, userId) => {
+    userId = userId || localStorage.getItem('userId');
     if (userId === null
         || userId === undefined
         || userId === '') {
