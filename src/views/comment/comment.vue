@@ -53,8 +53,10 @@ const getCommentList = async (loadMore = false) => {
             } else {
                 hasMoreComments.value = true;
             }
+            
 
             const subCommentsPromises = comments.value.map(async (comment) => {
+                if (comment.subCommentsLoaded) return;
                 const subCommentsRes = await reviewApi.getReviewList({
                     post_id: postId,
                     parent_review_no: comment.reviewNo,
@@ -65,6 +67,7 @@ const getCommentList = async (loadMore = false) => {
                 if (subCommentsRes.code === 0) {
                     comment.subComments = subCommentsRes.data;
                     comment.hasMoreSubComments = subCommentsRes.data.length >= 3;
+                    comment.subCommentsLoaded = true;
                 }
             });
 
