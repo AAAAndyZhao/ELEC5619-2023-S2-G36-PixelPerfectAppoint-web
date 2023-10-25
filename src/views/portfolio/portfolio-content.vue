@@ -11,10 +11,13 @@
         </div>
         <div class="photos-in-portfolio">
             <PhotoImage class="photo-container" v-for="photo in portfolioData" :src="photo.thumbnailUrl" :key="photo.id"
-                :photo="photo" fit="cover" @click="callThePhotoViewer(photo.url)" />
+                :photo="photo" fit="cover" @click="callThePhotoViewer(photo.url, photo.name, ownerInfo, photo.photoParam)" />
         </div>
-        <PhotoView :url="displayedPhotoUrl"
+        <PhotoViewer :url="displayedPhotoUrl"
         :visible="photoViewerVisible"
+        :photoName="displayedPhotoName"
+        :creator="displayedPhotoCreator"
+        :displayedPhotoParam="displayedPhotoParam"
         v-if="photoViewerVisible"
         @closeClick="closePhotoViewer" class="app-profile-portfolio-viewer"/>
     </div>
@@ -24,11 +27,10 @@
 import { ref, onMounted } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import portfolioApi from '@/services/portfolio-api';
-import PhotoView from "@/components/photo/photo-viewer.vue";
+import PhotoViewer from "@/components/photo/photo-viewer.vue";
 import router from '@/router';
 import PhotoImage from '@/components/photo/photo-image.vue';
 import photoApi from '@/services/photo-api';
-import PhotoViewer from '@/components/photo/photo-viewer.vue';
 
 const portfolioData = ref({
     photos: []
@@ -36,6 +38,12 @@ const portfolioData = ref({
 const loading = ref(false);  // <-- Define loading property
 const photoViewerVisible = ref(false);
 const displayedPhotoUrl = ref('');
+const displayedPhotoName = ref('');
+const displayedPhotoCreator = ref({});
+const ownerInfo = ref({});
+const ArrowLeft = 'arrow-left';
+const displayedPhotoParam = ref({});
+
 
 
 const fetchPortfolioPhotosByPortfolioId = async () => {
@@ -52,6 +60,7 @@ const fetchPortfolioPhotosByPortfolioId = async () => {
             console.log('Matching portfolio:', matchingPortfolio);
             if (matchingPortfolio) {
                 portfolioData.value = matchingPortfolio.photos; // <-- Set portfolioData
+                ownerInfo.value = matchingPortfolio.owner;
             } else {
                 ElMessage.error('Portfolio not found.');
             }
@@ -77,8 +86,12 @@ const goToEditPage = () => {
     });
 }
 
-const callThePhotoViewer = (photoUrl) => {
+const callThePhotoViewer = (photoUrl, photoName, photoOwner, photoParam) => {
     displayedPhotoUrl.value = photoUrl;
+    displayedPhotoName.value = photoName;
+    displayedPhotoCreator.value = photoOwner;
+    displayedPhotoParam.value = photoParam;
+    // console.log('Photo viewer called.' + photoOwner);
     // await nextTick();
     photoViewerVisible.value = true;
 }
