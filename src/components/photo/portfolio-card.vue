@@ -1,18 +1,7 @@
 <template>
     <el-card class="app-portfolio-card" body-class="app-portfolio-card-body" shadow="hover">
-        <div class="app-portfolio-card-cover-pics" >
-            <div class="app-portfolio-cover-pic-main-container">
-                <PhotoImage class="app-portfolio-cover-img" 
-                    v-if="portfolio.coverPhoto && portfolio.coverPhoto.thumbnailUrl"
-                    @click="openPortfolio"
-                    :src="portfolio.coverPhoto.thumbnailUrl" alt="cover image" fit="cover" />
-                <el-empty class="app-portfolio-cover-empty" v-else>
-                    <el-button type="primary" @click="jumpToPortfolioEdit">Edit</el-button>
-                </el-empty>
-            </div>
-            <!-- <el-divider direction="vertical" style="margin: 0 2px;height: 100%;" />
-            <div class="app-portfolio-cover-pic-subs"></div> -->
-        </div>
+        <PhotoImage class="app-portfolio-cover-img" v-if="portfolio.coverPhoto && portfolio.coverPhoto.thumbnailUrl"
+            @click="openPortfolio" :src="portfolio.coverPhoto.thumbnailUrl" alt="cover image" />
         <el-divider style="margin: 2px 0;" />
         <div class="app-portfolio-info">
             <div class="app-portfolio-name">{{ portfolio.title }}</div>
@@ -84,9 +73,9 @@ const toggleVisibility = () => {
             cancelButtonText: 'No',
             type: 'warning'
         }).then(() => {
-            emits('update-portfolio-visibility', { id: props.portfolio.id, hidden: !props.portfolio.hidden, sync: true});
+            emits('update-portfolio-visibility', { id: props.portfolio.id, hidden: !props.portfolio.hidden, sync: true });
         }).catch(() => {
-            emits('update-portfolio-visibility', { id: props.portfolio.id, hidden: !props.portfolio.hidden, sync: false});
+            emits('update-portfolio-visibility', { id: props.portfolio.id, hidden: !props.portfolio.hidden, sync: false });
         })
     }).catch(() => {
         // do nothing
@@ -122,10 +111,10 @@ const openPortfolio = () => {
 
 <style scoped>
 .app-portfolio-card {
-    min-width: 220px;
-    border-radius: 8px;
+    width: 320px;
+    height: 300px;
+    border-radius: 10px;
     box-sizing: border-box;
-    margin: 0;
     float: left;
     overflow: hidden;
     border: 1px solid #E4E7ED;
@@ -135,20 +124,38 @@ const openPortfolio = () => {
 .app-portfolio-card-cover-pics {
     display: flex;
     flex-direction: row;
-    width: 100%; 
+    width: 100%;
     box-sizing: border-box;
+    justify-content: center;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    min-height: 140px;
 }
 
 .app-portfolio-cover-pic-main-container {
-    height: 140px;
-    width: 100%;
+    width: 140px;
+    height: 120px;
     box-sizing: border-box;
 }
-.app-portfolio-cover-empty{
+
+.app-portfolio-cover-img {
+    height: 100%;
+    border-radius: 10px;
+}
+
+:deep(.app-portfolio-cover-img .el-image .el-image__inner) {
+    height: 180px;
+    width: 100%;
+    object-fit: cover;
+    margin: auto;
+}
+
+:deep(.el-image) {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.app-portfolio-cover-empty {
     width: 100%;
     height: 100%;
     transform: scale(0.5);
@@ -201,11 +208,7 @@ const openPortfolio = () => {
     position: relative;
 }
 
-.app-portfolio-cover-img {
-    height: 100%;
-    width: 100%;
-    object-position: center;
-}
+
 
 .app-portfolio-publish-date {
     overflow: hidden;
@@ -221,7 +224,7 @@ const openPortfolio = () => {
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
-    gap: 2%;
+    /* gap: 2%; */
 }
 
 :deep(.app-portfolio-card-body) {
@@ -230,6 +233,6 @@ const openPortfolio = () => {
     height: 100%;
     width: 100%;
     flex-direction: column;
-
+    padding: 10px;
 }
 </style>

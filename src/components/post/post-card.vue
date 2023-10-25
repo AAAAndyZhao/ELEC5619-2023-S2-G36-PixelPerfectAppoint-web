@@ -1,7 +1,8 @@
 <template>
     <el-card class="app-post-card" body-class="app-post-card-body">
         <div class="app-post-card-img">
-            <photo-image v-if="post.coverPhoto.thumbnailUrl" :src="post.coverPhoto.thumbnailUrl">
+            <photo-image v-if="post.coverPhoto?.thumbnailUrl" :src="post.coverPhoto?.thumbnailUrl"
+            fit="cover">
                 <template #error>
                     <el-icon>
                         <Picture />
@@ -58,22 +59,13 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import PhotoImage from '@/components/photo/photo-image.vue';
 const props = defineProps({
     post: {
         type: Object,
         required: false,
-        default: () => {
-            return {
-                id: 'unknown',
-                title: 'unknown',
-                simpleText: 'unknown',
-                coverUrl: '',
-                updateDatetime: 'unknown',
-                author: null
-            }
-        }
+        default: () => {}
     },
     display: {
         type: Array,
@@ -83,7 +75,6 @@ const props = defineProps({
         }
     }
 })
-const post = props.post;
 const shortenLikesNumber = (number) => {
     return $FUNC.shortenNumber(number);
 }
@@ -187,7 +178,7 @@ const hasAuthor = computed(() => {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: flex-start;
+    justify-content: center;
     
     .app-avatar{
         aspect-ratio: 1 / 1;
