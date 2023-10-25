@@ -16,27 +16,18 @@
             <span class="material-symbols-outlined" @click="likePhoto">
                 thumb_up
             </span>
-            <el-icon color="#409eff" size="40">
+            <el-icon color="#c6e2ff" size="40" class="comment-btn" @click="commentPhoto">
                 <ChatLineRound />
             </el-icon>
-            <el-icon class="info-btn" size="40" color="#409eff" @click="showTheParam">
+            <el-icon class="info-btn" size="40" color="#c6e2ff" @click="showTheParam">
                 <InfoFilled />
             </el-icon>
         </div>
-        <el-dialog v-model="dialogVisible" title="Picture Detail" class="dialogPhotoParam">
-            <el-text>Camera Maker: {{ displayedPhotoParam.camMaker == '' ? "Unkown" : displayedPhotoParam.camMaker }}</el-text>
-            <el-divider></el-divider>
-            <el-text>Camera Model: {{ displayedPhotoParam.camModel == '' ? "Unkown" : displayedPhotoParam.camModel }}</el-text>
-            <el-divider></el-divider>
-            <el-text>Exposure Time: {{ displayedPhotoParam.exposureTime == '' ? "Unkown" : displayedPhotoParam.exposureTime }}</el-text>
-            <el-divider></el-divider>
-            <el-text>Aperture: {{ displayedPhotoParam.fNumber == '' ? "Unkown" : displayedPhotoParam.fNumber }}</el-text>
-            <el-divider></el-divider>
-            <el-text>ISO: {{ displayedPhotoParam.iso == '' ? "Unkown" : displayedPhotoParam.iso }}</el-text>
-            <el-divider></el-divider>
-            <el-text>Focal Length: {{ displayedPhotoParam.focalLength == '' ? "Unkown" : displayedPhotoParam.focalLength }}</el-text>
-            <el-divider></el-divider>
-            <el-text>Len: {{ displayedPhotoParam.lens == '' ? "Unkown" : displayedPhotoParam.lens }}</el-text>
+        <el-dialog v-model="dialogVisible" title="Picture Detail" class="dialogPhotoParam" width="400px">
+            <el-table :data="tableData" class="dialog-photo-param-table">
+                <el-table-column property="parameter" label="Parameter" width="180"></el-table-column>
+                <el-table-column property="value" label="Value" width="180"></el-table-column>
+            </el-table>
         </el-dialog>
     </div>
 </template>
@@ -62,6 +53,16 @@ const props = defineProps({
     },
 })
 
+const tableData = ref([
+    { parameter: 'Camera Maker', value: props.displayedPhotoParam.camMaker || 'Unknown' },
+    { parameter: 'Camera Model', value: props.displayedPhotoParam.camModel || 'Unknown' },
+    { parameter: 'Exposure Time', value: props.displayedPhotoParam.exposureTime || 'Unknown' },
+    { parameter: 'Aperture', value: props.displayedPhotoParam.fNumber || 'Unknown' },
+    { parameter: 'ISO', value: props.displayedPhotoParam.iso || 'Unknown' },
+    { parameter: 'Focal Length', value: props.displayedPhotoParam.focalLength || 'Unknown' },
+    { parameter: 'Lens', value: props.displayedPhotoParam.lens || 'Unknown' },
+]);
+
 const dialogVisible = ref(false);
 
 const components = {
@@ -74,6 +75,7 @@ const likePhoto = () => {
 
 const commentPhoto = () => {
     console.log("Comment photo");
+    // Jump to the comment page
 }
 
 const showTheParam = () => {
@@ -108,7 +110,7 @@ onMounted(async () => {
 
 .user-avatar .el-text {
     margin-left: 20px;
-    color: var(--el-color-primary);
+    color: #c6e2ff;
     font-size: large;
 }
 
@@ -125,13 +127,13 @@ onMounted(async () => {
 .photo-info span {
     margin-right: 10px;
     font-size: large;
-    color: var(--el-color-primary);
+    color: #c6e2ff;
 }
 
 .material-symbols-outlined {
     margin-left: 20px;
     margin-right: 20px;
-    color: var(--el-color-primary);
+    color: #c6e2ff;
     font-size: 40px;
     font-variation-settings:
         'FILL' 0,
@@ -146,9 +148,39 @@ onMounted(async () => {
 
 .dialogPhotoParam {
     display: flex;
+    background-color: rgba(0, 0, 0, 0.5);
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
     gap: 10px;
+}
+
+.material-symbols-outlined:hover,
+.like-button el-icon:hover {
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.5s ease-in-out;   
+}
+
+.info-btn:hover {
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.5s ease-in-out;
+}
+
+.comment-btn:hover {
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.5s ease-in-out;
+}
+
+.like-button .material-symbols-outlined:active,
+.like-button .material-symbols-outlined:focus {
+    color: var(--el-color-primary);
+    font-variation-settings:
+        'FILL' 1,
+        'wght' 300,
+        'GRAD' 0,
+        'opsz' 24
 }
 </style>
