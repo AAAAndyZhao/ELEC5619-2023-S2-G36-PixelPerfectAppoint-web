@@ -44,7 +44,6 @@ const post = async () => {
             uid: userId,
             reply_to: 0
         }
-        console.log(reviewData);
         const response = await reviewApi.addReview(reviewData);
         if (response.code === 0) {
             inputContent.value = '';

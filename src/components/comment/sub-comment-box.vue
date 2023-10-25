@@ -36,7 +36,6 @@ const post = async () => {
             uid: userId,
             reply_to: props.replyTo
         }
-        console.log("zhegeshi子评论发出的数据", reviewData);
         const response = await reviewApi.addReview(reviewData);
         if (response.code === 0) {
             inputContent.value = '';
