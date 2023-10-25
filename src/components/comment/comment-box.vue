@@ -2,7 +2,7 @@
     <div>
         <div class="post-comment">
             <el-avatar :src=userAvatarUrl :size="70"></el-avatar>
-            <el-input id="comment-input" v-model="inputContent" placeholder="Add a comment" ref="commentInput"
+            <el-input class="post-comment-input" id="comment-input" v-model="inputContent" placeholder="Add a comment" ref="commentInput"
                 @focus="showButtons = true"></el-input>
         </div>
     </div>
@@ -81,7 +81,9 @@ onMounted(() => {
 .post-comment {
     display: flex;
 }
-
+.post-comment-input{
+    margin-left: 10px;
+}
 .post-buttons {
     margin-top: 6px;
     display: flex;
