@@ -1,7 +1,8 @@
 <template>
     <el-card class="app-post-card" body-class="app-post-card-body">
         <div class="app-post-card-img">
-            <photo-image v-if="post.coverUrl" :src="post.coverUrl">
+            <photo-image v-if="post.coverPhoto?.thumbnailUrl" :src="post.coverPhoto?.thumbnailUrl"
+            fit="cover">
                 <template #error>
                     <el-icon>
                         <Picture />

@@ -68,13 +68,16 @@ const getUserInformation = async (userId) => {
         || userId === undefined
         || userId === '') {
         throw new Error('User id is invalid');
-    } else {
-        try {
-            return await axios.get(`/user/info/${userId}`);
-        } catch (error) {
-            console.error('Error during requesting user info: ', error);
-            throw error;
-        }
+    } 
+    try {
+        return await axios.get(`/user/info/${userId}`, {
+            headers: {
+                authorization: localStorage.getItem("token")
+            }
+        });
+    } catch (error) {
+        console.error('Error during requesting user info: ', error);
+        throw error;
     }
 }
 

@@ -90,13 +90,13 @@ const searchPhotos = async (
             sorted_by: sortedBy,
             order: order
         }
-        if (photoParamProps.camMaker){
+        if (photoParamProps?.camMaker){
             body.cam_maker = photoParamProps.camMaker
         }
-        if (photoParamProps.camModel){
+        if (photoParamProps?.camModel){
             body.cam_model = photoParamProps.camModel
         }
-        if (photoParamProps.lens){
+        if (photoParamProps?.lens){
             body.lens = photoParamProps.lens
         }
 
@@ -128,9 +128,32 @@ const getPhotoByOwnerId = async () => {
     }
 }
 
+const getPublicPhotoByOwnerId = async ({
+    ownerId,
+    page = 1,
+    size = 30,
+    sortedBy,
+    order
+}) => {
+    try {
+        const body = {
+            owner_id: ownerId,
+            page: page,
+            size: size,
+            sorted_by: sortedBy,
+            order: order
+        }
+        return axios.post("/photo/search", body);
+    } catch (error) {
+        console.error("Error during getting photos by owner id: ", error.message)
+        throw error
+    }
+}
+
 export default {
     uploadPhoto,
     uploadPhotoList,
     searchPhotos,
     getPhotoByOwnerId,
+    getPublicPhotoByOwnerId
 }
