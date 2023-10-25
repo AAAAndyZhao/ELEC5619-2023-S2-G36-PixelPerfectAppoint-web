@@ -51,7 +51,7 @@ const fetchPortfolioPhotosByPortfolioId = async () => {
     const token = localStorage.getItem('token');
     loading.value = true;
     try {
-        const response = await portfolioApi.getUserPortfolio(userId, token, 1, 100); // 假设每页最多100个 portfolio
+        const response = await portfolioApi.getUserPortfolio(userId, token, 1, 100);
         console.log('API Response:', response);
         if (response.code === 0) {
             const fullPath = router.currentRoute.value.path;
