@@ -24,13 +24,15 @@
             Share the Moment
         </span>
         <div class="app-header-choose-dialog">
-            <div class="app-header-choose-post">
-                <router-link to="/post/upload" @click="goToPostPage">
+            <div>
+                <el-text>Post</el-text>
+                <router-link to="/post/upload" @click="goToPostPage" class="app-header-choose-post">
                     <el-icon size="80px" color="#928f8f" class="app-header-choose-post-icon"><Picture /></el-icon>
                 </router-link>
             </div>
-            <div class="app-header-choose-photo">
-                <router-link to="/photo/upload" @click="goToPhotoPage">
+            <div>
+                <el-text>Photo</el-text>
+                <router-link to="/photo/upload" @click="goToPhotoPage" class="app-header-choose-photo">
                     <el-icon size="80px" color="#928f8f" class="app-header-choose-photo-icon"><Camera /></el-icon>
                 </router-link>
             </div>
@@ -153,9 +155,17 @@ button.el-button.el-button--primary.app-header-login-btn {
 }
 
 .app-header-choose-dialog {
+    margin: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.app-header-choose-dialog .el-text {
+    font-size: 16px;
+    font-family: 'Playfair Display', serif, bold;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .app-header-choose-post,
@@ -164,6 +174,7 @@ button.el-button.el-button--primary.app-header-login-btn {
     height: 100px;
     margin: 20px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     border-radius: 10px;
