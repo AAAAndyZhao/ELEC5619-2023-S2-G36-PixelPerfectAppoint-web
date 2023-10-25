@@ -99,7 +99,8 @@ const userPhotos = ref({
 })
 const activeTab = ref('information');
 const shortenFollowerNumber = computed(() => {
-    return $FUNC.shortenNumber(userFollowStatus.value.targetUserFollowerCount);
+    console.log(userFollowStatus.value.targetUserFollowerCount)
+    return $FUNC.shortenNumber(userInfo.value.followerCount);
 })
 
 const fetchUserInfo = async () => {
