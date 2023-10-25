@@ -239,6 +239,7 @@ const handleSubmitPostUpdate = async () => {
             fileList.value = [];
             cover_image_url.value = ''
             photoUploaded.value = null;
+            router.push('/user/profile?tab=posts')
         }
     } catch (error) {
         ElMessage.error('Submit failed');
@@ -247,6 +248,7 @@ const handleSubmitPostUpdate = async () => {
         fileList.value = [];
         cover_image_url.value = ''
         photoUploaded.value = null;
+        router.push('/user/profile?tab=posts')
         return;
     } finally {
         loading.value = false;
