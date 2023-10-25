@@ -54,6 +54,7 @@ onMounted(async () => {
 
 <style scoped>
 #app-user-profile-container {
+    height: calc(100vh - 100px);
     padding: 10px;
     box-sizing: border-box;
     display: flex;

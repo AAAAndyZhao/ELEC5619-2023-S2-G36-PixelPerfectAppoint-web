@@ -8,13 +8,13 @@
             </template>
         </el-image>
         <div class="app-info-bar" v-if="showInfoBar">
-            <el-image class="app-owner-avatar" src="">
+            <el-avatar class="app-owner-avatar" :src="photo.owner?.avatarUrl">
                 <template #error>
                     <div class="image-slot">
                         <el-icon color="white"><Avatar /></el-icon>
                     </div>
                 </template>
-            </el-image>
+            </el-avatar>
             <div class="app-owner-info">
                 <div class="app-owner-alias">{{ photo.owner.alias }}</div>
                 <div class="app-owner-name">@{{ photo.owner.userName }}</div>
@@ -50,6 +50,7 @@ const props = defineProps({
     margin: 0;
     float: left;
     overflow: hidden;
+    position: relative;
     &:hover {
         cursor: pointer;
         width: 502px;

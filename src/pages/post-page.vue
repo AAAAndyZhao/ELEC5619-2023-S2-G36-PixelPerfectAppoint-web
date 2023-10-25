@@ -53,6 +53,7 @@ const postInfo = ref([])
 const isLiked = ref(false);
 const userId = localStorage.getItem('userId');
 const data = ref(false)
+const commentDate = ref([])
 const focusOnNestedChildInput = () => {
     data.value = !data.value;
 };

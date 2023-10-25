@@ -98,13 +98,24 @@ const props = defineProps({
         type: Number,
         default: 7,
     },
+    // custom props
+    width: {
+        type: String,
+        default: '100%',
+    },
+    height: {
+        type: String,
+        default: '100%',
+    },
 })
 const emits = defineEmits([
     'load',
     'error',
     'switch',
     'close',
-    'show'
+    'show',
+    // emits custom events
+    'load-complete'
 ]);
 // emit all el-images events
 const showThePhoto = ref(false);
@@ -135,9 +146,10 @@ const fetchImage = async () => {
         }
         const blob = await res.data;
         imageSrc.value = URL.createObjectURL(blob);
+        emits('load-complete');
         setTimeout(() => {
             showThePhoto.value = true;
-        }, 1000);
+        }, 100);
     } catch (error) {
         console.error(error);
         return '';
@@ -158,3 +170,7 @@ onMounted(() => {
     fetchImage();
 })
 </script>
+
+<style scoped>
+
+</style>

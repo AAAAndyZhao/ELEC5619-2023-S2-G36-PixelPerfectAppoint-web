@@ -179,4 +179,5 @@ watch(() => props.participants, () => {
 
 .el-pagination {
     justify-content: center
-}</style>
+}
+</style>
