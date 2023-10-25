@@ -33,25 +33,30 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { Switch } from '@element-plus/icons-vue';
 
 const emits = defineEmits(['follow-user', 'unfollow-user']);
 
 const props = defineProps({
     userId: {
         type: String,
-        required: true
+        required: false,
+        default: ''
     },
     isFollowing: {
         type: Boolean,
-        required: true
+        required: false,
+        default: false
     },
     isFollowed: {
         type: Boolean,
-        required: true
+        required: false,
+        default: false
     },
     followerCount: {
         type: Number,
-        required: true
+        required: false,
+        default: 0
     },
 })
 
@@ -72,7 +77,8 @@ const handleFollowButtonClick = (userId) => {
 <style scoped>
 .app-mutual-followed-button,
 .app-followed-button,
-.app-unfollow-dropdown-item{
-    width: 100px;
+:deep(.app-unfollow-dropdown-item){
+    box-sizing: border-box;
+    width: 150px;
 }
 </style>

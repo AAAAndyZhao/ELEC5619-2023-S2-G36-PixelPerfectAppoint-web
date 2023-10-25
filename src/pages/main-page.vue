@@ -36,6 +36,10 @@ const showSideView = computed(() => {
     display: flex;
     min-height: calc(100% - 60px);
 }
+.app-inner-container .app-aside{
+    width: 250px;
+    box-sizing: border-box;
+}
 
 .app-main {
     height: 100%;

@@ -50,6 +50,7 @@ const props = defineProps({
     margin: 0;
     float: left;
     overflow: hidden;
+    position: relative;
     &:hover {
         cursor: pointer;
         width: 502px;
