@@ -55,6 +55,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import PostInfoForm from '../../components/post/post-info-form.vue'
 import postApi from '@/services/post-api'
 import { OneThirdRotation } from '@icon-park/vue-next'
+import router from '../../router'
 
 
 const loading = ref(false)
@@ -214,6 +215,7 @@ const handleSubmitPostUploads = async () => {
             photoUploaded.value = null;
             cover_image_url.value = ''
             photoUploaded.value = null;
+            router.push('/user/profile?tab=posts')
         } else {
             ElMessage.error(`Submit failed, ${failureCount} photos failed to upload`);
             postInfo.image_ids = [];
@@ -221,6 +223,7 @@ const handleSubmitPostUploads = async () => {
             fileList.value = [];
             cover_image_url.value = ''
             photoUploaded.value = null;
+            router.push('/user/profile?tab=posts')
         }
     } catch (error) {
         ElMessage.error('Submit failed');
@@ -229,6 +232,7 @@ const handleSubmitPostUploads = async () => {
         fileList.value = [];
         cover_image_url.value = ''
         photoUploaded.value = null;
+        router.push('/user/profile?tab=posts')
         return;
     } finally {
         loading.value = false;

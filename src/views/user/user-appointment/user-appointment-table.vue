@@ -85,10 +85,6 @@
                             size="default">Creator Operations</el-button>
                             <template #dropdown>
                                 <el-dropdown-menu>
-                                    <el-dropdown-item @click="handleEdit(scope.row)"
-                                    class="app-creator-dropdown-item">
-                                        <el-icon><Edit /></el-icon>Edit
-                                    </el-dropdown-item>
                                     <el-dropdown-item @click="handleComplete(scope.row)"
                                     class="app-creator-dropdown-item">
                                         <el-icon><Check /></el-icon>Complete
@@ -120,7 +116,7 @@ import MenuUtils from '@/utils/menu';
 import MapShow from '@/components/map/map-show.vue';
 import UserAvatar from '@/components/user/user-avatar.vue';
 
-const emits = defineEmits(['change-status', 'view', 'edit', 'quit']);
+const emits = defineEmits(['change-status', 'view', 'quit']);
 const props = defineProps({
     data: {
         type: Array,
@@ -190,9 +186,6 @@ const handleClickLocation = (row) => {
 
 const handleView = (row) => {
     emits('view', row);
-}
-const handleEdit = (row) => {
-    emits('edit', row);
 }
 const handleQuit = (row) => {
     emits('quit', row);
