@@ -8,7 +8,7 @@ const addReview = async (review) => {
         throw new Error('User id is invalid');
     }
     try {
-        return axios.post(`/post/review/add`,review,{
+        return axios.post(`/post/review/add`, review, {
             headers: {
                 "authorization": localStorage.getItem("token")
             }
@@ -28,7 +28,7 @@ const getReviewList = async (data) => {
     }
     try {
 
-        return axios.post(`post/review/find`,data);
+        return axios.post(`post/review/find`, data);
     } catch (error) {
         console.error('Error during getting review: ', error);
         throw error;
