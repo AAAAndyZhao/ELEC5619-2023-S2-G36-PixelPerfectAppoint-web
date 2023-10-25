@@ -1,38 +1,43 @@
 <template>
     <div class="comment-container">
-        <el-avatar :src=comment?.avatar :size="70"></el-avatar>
+        <el-avatar :src=comment?.author.avatarUrl :size="50"></el-avatar>
         <div class="comment-detail">
             <div class="comment-name">
-                <el-link :underline="false">{{ comment?.userName }}</el-link>
+                <el-link :underline="false">{{ comment?.author.userName }}{{ comment?.reviewNo }}</el-link>
             </div>
             <div class="comment-comment">
                 <span>{{ comment?.content }}</span>
             </div>
             <div class="comment-info">
                 <div class="comment-info-time">
-                    <span>{{ comment?.commentDate }}</span>
+                    <span>{{ comment?.createdAt}}</span>
                 </div>
                 <div class="comment-info-reply">
-                    <el-link :underline="false">Reply</el-link>
+                    <el-button text :underline="false" size="small" @click="clickReply">Reply</el-button>
                 </div>
 
             </div>
         </div>
-
-
     </div>
+    <CommentBox v-if="showSubCommentBox" :replyTo="comment?.reviewNo" @data-uploaded="refreshCommentList"></CommentBox>
 </template>
 
-<script setup lang = 'ts'>
-import { defineProps } from 'vue';
-
+<script setup >
+import { defineProps,ref } from 'vue';
+import CommentBox from '../../components/comment/sub-comment-box.vue'
+const emits = defineEmits(['data-uploaded']);
+const showSubCommentBox = ref(false);
+const refreshCommentList = () => {
+    emits('data-uploaded');
+}
+const clickReply = () => {
+    showSubCommentBox.value = !showSubCommentBox.value;
+}
 const props = defineProps({
-    comment: Object as () => ({
-        userName: string,
-        content: String,
-        avatar: String
-        commentDate: String
-    })
+    comment: {
+        type: Object,
+        required: false,
+    }
 });
 
 </script>
@@ -66,5 +71,6 @@ const props = defineProps({
 }
 
 .comment-info-reply {
-    margin-left: 60px;
-}</style>
+    margin-left: 30px;
+}
+</style>

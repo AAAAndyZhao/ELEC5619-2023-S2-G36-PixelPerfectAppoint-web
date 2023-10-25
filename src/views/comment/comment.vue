@@ -1,12 +1,12 @@
 <template>
-    <CommentBox :middleValue="parentData"></CommentBox>
+    <CommentBox :middleValue="parentData" @data-uploaded="refreshCommentList"></CommentBox>
     <div class="comment-list" v-for="comment in displayedComments" :key="comment.id">
         <div class="comment-list-root">
-            <CommentList :comment="comment"></CommentList>
+            <CommentList :comment="comment" @data-uploaded="refreshCommentList" ></CommentList>
         </div>
         <div v-if="comment.subComments" class="sub-comment-list-root" v-for="subcomment in comment.displayedSubComments"
-            :key="subcomment.id">
-            <CommentList :comment="subcomment"></CommentList>
+            :key="subcomment.id" >
+            <CommentList :comment="subcomment" @data-uploaded="refreshCommentList" ></CommentList>
         </div>
         <div class="load-more-subComments">
             <el-button v-if="comment.canLoadMoreSubComments" @click="loadMoreSubComments(comment)" text>load more
@@ -19,9 +19,10 @@
     </div>
 </template>
 <script setup >
-import { ref,defineProps,watch } from 'vue'
+import { ref,defineProps,watch,onMounted } from 'vue'
 import CommentBox from '../../components/comment/comment-box.vue'
 import CommentList from '../../components/comment/comment-item.vue'
+import reviewApi from '../../services/review-api'
 const props = defineProps(['parentData']);
 watch(() => props.parentData, (newValue, oldValue) => {
   
@@ -36,93 +37,12 @@ const initializeSubComments = (comment) => {
 
 
 const comments = ref([
-    {
-        id: 1,
-        userName: 'John',
-        content: 'Hello World',
-        avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-        commentDate: '2021-07-01 12:00:00',
-        subComments: [
-            {
-                id: 1,
-                userName: 'John',
-                content: 'Hello World',
-                avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-                commentDate: '2021-07-01 12:00:00',
-            },
-            {
-                id: 2,
-                userName: 'John',
-                content: 'Hello World',
-                avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-                commentDate: '2021-07-01 12:00:00',
-            },
-            {
-                id: 3,
-                userName: 'John',
-                content: 'Hello World',
-                avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-                commentDate: '2021-07-01 12:00:00',
-            },
-        ]
-    },
-    {
-        id: 2,
-        userName: 'gongfan',
-        content: 'Hello World',
-        avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-        commentDate: '2021-07-01 12:00:00',
-        subComments: [
-            {
-                id: 1,
-                userName: 'John',
-                content: 'Hello World',
-                avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-                commentDate: '2021-07-01 12:00:00',
-            },
-            {
-                id: 2,
-                userName: 'John',
-                content: 'Hello World',
-                avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-                commentDate: '2021-07-01 12:00:00',
-            },
-            {
-                id: 3,
-                userName: 'John',
-                content: 'Hello World',
-                avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-                commentDate: '2021-07-01 12:00:00',
-            },
-            {
-                id: 4,
-                userName: 'John',
-                content: 'Hello World',
-                avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-                commentDate: '2021-07-01 12:00:00',
-            },
-        ]
-    },
-    {
-        id: 3,
-        userName: 'wulll',
-        content: 'Hello World',
-        avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-        commentDate: '2021-07-01 12:00:00',
-    },
-    {
-        id: 4,
-        userName: '?????',
-        content: 'Hello World',
-        avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-        commentDate: '2021-07-01 12:00:00',
-    }
 ])
 
 
 
 const displayedComments = ref([]);
-const commentsPerPage = 1;
+const commentsPerPage = 5;
 const canLoadMoreComment = ref(comments.value.length > 0);
 const loadMoreComment = () => {
     const moreComments = comments.value.splice(0, commentsPerPage);
@@ -133,7 +53,7 @@ const loadMoreComment = () => {
     canLoadMoreComment.value = comments.value.length > 0;
 }
 
-const subCommentsPerPage = 2;
+const subCommentsPerPage = 5;
 const loadMoreSubComments = (comment) => {
     if (comment.subComments) {
         const moreSubComments = comment.subComments.splice(0, subCommentsPerPage);
@@ -143,10 +63,54 @@ const loadMoreSubComments = (comment) => {
         comment.canLoadMoreSubComments = comment.subComments.length > 0;
     }
 }
+const getCommentList = async () => {
+    let path = window.location.pathname;
+    let parts = path.split('/');
+    let postId = parts[parts.length - 1];
+    const reviewData = {
+        post_id: postId,
+        reply_to: 0,
+        page: 1,
+        size: 10
+    };
+    try {
+        const mainCommentsRes = await reviewApi.getReviewList(reviewData);
+        if (mainCommentsRes.code === 0) {
+            comments.value = mainCommentsRes.data;
+
+            // 使用Promise.all获取所有主评论的子评论
+            const subCommentsPromises = comments.value.map(async (comment) => {
+                const subCommentsRes = await reviewApi.getReviewList({
+                    post_id: postId,
+                    reply_to: comment.reviewNo,  // 使用正确的评论标识符
+                    page: 1,
+                    size: 10
+                });
+                if (subCommentsRes.code === 0) {
+                    comment.subComments = subCommentsRes.data;
+                }
+            });
+            
+            // 等待所有子评论的获取操作完成
+            await Promise.all(subCommentsPromises);
+
+            loadMoreComment();
+        }
+    } catch (e) {
+        console.log(e);
+    }
+};
+
 
 loadMoreComment();
+const refreshCommentList = () => {
+    displayedComments.value = [];
+    getCommentList();
+}
+onMounted(() => {
+    getCommentList();
 
-
+});
 </script>
 
 <style scoped>
@@ -156,6 +120,7 @@ loadMoreComment();
 
 .sub-comment-list-root {
     padding-left: 72px;
+    margin-top: 10px;
 }
 
 .load-more-subComments {
