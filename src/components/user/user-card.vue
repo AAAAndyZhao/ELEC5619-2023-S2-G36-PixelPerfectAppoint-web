@@ -7,8 +7,8 @@
             <div v-if="display.includes('alias')" class="app-user-alias">{{ user.alias }}</div>
             <div v-if="display.includes('userName')" class="app-user-username">@{{ user.userName }}</div>
         </div>
-        <div v-if="display.includes('description')" class="app-user-card-introduction">
-            <div class="app-user-introduction">{{ user.description ? shortenText(user.description, 200) : 'This user is too lazy to leave a introduction.' }}</div>
+        <div v-if="display.includes('description')" class="app-user-card-introduction" ref="descRef">
+            <div v-if="hasEnoughDescSpace" class="app-user-introduction">{{ user.description ? shortenText(user.description, 200) : 'This user is too lazy to leave a introduction.' }}</div>
         </div>
         <div v-if="display.includes('followerCount')" class="app-user-follower-count">
             <span class="app-user-follower-count-number">{{ shortenFollowerCount(user.followerCount) }}</span>
@@ -23,6 +23,7 @@
 </template>
 
 <script setup>
+import { ref, computed, watch } from 'vue';
 import UserAvatar from '@/components/user/user-avatar.vue';
 defineProps({
     user: {
@@ -47,6 +48,16 @@ defineProps({
             return ['alias', 'userName', 'description', 'followerCount'];
         }
     }
+})
+const descRef = ref(null);
+
+const hasEnoughDescSpace = computed(() => {
+    // get the width of the descRef
+    if (descRef.value) {
+        console.log(descRef.value.offsetWidth);
+        return descRef.value.offsetWidth > 100;
+    }
+    return false;
 })
 
 const shortenText = (text, length) => {

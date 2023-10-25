@@ -11,8 +11,8 @@
                     </div>
                     <UserPortfolioList :data="portfolioData" @update-portfolio-visibility="updatePortfolioVisibility"
                         @delectPortfolio="delectPortfolio" class="app-portfolio-list" />
-                    <div>
-                        <el-pagination class="app-profile-portfolio-pagination-bar" background layout="prev, pager, next"
+                    <div class="app-profile-portfolio-pagination-bar">
+                        <el-pagination background layout="prev, pager, next"
                             :total="portfolioPageProps.total" v-model:current-page="currentPage"
                             v-model:page-size="pageSize" @current-change="handleCurrentChange" />
                     </div>
@@ -195,7 +195,7 @@ onMounted(() => {
 }
 
 .app-container {
-    height: 1500px;
+    min-height: 1400px;
     width: 100%;
     box-sizing: border-box;
     padding: 0 20px;
@@ -245,8 +245,7 @@ onMounted(() => {
     margin: 10px 0;
 }
 
-.app-portfolio-list {
-    height: 600px;
-    min-height: 400px;
+.app-profile-portfolio-pagination-bar {
+    margin: 10px 0;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
     <div class="app-posts-list">
         <PostCard v-for="post in data" :key="post.id" :post="post" v-if="hasData"
-        :display="['title', 'text', 'updateDatetime', 'likes', 'operation']">
+        :display="['title', 'text', 'updateDatetime', 'operation', 'likes']">
             <el-button size="small" @click="handleEdit(post)">
                 Edit
             </el-button>

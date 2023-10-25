@@ -1,24 +1,25 @@
 <template>
-    <el-image :src="imageSrc" :alt="alt" :style="style" :fit="fit" :hide-on-click-modal="hideOnClickModal"
-        :loading="loading" :lazy="lazy" :scroll-container="scrollContainer" :referrerpolicy="referrerpolicy"
-        :preview-src-list="previewSrcList" :z-index="zIndex" :initial-index="initialIndex"
-        :close-on-press-escape="closeOnPressEscape" :preview-teleported="previewTeleported" :infinite="infinite"
-        :zoom-rate="zoomRate" :min-scale="minScale" :max-scale="maxScale"
-        v-loading="imgLoading">
-        <!-- pass templates to el-image -->
-        <template #error>
-            <slot name="error">
-            </slot>
-        </template>
-        <template #placeholder>
-            <slot name="placeholder">
-            </slot>
-        </template>
-        <template #viewer>
-            <slot name="viewer">
-            </slot>
-        </template>
-    </el-image>
+    <div class="app-photo-image" v-loading="imgLoading" :style="{ width: width, height: height }">
+        <el-image :src="imageSrc" :alt="alt" :style="{...style, width: width, height: height}" :fit="fit" :hide-on-click-modal="hideOnClickModal"
+            :loading="loading" :lazy="lazy" :scroll-container="scrollContainer" :referrerpolicy="referrerpolicy"
+            :preview-src-list="previewSrcList" :z-index="zIndex" :initial-index="initialIndex"
+            :close-on-press-escape="closeOnPressEscape" :preview-teleported="previewTeleported" :infinite="infinite"
+            :zoom-rate="zoomRate" :min-scale="minScale" :max-scale="maxScale" v-show="showThePhoto">
+            <!-- pass templates to el-image -->
+            <template #error>
+                <slot name="error">
+                </slot>
+            </template>
+            <template #placeholder>
+                <slot name="placeholder">
+                </slot>
+            </template>
+            <template #viewer>
+                <slot name="viewer">
+                </slot>
+            </template>
+        </el-image>
+    </div>
 </template>
 
 <script setup>
@@ -97,15 +98,27 @@ const props = defineProps({
         type: Number,
         default: 7,
     },
+    // custom props
+    width: {
+        type: String,
+        default: '100%',
+    },
+    height: {
+        type: String,
+        default: '100%',
+    },
 })
 const emits = defineEmits([
     'load',
     'error',
     'switch',
     'close',
-    'show'
+    'show',
+    // emits custom events
+    'load-complete'
 ]);
 // emit all el-images events
+const showThePhoto = ref(false);
 const imgLoading = ref(false);
 const imageSrc = ref('');
 const fetchImage = async () => {
@@ -133,10 +146,14 @@ const fetchImage = async () => {
         }
         const blob = await res.data;
         imageSrc.value = URL.createObjectURL(blob);
+        emits('load-complete');
+        setTimeout(() => {
+            showThePhoto.value = true;
+        }, 100);
     } catch (error) {
         console.error(error);
         return '';
-    }finally {
+    } finally {
         imgLoading.value = false;
     }
 }
@@ -159,3 +176,7 @@ onMounted(() => {
     fetchImage();
 })
 </script>
+
+<style scoped>
+
+</style>
