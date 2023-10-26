@@ -39,6 +39,6 @@ const handleDeletePortfolio = (portfolioData) => {
     flex-wrap: wrap;
     justify-content: flex-start;
     align-content: flex-start;
-    min-height: 600px;
+    min-height: calc(100vh - 300px);
 }
 </style>
