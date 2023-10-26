@@ -121,8 +121,8 @@
                             :participant="review.participant"
                             :target-participant="review.targetParticipant"
                             :content="review.content"
-                            :rating="review.rating"
-                            />
+                            :rating="review.rating">
+                            </user-appointment-review>
                         </el-timeline-item>
                     </el-timeline>
                 </el-skeleton>
