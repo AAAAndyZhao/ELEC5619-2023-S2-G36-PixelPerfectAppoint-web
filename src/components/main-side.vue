@@ -44,7 +44,7 @@
                 <el-icon size="30px" color="#928f8f" class="app-side-setting-icon" style="margin: 20px; margin-left: 50px;">
                     <Setting />
                 </el-icon>
-                <span style="margin: 10px; font-weight: 600;">Setting</span>
+                <span style="margin: 10px; font-weight: 600;" @click="goToSettings">Setting</span>
             </el-menu-item>
         </el-menu>
         <div id="app-side-user" v-if="!needLogIn">
@@ -146,6 +146,13 @@ const goToSearchPage = () => {
 
 const goToAppointmentPage = () => {
     router.push({ path: '/user/profile', query: { tab: 'appointment' } }).then(() => {
+        window.location.reload()
+        openLoadingPage()
+    })
+}
+
+const goToSettings = () => {
+    router.push('/user/settings').then(() => {
         window.location.reload()
         openLoadingPage()
     })
