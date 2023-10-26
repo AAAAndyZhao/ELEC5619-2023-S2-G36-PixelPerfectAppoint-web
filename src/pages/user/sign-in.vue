@@ -63,7 +63,7 @@ const rules = reactive<FormRules<RuleForm>>({
         { required: true, message: 'Please input user name', trigger: 'blur' },
     ],
     password: [
-        { required: true, message: 'Please input user name', trigger: 'blur' },
+        { required: true, message: 'Please input password', trigger: 'blur' },
     ],
 })
 
