@@ -107,6 +107,26 @@
                 </el-skeleton>
             </section>
             <el-divider />
+            <section class="app-reviews">
+                <h3>
+                    Reviews
+                    <el-button :icon="Plus" circle class="app-edit-button"
+                    @click="openDialog('review-add')"></el-button>
+                </h3>
+                <el-skeleton :rows="5" animated :loading="skeletonLoading">
+                    <el-timeline>
+                        <el-timeline-item v-for="review in appointmentData.reviews" :key="review"
+                        :timestamp="review.updateAt" placement="top">
+                            <user-appointment-review
+                            :participant="review.participant"
+                            :target-participant="review.targetParticipant"
+                            :content="review.content"
+                            :rating="review.rating"
+                            />
+                        </el-timeline-item>
+                    </el-timeline>
+                </el-skeleton>
+            </section>
         </div>
         <el-dialog v-model="editDialogVisible.title" class="app-edit-dialog" destroy-on-close>
             <template #header>
@@ -169,6 +189,19 @@
                 <el-button @click="cancelUpdate.participants('add')">Close</el-button>
             </template>
         </el-dialog>
+        <el-dialog v-model="editDialogVisible.reviewAdd" class="app-edit-dialog" width="30vw" destroy-on-close>
+            <template #header>
+                <h3>Add Review</h3>
+            </template>
+            <review-add
+                :participants="appointmentData.participants"
+                :exist-reviews="appointmentData.reviews"
+                @update:review="updateReview" />
+            <template #footer>
+                <el-button @click="cancelUpdate.reviewAdd">Close</el-button>
+                <el-button type="primary" @click="confirmUpdate.reviewAdd" :disabled="!editProps.review.targetParticipantId">Confirm</el-button>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
@@ -190,6 +223,8 @@ import TimeEdit from '@/views/appointment/detail/time-edit.vue';
 import LocationEdit from '@/views/appointment/detail/location-edit.vue';
 import ParticipantEditRole from '@/views/appointment/detail/participant-edit-role.vue';
 import ParticipantAdd from '@/views/appointment/detail/participant-add.vue';
+import ReviewAdd from '@/views/appointment/detail/review-add.vue';
+import UserAppointmentReview from '@/components/appointment/user-appointment-review.vue';
 
 const props = defineProps({
     appointmentId: {
@@ -208,7 +243,8 @@ const editDialogVisible = ref({
     participants: {
         role: false,
         add: false
-    }
+    },
+    reviewAdd: false,
 })
 const editProps = ref({
     title: '',
@@ -216,6 +252,7 @@ const editProps = ref({
     time: {},
     location: {},
     currentParticipant: {},
+    review: {}
 })
 const roleMenu = $MENU['APPOINTMENT_PARTICIPANT_ROLE']
 const currentUserId = localStorage.getItem('userId')
@@ -242,7 +279,6 @@ const fetchAppointmentDetail = async () => {
             // 404
             router.push('/404')
         }
-        console.log(res)
     } catch (error) {
         console.error(error)
     } finally {
@@ -287,6 +323,9 @@ const openDialog = (propName, participantId) => {
         case 'participants-add':
             // do nothing
             break;
+        case 'review-add':
+            // do nothing
+            break;
         default:
             break;
     }
@@ -294,6 +333,8 @@ const openDialog = (propName, participantId) => {
         editDialogVisible.value.participants.role = true;
     } else if (propName === 'participants-add') {
         editDialogVisible.value.participants.add = true;
+    } else if (propName === 'review-add') {
+        editDialogVisible.value.reviewAdd = true;
     } else {
         editDialogVisible.value[propName] = true;
     }
@@ -304,6 +345,9 @@ const closeDialog = (propName) => {
         editDialogVisible.value.participants.role = false;
     } else if (propName === 'participants-add') {
         editDialogVisible.value.participants.add = false;
+        fetchAppointmentDetail();
+    } else if (propName === 'review-add') {
+        editDialogVisible.value.reviewAdd = false;
         fetchAppointmentDetail();
     } else {
         editDialogVisible.value[propName] = false;
@@ -486,6 +530,27 @@ const confirmUpdate = {
                 fetchAppointmentDetail()
             }
         }
+    },
+    reviewAdd: async () => {
+        try {
+            const res = await appointmentApi.addReview({
+                appointmentId: appointmentData.value.id,
+                targetParticipantId: editProps.value.review.targetParticipantId,
+                content: editProps.value.review.content,
+                rating: editProps.value.review.rating
+            });
+            if (res.code === 0){
+                ElMessage.success('Review added');
+                fetchAppointmentDetail()
+                closeDialog('review-add');
+            } else {
+                console.error(res.msg);
+                ElMessage.error('Failed to add review: ' + res.msg);
+            }
+        } catch (e) {
+            console.error(e);
+            ElMessage.error('Failed to add review');
+        }
     }
 }
 
@@ -513,7 +578,12 @@ const cancelUpdate = {
         } else if (field === 'add') {
             closeDialog('participants-add');
         }
+    },
+    reviewAdd: () => {
+        editProps.value.review = {};
+        closeDialog('review-add');
     }
+    
 }
 const handleChangeAppointmentStatus = (appointment, statusCode) => {
     let confirmText;
@@ -600,6 +670,10 @@ const inviteParticipant = async (participant) => {
         console.error(e);
         ElMessage.error('Failed to invite participant');
     }
+}
+
+const updateReview = async (review) => {
+    editProps.value.review = review
 }
 
 onMounted(() => {
