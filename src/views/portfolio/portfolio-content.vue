@@ -11,7 +11,7 @@
         </div>
         <div class="photos-in-portfolio" ref="photoContainerRef">
             <PhotoImage class="photo-container" v-for="photo in photoList" :src="photo.thumbnailUrl" :key="photo.id"
-                :photo="photo" fit="cover" @click="callThePhotoViewer(photo.url, photo.name, ownerInfo, photo.photoParam)"
+                :photo="photo" fit="cover" @click="callThePhotoViewer(photo.url, photo.name, ownerInfo, photo.photoParam, photo.id)"
                 @load-complete="countImageLoadComplete" />
         </div>
         <PhotoViewer :url="displayedPhotoUrl"
@@ -19,6 +19,7 @@
         :photoName="displayedPhotoName"
         :creator="displayedPhotoCreator"
         :displayedPhotoParam="displayedPhotoParam"
+        :photoId="displayedPhotoId"
         v-if="photoViewerVisible"
         @closeClick="closePhotoViewer" class="app-profile-portfolio-viewer"/>
     </div>
@@ -45,7 +46,6 @@ const displayedPhotoUrl = ref('');
 const displayedPhotoName = ref('');
 const displayedPhotoCreator = ref({});
 const ownerInfo = ref({});
-const ArrowLeft = 'arrow-left';
 const displayedPhotoParam = ref({});
 const photoContainerRef = ref(null);
 let imageLoadCompleteCount = 0;
@@ -97,11 +97,12 @@ const goToEditPage = () => {
     });
 }
 
-const callThePhotoViewer = (photoUrl, photoName, photoOwner, photoParam) => {
+const callThePhotoViewer = (photoUrl, photoName, photoOwner, photoParam, photoId) => {
     displayedPhotoUrl.value = photoUrl;
     displayedPhotoName.value = photoName;
     displayedPhotoCreator.value = photoOwner;
     displayedPhotoParam.value = photoParam;
+    displayedPhotoId.value = photoId;
     photoViewerVisible.value = true;
 }
 
