@@ -73,10 +73,9 @@
             <el-table-column
                 prop="status"
                 label="Status"
-                width="260">
+                width="200">
                 <template #default="scope">
                     <div class="app-appointment-operation">
-                        <el-button type="primary" size="default" @click="handleView(scope.row)">View</el-button>
                         <el-button v-if="userId !== scope.row.creator.id" type="danger" size="default" @click="handleQuit(scope.row)">Quit</el-button>
                         <el-dropdown v-if="userId === scope.row.creator.id">
                             <el-button
