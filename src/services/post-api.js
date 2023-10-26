@@ -2,6 +2,7 @@
 This is the post api service, which is used to communicate with the backend server.
 All the api calls should be defined here.
 */
+
 import axios from "../utils/axios.js";
 
 const getUserPosts = async (page, limit, filterProps, userId) => {
@@ -117,6 +118,67 @@ const updatePostDetail = async (postId, postData) => {
     }
 }
 
+const likePost = async (data) => {
+    const userId = localStorage.getItem('userId');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    try {
+
+        return axios.post(`/post/like`, data, {
+            headers: {
+                "authorization": localStorage.getItem("token")
+            }
+        });
+    } catch (error) {
+        console.error('Error during liking post : ', error);
+        throw error;
+    }
+}
+
+const unlikePost = async (data) => {
+    const userId = localStorage.getItem('userId');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    try {
+
+        return axios.post(`/post/unlike`, data, {
+            headers: {
+                "authorization": localStorage.getItem("token")
+            }
+        });
+    } catch (error) {
+        console.error('Error during unliking post : ', error);
+        throw error;
+    }
+}
+
+const checkLikePost = async (data) => {
+    const userId = localStorage.getItem('userId');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    try {
+
+        return axios.post(`/post/check_like`, data, {
+            headers: {
+                "authorization": localStorage.getItem("token")
+            }
+        });
+    } catch (error) {
+        console.error('Error during unliking post : ', error);
+        throw error;
+    }
+}
+
+
 export default {
     getUserPosts,
     uploadPost,
@@ -125,6 +187,9 @@ export default {
     deleteSinglePost,
     deletePosts,
     getPostDetail,
-    updatePostDetail
+    updatePostDetail,
+    likePost,
+    unlikePost,
+    checkLikePost
 
 }
