@@ -115,7 +115,6 @@ const openPortfolio = () => {
     height: 300px;
     border-radius: 10px;
     box-sizing: border-box;
-    float: left;
     overflow: hidden;
     border: 1px solid #E4E7ED;
     background-color: #f1f1f1;
