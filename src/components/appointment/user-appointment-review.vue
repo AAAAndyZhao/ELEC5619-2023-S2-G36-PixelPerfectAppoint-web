@@ -1,18 +1,23 @@
 <template>
     <el-card class="app-user-appointment-review" body-class="app-user-appointment-review-body">
-        <div class="app-participant-target">
-            <user-avatar :user="participant" :size="20"/>
-            <span>{{ participant.alias }}</span>
-            <el-icon><Right /></el-icon>
-            <user-avatar :user="targetParticipant" :size="20"/>
-            <span>{{ targetParticipant.alias }}</span>
+        <div class="app-review-info">
+            <div class="app-participant-target">
+                <user-avatar :user="participant" :size="20"/>
+                <span>{{ participant.alias }}</span>
+                <el-icon><Right /></el-icon>
+                <user-avatar :user="targetParticipant" :size="20"/>
+                <span>{{ targetParticipant.alias }}</span>
+            </div>
+            <div class="app-review-rating">
+                <el-rate :model-value="rating" size="large" disabled />
+            </div>
+            <el-text class="app-review-content">
+                {{  content  }}
+            </el-text>
         </div>
-        <div class="app-review-rating">
-            <el-rate :model-value="rating" size="large" readonly />
-        </div>
-        <el-text class="app-review-content">
-            {{  content  }}
-        </el-text>
+        <slot class="app-oparation-slot" name="default">
+
+        </slot>
     </el-card>
 </template>
 
@@ -45,13 +50,21 @@ const props = defineProps({
 <style scoped>
 :deep(.app-user-appointment-review-body) {
     width: 100%;
+    box-sizing: border-box;
+    padding: 20px;
+    gap: 30px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+.app-review-info {
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
-    padding: 20px;
-    box-sizing: border-box;
 }
 
 .app-participant-target {
@@ -78,5 +91,9 @@ const props = defineProps({
 .app-review-content{
     width: 100%;
     white-space: pre-wrap;
+}
+.app-oparation-slot{
+    flex: 1;
+    text-align: right;
 }
 </style>

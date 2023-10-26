@@ -34,7 +34,7 @@ const errorHandle = (status, other) => {
 
 axios.interceptors.request.use((request) => {
     // loading
-    console.log("loading", request.url);
+    console.log("loading" + request.url);
     return request;
 }, (error) => {
     return Promise.reject(error);
