@@ -49,8 +49,7 @@ const handleFollowButtonClick = (user) => {
 
 <style scoped>
 .app-user-followings-list {
-    /* min-height: calc(100% - 60px); */
-    min-height: 600px;
+    min-height: calc(100% - 60px);
     width: 100%;
     box-sizing: border-box;
     padding: 0 20px 0 0;

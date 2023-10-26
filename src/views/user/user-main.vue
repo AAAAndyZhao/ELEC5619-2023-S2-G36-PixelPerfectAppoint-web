@@ -69,7 +69,7 @@ onMounted(async () => {
 }
 
 :deep(.app-user-profile-tabs>.el-tabs__content) {
-    /* height: calc(100% - 40px); */
+    height: calc(100% - 40px);
     width: 100%;
 }
 
