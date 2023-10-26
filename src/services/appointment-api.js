@@ -523,7 +523,34 @@ const addReview = async ({appointmentId, targetParticipantId, rating, content}) 
         throw error;
     }
 }
-
+const getAppointmentReviewsOfUser= async (userId) => {
+    userId = userId || localStorage.getItem('userId');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    try {
+        return await axios.get(`/appointment/review/get_of_user/${userId}`);
+    } catch(error) {
+        console.error('Error during requesting get appointment reviews of user: ', error.message);
+        throw error;
+    }
+}
+const getAppointmentReviewsOfTargetUser = async (userId) => {
+    userId = userId || localStorage.getItem('userId');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    try {
+        return await axios.get(`/appointment/review/get_of_target_user/${userId}`);
+    } catch(error) {
+        console.error('Error during requesting get appointment reviews of user: ', error.message);
+        throw error;
+    }
+}
 export default {
     createAppointment,
     getAppointmentByUser,
@@ -534,5 +561,7 @@ export default {
     inviteParticipant,
     updateAppointmentFunctionMap,
     respondInvitation,
-    addReview
+    addReview,
+    getAppointmentReviewsOfUser,
+    getAppointmentReviewsOfTargetUser
 }
