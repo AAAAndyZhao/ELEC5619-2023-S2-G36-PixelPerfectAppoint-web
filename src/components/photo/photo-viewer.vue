@@ -3,7 +3,7 @@
         <div class="app-photo-mask-layer"></div>
         <ZoomablePhotoImage class="img" :src="url" alt="Image failed to load!" @keydown.esc="closeClick"/>
         <PhotoViewerOperationBar class="app-photo-operation-bar" :photoName="photoName" :creator="creator"
-            :displayedPhotoParam="displayedPhotoParam" />
+            :displayedPhotoParam="displayedPhotoParam" :photoId="photoId"/>
         <el-icon class="close-btn" size="30" color="#ecf5ff" @click="closeClick">
             <CircleCloseFilled />
         </el-icon>
@@ -39,6 +39,10 @@ export default {
             type: Object,
             default: () => ({}),
         },
+        photoId: {
+            type: String,
+            default: "",
+        },
     },
     methods: {
         closeClick() {
@@ -72,7 +76,7 @@ export default {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.6);
-    z-index: 1;
+    z-index: 101;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -84,7 +88,7 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
+    z-index: 101;
     background: rgba(0, 0, 0, 0.6);
 }
 
@@ -102,7 +106,7 @@ export default {
     right: 10px;
     padding: 5px 10px;
     border-radius: 5px;
-    z-index: 3;  /* Updated z-index to match operation bar layer */
+    z-index: 103;  /* Updated z-index to match operation bar layer */
 }
 
 .show-photo .img {
@@ -111,7 +115,7 @@ export default {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    z-index: 2;
+    z-index: 102;
 }
 
 /* provide transition for hover on close-btn with changing color*/
