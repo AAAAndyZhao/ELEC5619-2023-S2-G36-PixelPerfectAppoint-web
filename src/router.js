@@ -308,6 +308,21 @@ const routes = [
             }
         ]
     },
+    {
+        path: '/message',
+        component: MainPage,
+        name: 'MessagePage',
+        meta: { requiresAuth: true },
+        children: [
+            {
+                path: '',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/message/message.vue'),
+                }
+            }
+        ]
+    }
 ]
 
 const router = createRouter({
