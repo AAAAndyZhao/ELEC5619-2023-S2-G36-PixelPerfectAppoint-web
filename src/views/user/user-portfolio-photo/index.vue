@@ -13,7 +13,7 @@
                         @delectPortfolio="delectPortfolio" class="app-portfolio-list" />
                     <div class="app-profile-portfolio-pagination-bar">
                         <el-pagination layout="prev, pager, next"
-                            :total="portfolioPageProps.total" v-model:current-page="currentPage"
+                            :total="portfolioPageProps.total" v-model:current-page="portfolioPageProps.currentPage"
                             v-model:page-size="pageSize" @current-change="handleCurrentChange" />
                     </div>
                 </div>
@@ -39,7 +39,6 @@ import portfolioApi from '@/services/portfolio-api';
 import router from '@/router';
 import { reactive } from 'vue';
 
-const currentPage = ref(1);
 const pageSize = ref(10);
 const loading = ref(false);
 const portfolioData = ref([]);
@@ -58,7 +57,6 @@ const fetchPortfolioData = async (isReload = false) => {
     loading.value = true;
     const userId = localStorage.getItem('userId');
     const token = localStorage.getItem('token');
-    portfolioPageProps.value.currentpage = currentPage.value;
     if (!userId) {
         ElMessage.error('Please login first');
         return;
@@ -71,7 +69,7 @@ const fetchPortfolioData = async (isReload = false) => {
         const res = await portfolioApi.getUserPortfolio(
             userId,
             token,
-            currentPage.value,
+            portfolioPageProps.value.currentPage,
             portfolioPageProps.value.pageSize,
         );
         if (res.code === 0) {
@@ -80,9 +78,8 @@ const fetchPortfolioData = async (isReload = false) => {
         } else {
             ElMessage.error('Failed to get portfolio data');
         }
-        console.log(res);
     } catch (err) {
-        console.log(err);
+        console.error(err);
         ElMessage.error('Failed to get portfolio data');
     } finally {
         setTimeout(() => {
@@ -107,7 +104,6 @@ const updatePortfolioVisibility = async (portfolioData) => {
             portfolioData.hidden,
             portfolioData.sync,
         );
-        console.log(response);
         if (response.code === 0) {
             ElMessage.success('PortVisibility updated successfully!');
             fetchPortfolioData();
@@ -115,7 +111,7 @@ const updatePortfolioVisibility = async (portfolioData) => {
             ElMessage.error('Failed to update visibility');
         }
     } catch (err) {
-        console.log(err);
+        console.error(err);
         ElMessage.error('Failed to update portfolio visibility');
     }
 }
@@ -144,8 +140,7 @@ const delectPortfolio = async (portfolioData) => {
 }
 
 const handleCurrentChange = (page) => {
-    currentPage.value = page;
-    console.log(currentPage.value);
+    portfolioPageProps.value.currentPage = page;
     fetchPortfolioData();
 }
 
@@ -163,7 +158,7 @@ onMounted(() => {
 
 <style scoped>
 .app-user-portfolio-photo {
-    min-height: 100%;
+    height: 100%;
     width: 100%;
 }
 
@@ -195,13 +190,12 @@ onMounted(() => {
 }
 
 .app-container {
-    min-height: 1400px;
+    height: 100%;
     width: 100%;
     box-sizing: border-box;
     padding: 0 20px;
     text-align: left;
-    display: flex;
-    flex-direction: column;
+    overflow-y: auto;
 }
 
 .app-container .app-container-header {
@@ -223,26 +217,10 @@ onMounted(() => {
     margin-left: 50px;
 }
 
-.app-container .app-container-content {
-    height: calc(100% - 100px);
-    width: 100%;
-    overflow-y: auto;
-}
-
 .app-container .el-pagination {
     justify-content: center;
     height: 50px;
     width: 100%;
-}
-
-.app-container .app-container-content .app-container-content-item {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    margin: 10px 0;
 }
 
 .app-profile-portfolio-pagination-bar {
