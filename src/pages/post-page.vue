@@ -13,8 +13,8 @@
             </el-card>
             <el-card class="app-main-post-tools">
                 <el-button type="text" @click="toggleLike">
-                    <like class="tool-icon" theme="outline" size="30" fill="#333" v-if="isLiked" />
-                    <like class="tool-icon" theme="filled" size="30" fill="#d60000" v-if="!isLiked" />
+                    <like class="tool-icon" theme="outline" size="30" fill="#333" v-if="!isLiked" />
+                    <like class="tool-icon" theme="filled" size="30" fill="#d60000" v-if="isLiked" />
                 </el-button>
                 <el-button type="text" @click="focusOnNestedChildInput">
                     <comment class="tool-icon" theme="outline" size="30" fill="#333" />
@@ -53,6 +53,14 @@ const postInfo = ref([])
 const isLiked = ref(false);
 const userId = localStorage.getItem('userId');
 const data = ref(false)
+const commentDate = ref([])
+let path = window.location.pathname;
+let parts = path.split('/');
+let postId = parts[parts.length - 1];
+const likeData = {
+    post_id: postId,
+    uid: userId
+};
 const focusOnNestedChildInput = () => {
     data.value = !data.value;
 };
@@ -60,9 +68,6 @@ watch(data, (newValue, oldValue) => {
 
 });
 const getPostDetail = async () => {
-    let path = window.location.pathname;
-    let parts = path.split('/');
-    let postId = parts[parts.length - 1];
     try {
         const res = await postApi.getPostDetail(postId);
 
@@ -79,8 +84,45 @@ const getPostDetail = async () => {
     }
 
 }
-const toggleLike = () => {
-    isLiked.value = !isLiked.value;
+
+const checkLiked = async () => {
+    try {
+        const res = await postApi.checkLikePost(likeData);
+        if (res.code === 0) {
+            isLiked.value = true;
+        } else {
+            isLiked.value = false;
+        }
+    } catch (e) {
+        console.log('Error checking like:', e);
+
+    }
+};
+
+const toggleLike = async () => {
+    if (isLiked.value) {
+        try {
+            const res = await postApi.unlikePost(likeData);
+            if (res.code === 0) {
+                isLiked.value = false;
+            } else {
+                console.log('Error unliking post:', res.message);
+            }
+        } catch (e) {
+            console.log('Error unliking post:', e);
+        }
+    } else {
+        try {
+            const res = await postApi.likePost(likeData);
+            if (res.code === 0) {
+                isLiked.value = true;
+            } else {
+                console.log('Error liking post:', res.message);
+            }
+        } catch (e) {
+            console.log('Error liking post:', e);
+        }
+    }
 };
 const getCurrentUrl = () => {
     let url = window.location.href;
@@ -95,6 +137,7 @@ const getCurrentUrl = () => {
 
 
 onMounted(() => {
+    checkLiked();
 
     getPostDetail();
 });
