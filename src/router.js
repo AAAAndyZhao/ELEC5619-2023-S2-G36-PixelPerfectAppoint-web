@@ -155,6 +155,14 @@ const routes = [
                     
                 }
             },
+            {
+                path:'settings',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/settings/settings.vue'),
+                    side: () => import('./components/main-side.vue')
+                }
+            }
         ]
     },
     {
@@ -299,7 +307,7 @@ const routes = [
                 }
             }
         ]
-    }
+    },
 ]
 
 const router = createRouter({
