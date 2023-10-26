@@ -1,6 +1,8 @@
 <template>
     <div @wheel="handleWheel" @mousedown="handleMouseDown" @mouseup="handleMouseUp">
-        <PhotoImage :style="{ transform: `scale(${scale}) translate(${x}px, ${y}px)`, cursor: dragging ?  'grabbing' : 'grab' }" :src="src" />
+        <PhotoImage
+            :style="{ transform: `scale(${scale}) translate(${x}px, ${y}px)`, cursor: dragging ? 'grabbing' : 'grab' }"
+            :src="src" />
     </div>
 </template>
 
@@ -32,8 +34,10 @@ export default {
         },
         handleMouseMove(event) {
             if (!this.dragging) return;
-            this.x = event.clientX - this.startX;
-            this.y = event.clientY - this.startY;
+            const dx = (event.clientX - this.startX) / this.scale;
+            const dy = (event.clientY - this.startY) / this.scale;
+            this.x = this.initialX + dx;
+            this.y = this.initialY + dy;
         },
         handleMouseUp() {
             this.dragging = false;
@@ -42,8 +46,10 @@ export default {
         },
         handleMouseDown(event) {
             this.dragging = true;
-            this.startX = event.clientX - this.x;
-            this.startY = event.clientY - this.y;
+            this.startX = event.clientX;
+            this.startY = event.clientY;
+            this.initialX = this.x;
+            this.initialY = this.y;
             window.addEventListener('mousemove', this.handleMouseMove);
         },
     },
