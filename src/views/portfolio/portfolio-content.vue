@@ -47,6 +47,7 @@ const displayedPhotoName = ref('');
 const displayedPhotoCreator = ref({});
 const ownerInfo = ref({});
 const displayedPhotoParam = ref({});
+const displayedPhotoId = ref('');
 const photoContainerRef = ref(null);
 let imageLoadCompleteCount = 0;
 const countImageLoadComplete = () => {

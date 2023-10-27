@@ -30,15 +30,15 @@
                             </el-button>
                         </div>
                     </div>
-                    <div class="app-user-photos-display">
+                    <div class="app-user-photos-display" ref="photoContainerRef">
                         <PhotoImage class="photo-container" v-for="photo in photosData" :src="photo.thumbnailUrl"
                             :key="photo.id" :photo="photo" fit="cover"
-                            @click="callThePhotoViewer(photo.url, photo.name, ownerInfo, photo.photoParam, photo.id)" />
+                            @click="callThePhotoViewer(photo.url, photo.name, ownerInfo, photo.photoParam, photo.id)" @load-complete="countImageLoadComplete" />
                     </div>
                 </div>
                 <PhotoViewer :url="displayedPhotoUrl" :visible="photoViewerVisible" :photoName="displayedPhotoName"
                     :creator="displayedPhotoCreator" :displayedPhotoParam="displayedPhotoParam" :photoId="displayedPhotoId"
-                    v-if="photoViewerVisible" @closeClick="closePhotoViewer" class="app-profile-portfolio-viewer" />
+                    v-if="photoViewerVisible" @closeClick="closePhotoViewer" class="app-profile-portfolio-viewer"/>
             </el-tab-pane>
         </el-tabs>
     </div>
@@ -56,6 +56,10 @@ import PhotoViewer from '@/components/photo/photo-viewer.vue';
 import router from '@/router';
 import { reactive } from 'vue';
 import photoApi from '@/services/photo-api';
+import Masonry from 'masonry-layout';
+import imagesLoaded from 'imagesloaded';
+
+let msnry;
 
 const pageSize = ref(10);
 const loading = ref(false);
@@ -73,8 +77,19 @@ const displayedPhotoCreator = ref({});
 const displayedPhotoParam = ref({});
 const ownerInfo = ref({});
 const displayedPhotoId = ref('');
+const photoContainerRef = ref(null);
+let imageLoadCompleteCount = 0;
 
 
+const countImageLoadComplete = () => {
+    imageLoadCompleteCount++;
+    console.log('imageLoadCompleteCount: ' + imageLoadCompleteCount)
+    if (imageLoadCompleteCount === photosData.value.length) {
+        setTimeout(() => {
+            doMasonryLayout();
+        }, 500);
+    }
+}
 
 const handleFinalClick = () => {
     emits('customClickFromB');
@@ -219,6 +234,22 @@ const fetchOwnerPhotoData = async (isReload = false) => {
     }
 }
 
+const doMasonryLayout = () => {
+    if(msnry) {
+        msnry.reloadItems();
+        msnry.layout();
+        console.log('layout reloaded')
+        return;
+    }
+    msnry = new Masonry(photoContainerRef.value, {
+        itemSelector: '.photo-container',
+        columnWidth: '.photo-container',
+        horizontalOrder: true,
+        gutter: 10,
+    })
+    console.log('layout created')
+}
+
 onMounted(() => {
     fetchPortfolioData(true);
     fetchOwnerPhotoData(true);
@@ -309,7 +340,6 @@ onMounted(() => {
 
 .photo-container {
     width: 200px;
-    height: 200px;
     cursor: pointer;
 }
 
