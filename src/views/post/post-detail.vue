@@ -1,31 +1,39 @@
 <template>
     <el-carousel indicator-position="outside" class="carousel">
         <el-carousel-item v-for="photo in postInfo?.photos" :key="photo.id">
-            <img :src="photo.url" class="photo" @click.self="showBigImage($event)" />
+            <img :src="photo.thumbnailUrl" :photo-id="photo.id" class="photo" @click.self="showBigImage($event)" />
         </el-carousel-item>
     </el-carousel>
-    <BigImg :visible="photoVisible" :url="bigImgUrl" @click="closeBigImage"></BigImg>
+    <PhotoViewer :url="displayedPhoto.url"
+        :visible="photoVisible"
+        :photoName="displayedPhoto.name"
+        :creator="postInfo.author"
+        :photoId="displayedPhoto.id"
+        v-if="photoVisible"
+        @closeClick="closeBigImage" class="app-profile-portfolio-viewer"/>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import BigImg from '../../components/photo/photo-viewer.vue';
+import PhotoViewer from '../../components/photo/photo-viewer.vue';
 
 const photoVisible = ref(false);
-const bigImgUrl = ref('');
-const photos = ref([]);
 const props = defineProps({
     postInfo: {
         type: Object,
         required: false
-    },
-   
+    }
 });
 
+const displayedPhoto = ref(null);
 
 const showBigImage = (e) => {
+    const photoId = e.target.getAttribute('photo-id');
+    console.log(e.target)
+    console.log(e.target.getAttribute('photo-id'))
+    const photo = props.postInfo?.photos.find((photo) => photo.id === photoId);
+    displayedPhoto.value = photo;
     photoVisible.value = true;
-    bigImgUrl.value = e.target.src;
 };
 
 const closeBigImage = () => {
@@ -46,13 +54,6 @@ export default {
 
 <style scoped>
 .photo {
-    max-width: 100%;
-
-    max-height: 100%;
-
-    width: auto;
-
-    height: auto;
-
+    height: 100%;
 }
 </style>
