@@ -11,7 +11,7 @@
                 <el-icon size="30px" color="#928f8f" class="app-side-message-icon" style="margin: 20px; margin-left: 50px;">
                     <Message />
                 </el-icon>
-                <span style="margin: 10px; font-weight: 600;">Message</span>
+                <span style="margin: 10px; font-weight: 600;" @click="goToMessage">Message</span>
             </el-menu-item>
             <el-menu-item index="3">
                 <el-icon size="25px" color="#928f8f" class="app-side-following-icon"
@@ -111,6 +111,10 @@ const goToHomePage = () => {
         window.location.reload()
         openLoadingPage()
     })
+}
+
+const goToMessage = () => {
+    router.push('/message')
 }
 
 const goToProfile = () => {
