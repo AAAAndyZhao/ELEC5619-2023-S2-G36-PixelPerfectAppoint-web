@@ -103,6 +103,18 @@ const handleClickConversation = (chat) => {
     chat.unreadCount = 0;
     loadMessages(chat);
 }
+const sortChatsBySendDatetimeDesc = () => {
+    chats.value.sort((chat1, chat2) => {
+        if (!chat1.sendDatetime) {
+            return 1
+        }
+        if (!chat2.sendDatetime) {
+            return -1
+        }
+        // convert to long to compare
+        return new Date(chat2.sendDatetime).getTime() - new Date(chat1.sendDatetime).getTime()
+    })
+}
 const loadRecentChats = async () => {
     try {
         const res = await messageApi.getRecentChats()
@@ -114,12 +126,13 @@ const loadRecentChats = async () => {
             for (const chat of res.data) {
                 const existChat = chats.value.find((existChat) => chatEquals(chat, existChat));
                 if (!existChat) {
-                    chats.value.unshift(chat)
+                    chats.value.push(chat)
                 } else {
                     // replace the existing chat
                     Object.assign(existChat, chat)
                 }
             }
+            sortChatsBySendDatetimeDesc()
         } else {
             ElMessage.error(res.msg)
         }
@@ -219,7 +232,12 @@ const sendMessage = async () => {
         })
         if (res.code === 0) {
             messageInput.value = ''
-            loadMessages(selectedChat.value)
+            loadMessages(selectedChat.value).then(() => {
+                // scroll to bottom
+                setTimeout(() => {
+                    messageContentRef.value.scrollTop = messageContentRef.value.scrollHeight;
+                }, 100);
+            })
         } else {
             ElMessage.error(res.msg)
         }

@@ -39,6 +39,8 @@ import UserFollowOperation from '@/components/user/user-follow-operation.vue';
 import userApi from '@/services/user-api';
 import UserAvatar from '@/components/user/user-avatar.vue';
 import MenuUtils from '@/utils/menu';
+import router from '@/router';
+
 const props = defineProps({
     user: {
         type: Object,
@@ -85,7 +87,7 @@ const handleChangeRole = () => {
     emits('role-change', props.user.id)
 }
 const sendMessage = () => {
-    ElMessage.info("not implemented yet")
+    router.push({ path: '/message', query: { to: props.user.id } })
 }
 </script>
 
