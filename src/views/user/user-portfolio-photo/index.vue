@@ -12,18 +12,33 @@
                     <UserPortfolioList :data="portfolioData" @update-portfolio-visibility="updatePortfolioVisibility"
                         @delectPortfolio="delectPortfolio" class="app-portfolio-list" />
                     <div class="app-profile-portfolio-pagination-bar">
-                        <el-pagination layout="prev, pager, next"
-                            :total="portfolioPageProps.total" v-model:current-page="portfolioPageProps.currentPage"
-                            v-model:page-size="pageSize" @current-change="handleCurrentChange" />
+                        <el-pagination layout="prev, pager, next" :total="portfolioPageProps.total"
+                            v-model:current-page="portfolioPageProps.currentPage" v-model:page-size="pageSize"
+                            @current-change="handleCurrentChange" />
                     </div>
                 </div>
             </el-tab-pane>
             <el-tab-pane label="Photos">
-                <div class="app-followings-container app-container">
+                <div class="app-container">
                     <div class="app-container-header">
                         <div class="app-container-header-title">My Photos</div>
+                        <div>
+                            <el-button type="primary" @click="goToUploadPhoto">Upload
+                                <el-icon class="el-icon--right">
+                                    <Upload />
+                                </el-icon>
+                            </el-button>
+                        </div>
+                    </div>
+                    <div class="app-user-photos-display" ref="photoContainerRef">
+                        <PhotoImage class="photo-container" v-for="photo in photosData" :src="photo.thumbnailUrl"
+                            :key="photo.id" :photo="photo" fit="cover"
+                            @click="callThePhotoViewer(photo.url, photo.name, ownerInfo, photo.photoParam, photo.id)" @load-complete="countImageLoadComplete" />
                     </div>
                 </div>
+                <PhotoViewer :url="displayedPhotoUrl" :visible="photoViewerVisible" :photoName="displayedPhotoName"
+                    :creator="displayedPhotoCreator" :displayedPhotoParam="displayedPhotoParam" :photoId="displayedPhotoId"
+                    v-if="photoViewerVisible" @closeClick="closePhotoViewer" class="app-profile-portfolio-viewer"/>
             </el-tab-pane>
         </el-tabs>
     </div>
@@ -36,8 +51,15 @@ import { ElMessage, ElMessageBox, ElPagination } from 'element-plus';
 import PortfolioCard from '@/components/photo/portfolio-card.vue';
 import UserPortfolioList from './user-portfolio-list.vue';
 import portfolioApi from '@/services/portfolio-api';
+import PhotoImage from '@/components/photo/photo-image.vue';
+import PhotoViewer from '@/components/photo/photo-viewer.vue';
 import router from '@/router';
 import { reactive } from 'vue';
+import photoApi from '@/services/photo-api';
+import Masonry from 'masonry-layout';
+import imagesLoaded from 'imagesloaded';
+
+let msnry;
 
 const pageSize = ref(10);
 const loading = ref(false);
@@ -47,10 +69,37 @@ const portfolioPageProps = ref({
     pageSize: 10,
     total: 2,
 });
+const photosData = ref([]);
+const photoViewerVisible = ref(false);
+const displayedPhotoUrl = ref('');
+const displayedPhotoName = ref('');
+const displayedPhotoCreator = ref({});
+const displayedPhotoParam = ref({});
+const ownerInfo = ref({});
+const displayedPhotoId = ref('');
+const photoContainerRef = ref(null);
+let imageLoadCompleteCount = 0;
+
+
+const countImageLoadComplete = () => {
+    imageLoadCompleteCount++;
+    console.log('imageLoadCompleteCount: ' + imageLoadCompleteCount)
+    if (imageLoadCompleteCount === photosData.value.length) {
+        setTimeout(() => {
+            doMasonryLayout();
+        }, 500);
+    }
+}
+
 const handleFinalClick = () => {
     emits('customClickFromB');
     router.push({
         path: '../portfolio/photos-in-portfolio'
+    });
+}
+const goToUploadPhoto = () => {
+    router.push({
+        path: '/photo/upload'
     });
 }
 const fetchPortfolioData = async (isReload = false) => {
@@ -150,8 +199,60 @@ const handleClickCreate = () => {
     });
 }
 
+const closePhotoViewer = () => {
+    photoViewerVisible.value = false;
+}
+
+const callThePhotoViewer = (photoUrl, photoName, photoOwner, photoParam, photoId) => {
+    displayedPhotoUrl.value = photoUrl;
+    displayedPhotoName.value = photoName;
+    displayedPhotoCreator.value = photoOwner;
+    displayedPhotoParam.value = photoParam;
+    displayedPhotoId.value = photoId;
+    photoViewerVisible.value = true;
+}
+
+const fetchOwnerPhotoData = async (isReload = false) => {
+    loading.value = true;
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
+    if (!userId || !token) {
+        ElMessage.error('Please login first');
+        return;
+    }
+    try {
+        const response = await photoApi.getPhotoByOwnerId();
+        if (response.code === 0) {
+            photosData.value = response.data;
+            ownerInfo.value = response.data[0].owner;
+        } else {
+            ElMessage.error('Failed to get photo data');
+        }
+    } catch (err) {
+        console.error(err);
+        ElMessage.error('Failed to get photo data');
+    }
+}
+
+const doMasonryLayout = () => {
+    if(msnry) {
+        msnry.reloadItems();
+        msnry.layout();
+        console.log('layout reloaded')
+        return;
+    }
+    msnry = new Masonry(photoContainerRef.value, {
+        itemSelector: '.photo-container',
+        columnWidth: '.photo-container',
+        horizontalOrder: true,
+        gutter: 10,
+    })
+    console.log('layout created')
+}
+
 onMounted(() => {
     fetchPortfolioData(true);
+    fetchOwnerPhotoData(true);
     const path = router.currentRoute.value.path;
 });
 </script>
@@ -225,5 +326,24 @@ onMounted(() => {
 
 .app-profile-portfolio-pagination-bar {
     margin: 10px 0;
+}
+
+.app-user-photos-display {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    gap: 10px;
+    overflow: auto;
+}
+
+.photo-container {
+    width: 200px;
+    cursor: pointer;
+}
+
+:deep(.app-profile-portfolio-viewer .el-image__inner) {
+    height: 100vh;
 }
 </style>
