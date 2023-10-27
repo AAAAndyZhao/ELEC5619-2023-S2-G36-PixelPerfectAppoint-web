@@ -127,13 +127,14 @@ const signInByGoogle = async () => {
 
 const checkRedirect = () => {
     if (!props.redirect) return;
-    const regUrlFormat = /^http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?$/;
+    console.log(props.redirect)
     const regPathFormat = /^\/[\w- .\/?%&=]*$/;
-    if (props.redirect && regUrlFormat.test(props.redirect)) {
+    if (props.redirect && props.redirect.startsWith('http://')) {
         needRedirect = true;
     }else if(props.redirect && regPathFormat.test(props.redirect)){
         needPush = true;
     }
+    console.log(needRedirect, needPush)
 }
 
 onBeforeMount(async () => {

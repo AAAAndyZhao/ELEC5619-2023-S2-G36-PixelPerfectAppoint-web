@@ -3,9 +3,9 @@
         <el-avatar :src=comment?.author.avatarUrl :size="50"></el-avatar>
         <div class="comment-detail">
             <div class="comment-name">
-                <el-link :underline="false">{{ comment?.author.userName }}</el-link>
+                <el-link :underline="false">{{ comment?.author.alias }}</el-link>
                 <span v-if="comment?.replyToUser">
-                    @ <el-link :underline="false">{{ comment?.replyToUser.userName }}</el-link>
+                    @ <el-link :underline="false">{{ comment?.replyToUser.alias }}</el-link>
                 </span>
             </div>
             <div class="comment-comment">
@@ -16,7 +16,8 @@
                     <span>{{ comment?.createdAt }}</span>
                 </div>
                 <div class="comment-info-reply">
-                    <el-button text :underline="false" size="small" @click="clickReply">Reply</el-button>
+                    <el-button link :underline="false" size="small" @click="clickReply"
+                    type="primary">Reply</el-button>
                 </div>
 
             </div>
@@ -70,10 +71,14 @@ const props = defineProps({
 .comment-info {
     display: flex;
     font-size: 12px;
-
+    align-items: center;
 }
 
 .comment-info-reply {
     margin-left: 30px;
+}
+
+.comment-info-time {
+    color: var(--el-color-info-light-5)
 }
 </style>
