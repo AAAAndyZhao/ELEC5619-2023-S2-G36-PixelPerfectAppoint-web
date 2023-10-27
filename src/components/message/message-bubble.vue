@@ -73,6 +73,7 @@ const simplifiedSendDatetime = computed(() => {
 .app-message-content {
     margin: 0 10px;
     min-width: 100px;
+    max-width: 400px;
 }
 :deep(.app-message-content-body) {
     box-sizing: border-box;
