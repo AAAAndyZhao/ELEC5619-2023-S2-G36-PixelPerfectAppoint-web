@@ -5,12 +5,15 @@
             <div class="app-settings-user-info-name">{{ user.firstName }} {{ user.lastName }}</div>
             <div class="app-settings-user-info-alias">@{{ user.alias }}</div>
             <div class="app-settings-user-info-email">E-mail: {{ user.email }}
-                <button class="instagram-button" @click="goToPersonalInformation">
+                <el-button class="instagram-button" @click="goToPersonalInformation">
                     Personal Information
-                </button>
-                <button class="instagram-button" @click="goToChangPassword">
+                </el-button>
+                <el-button class="instagram-button" @click="goToChangPassword">
                     Change Password
-                </button>
+                </el-button>
+                <el-button type="danger" class="instagram-button-danger" @click="cancelAccount">
+                    Cancel Account
+                </el-button>
             </div>
         </div>
     </div>
@@ -58,17 +61,20 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Name with darker name display */
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Maven+Pro:wght@500&display=swap');
 .app-settings-user-info-name {
     font-size: 30px;
     font-weight: 600;
     margin-bottom: 10px;
+    font-family: 'Pacifico', cursive;
 }
 
 .app-settings-user-info-alias {
     font-size: 20px;
     color: #928f8f;
     margin-bottom: 20px;
+    font-family: 'Maven Pro', sans-serif;
 }
 
 .app-settings-user-info-email {
@@ -81,20 +87,33 @@ onMounted(() => {
 }
 
 .instagram-button {
-  font-size: 16px;
-  font-weight: 500;
-  padding: 10px 20px;
-  margin: 5px;
-  margin-top: 20px;
-  border: none;
-  border-radius: 5px;
-  background-color: #3897f0;
-  color: #ffffff;
-  cursor: pointer;
-  transition: background-color 0.3s;
+    width: 200px;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 10px 20px;
+    margin: 5px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #3897f0;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.instagram-button-danger {
+    width: 200px;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 10px 20px;
+    margin: 5px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .instagram-button:hover {
-  background-color: #357ABD;
+    background-color: #357ABD;
 }
 </style>

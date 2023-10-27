@@ -13,7 +13,10 @@
             <span>{{ photoName }}</span>
         </div>
         <div class="like-button">
-            <span class="material-symbols-outlined" @click="likePhoto">
+            <span class="material-symbols-outlined photo-with-no-like" @click="likePhoto" v-if="!alreadyLiked">
+                thumb_up
+            </span>
+            <span class="material-symbols-outlined photo-with-like" @click="unlikePhoto" v-if="alreadyLiked">
                 thumb_up
             </span>
             <el-icon color="#c6e2ff" size="40" class="comment-btn" @click="commentPhoto">
@@ -35,8 +38,12 @@
 <script setup>
 
 import { ref, computed, onMounted } from "vue";
+import { ElMessage } from "element-plus";
 import userAvatar from "../user/user-avatar.vue";
 import userApi from "@/services/user-api.js";
+import photoApi from "@/services/photo-api.js";
+
+const alreadyLiked = ref(false);
 
 const props = defineProps({
     photoName: {
@@ -50,6 +57,10 @@ const props = defineProps({
     displayedPhotoParam: {
         type: Object,
         default: () => ({}),
+    },
+    photoId: {
+        type: String,
+        required: true,
     },
 })
 
@@ -69,13 +80,57 @@ const components = {
     UserAvatar: userAvatar,
 }
 
-const likePhoto = () => {
-    console.log("Like photo");
+const likePhoto = async () => {
+    const response = await photoApi.photoLike(props.photoId);
+    if (response.code === 0) {
+        ElMessage({
+            message: 'Like photo successfully',
+            type: 'success'
+        })
+        alreadyLiked.value = true;
+    } else {
+        console.error("Like photo failed");
+        ElMessage({
+            message: 'Like photo failed',
+            type: 'error'
+        })
+    }
+}
+
+const unlikePhoto = async () => {
+    const response = await photoApi.photoUnlike(props.photoId);
+    if (response.code === 0) {
+        ElMessage({
+            message: 'Unlike photo successfully',
+            type: 'info'
+        })
+        alreadyLiked.value = false;
+    } else {
+        console.error("Unlike photo failed");
+        ElMessage({
+            message: 'Unlike photo failed',
+            type: 'error'
+        })
+    }
+}
+
+const checkPhotoLike = async () => {
+    const response = await photoApi.photoCheckLike(props.photoId);
+    if (response.code === 0) {
+        alreadyLiked.value = true;
+    } else if (response.code === 1 && response.msg === "photo not found or hidden") {
+        ElMessage({
+            message: "Secret or Not Avaliable Photo",
+            type: 'warning',
+        })
+    } else {
+        console.error(response.msg);
+        alreadyLiked.value = false;
+    }
 }
 
 const commentPhoto = () => {
     console.log("Comment photo");
-    // Jump to the comment page
 }
 
 const showTheParam = () => {
@@ -84,13 +139,14 @@ const showTheParam = () => {
 };
 
 onMounted(async () => {
+    checkPhotoLike();
 })
 </script>
 
 <style scoped>
 .operation-bar {
     position: fixed;
-    z-index: 3;
+    z-index: 103;
     bottom: 0;
     left: 0;
     height: 60px;
@@ -139,7 +195,8 @@ onMounted(async () => {
         'FILL' 0,
         'wght' 300,
         'GRAD' 0,
-        'opsz' 24
+        'opsz' 24;
+    transition: all 0.7s ease-in-out;
 }
 
 .info-btn {
@@ -159,7 +216,7 @@ onMounted(async () => {
 .like-button el-icon:hover {
     color: #ffffff;
     cursor: pointer;
-    transition: all 0.5s ease-in-out;   
+    transition: all 0.5s ease-in-out;
 }
 
 .info-btn:hover {
@@ -174,9 +231,16 @@ onMounted(async () => {
     transition: all 0.5s ease-in-out;
 }
 
-.like-button .material-symbols-outlined:active,
-.like-button .material-symbols-outlined:focus {
+.like-button .photo-with-like {
     color: var(--el-color-primary);
+    font-variation-settings:
+        'FILL' 1,
+        'wght' 300,
+        'GRAD' 0,
+        'opsz' 24
+}
+
+.like-button .photo-with-no-like {
     font-variation-settings:
         'FILL' 1,
         'wght' 300,
