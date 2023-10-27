@@ -11,12 +11,16 @@ const props = defineProps({
         type: Object,
         required: false
     },
-   
+
 });
 </script>
 
 <style scoped>
 .description {
     text-align: left;
+}
+
+.description-detail {
+    white-space: pre-wrap;
 }
 </style>

@@ -123,4 +123,7 @@ export default {
     color: #fff;
     transition: all 0.5s ease-in-out;
 }
+:deep(.img .el-image__inner) {
+    height: 100vh;
+}
 </style>
