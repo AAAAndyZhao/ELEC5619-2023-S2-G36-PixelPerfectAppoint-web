@@ -311,14 +311,19 @@ const routes = [
     {
         path: '/message',
         component: MainPage,
-        name: 'MessagePage',
         meta: { requiresAuth: true },
         children: [
             {
                 path: '',
+                name: 'MessagePage',
                 components: {
                     header: () => import('./components/main-header.vue'),
                     content: () => import('./views/message/message.vue'),
+                },
+                props: {
+                    content: (route) => ({
+                        toUserId: route.query.to
+                    })
                 }
             }
         ]
