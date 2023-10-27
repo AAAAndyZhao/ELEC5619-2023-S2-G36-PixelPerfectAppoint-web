@@ -493,7 +493,64 @@ const respondInvitation = async (appointmentId, token, isAccept) => {
         throw error;
     }
 }
-
+const addReview = async ({appointmentId, targetParticipantId, rating, content}) => {
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    if (token === null
+        || token === undefined
+        || token === '') {
+        throw new Error('User token is invalid');
+    }
+    try{
+        return axios.post(`/appointment/review/add`, {
+            uid: userId,
+            appointment_id: appointmentId,
+            target_participant_id: targetParticipantId,
+            rating: rating,
+            content: content
+        }, {
+            headers: {
+                authorization: token
+            }
+        })
+    }catch(error) {
+        console.error('Error during requesting add review: ', error.message);
+        throw error;
+    }
+}
+const getAppointmentReviewsOfUser= async (userId) => {
+    userId = userId || localStorage.getItem('userId');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    try {
+        return await axios.get(`/appointment/review/get_of_user/${userId}`);
+    } catch(error) {
+        console.error('Error during requesting get appointment reviews of user: ', error.message);
+        throw error;
+    }
+}
+const getAppointmentReviewsOfTargetUser = async (userId) => {
+    userId = userId || localStorage.getItem('userId');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    try {
+        return await axios.get(`/appointment/review/get_of_target_user/${userId}`);
+    } catch(error) {
+        console.error('Error during requesting get appointment reviews of user: ', error.message);
+        throw error;
+    }
+}
 export default {
     createAppointment,
     getAppointmentByUser,
@@ -503,5 +560,8 @@ export default {
     removeParticipant,
     inviteParticipant,
     updateAppointmentFunctionMap,
-    respondInvitation
+    respondInvitation,
+    addReview,
+    getAppointmentReviewsOfUser,
+    getAppointmentReviewsOfTargetUser
 }

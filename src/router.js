@@ -155,6 +155,14 @@ const routes = [
                     
                 }
             },
+            {
+                path:'settings',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/settings/settings.vue'),
+                    side: () => import('./components/main-side.vue')
+                }
+            }
         ]
     },
     {
@@ -296,6 +304,21 @@ const routes = [
                     header: () => import('./components/main-header.vue'),
                     content: () => import('./views/portfolio/portfolio-content.vue'),
                     side: () => import('./components/main-side.vue')
+                }
+            }
+        ]
+    },
+    {
+        path: '/message',
+        component: MainPage,
+        name: 'MessagePage',
+        meta: { requiresAuth: true },
+        children: [
+            {
+                path: '',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/message/message.vue'),
                 }
             }
         ]
