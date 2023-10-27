@@ -35,12 +35,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watchEffect, onUnmounted } from 'vue'
 import { useStore } from 'vuex'
 import { ElImage, ElMessage } from 'element-plus'
 import messageApi from '@/services/message-api'
 import ChatCard from '@/components/message/chat-card.vue'
 import MessageBubble from '@/components/message/message-bubble.vue'
+import router from '@/router'
 
 const props = defineProps({
     toUserId: {
@@ -101,6 +102,9 @@ const handleClickConversation = (chat) => {
     noMoreHistoryTag.value = false;
     // for user experience, just set unreadCount to 0
     chat.unreadCount = 0;
+    // change 'to' in query string
+    const query = { to: getOtherUserIdFromChat(chat) }
+    router.push({ path: '/message', query: query })
     loadMessages(chat);
 }
 const sortChatsBySendDatetimeDesc = () => {
@@ -280,7 +284,15 @@ const loadDefaultOpenChat = async () => {
         }
     }
 }
+const updateLayout = () => {
+    if (window.innerWidth < 1000) {
+        useTwoSideLayout.value = false
+    } else {
+        useTwoSideLayout.value = true
+    }
+}
 onMounted(() => {
+    window.addEventListener('resize', updateLayout);
     loadRecentChats().then(() => {
         loadDefaultOpenChat()
     })
@@ -292,6 +304,9 @@ onMounted(() => {
         loadMessages(selectedChat.value)
     }, 5000)
 })
+onUnmounted(() => {
+    window.removeEventListener('resize', updateLayout);
+});
 </script>
 
 <style scoped>
