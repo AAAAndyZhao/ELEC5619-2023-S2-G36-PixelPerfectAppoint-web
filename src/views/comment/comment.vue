@@ -14,7 +14,8 @@
         </div>
     </div>
     <el-button v-if="hasMoreComments" @click="loadMoreComments" text type="primary">load more review</el-button>
-    <p v-else>All reviews have been loaded.</p>
+    <el-divider class="app-all-review-loaded-note" v-else> All reviews have been loaded </el-divider>
+    <el-empty v-if="comments.length === 0" description="All reviews have been loaded" />
 </template>
 
 <script setup>
@@ -29,6 +30,9 @@ const page = ref(1);
 const hasMoreComments = ref(true);
 
 const getCommentList = async (loadMore = false) => {
+    // if (!localStorage.getItem('token') || !localStorage.getItem('userId')) {
+    //     return;
+    // }
     let path = window.location.pathname;
     let parts = path.split('/');
     let postId = parts[parts.length - 1];
@@ -53,7 +57,6 @@ const getCommentList = async (loadMore = false) => {
             } else {
                 hasMoreComments.value = true;
             }
-            
 
             const subCommentsPromises = comments.value.map(async (comment) => {
                 if (comment.subCommentsLoaded) return;
@@ -81,7 +84,7 @@ const subCommentsPages = ref({});
 
 const loadMoreSubComments = async (parentReviewNo) => {
     if (!subCommentsPages.value[parentReviewNo]) {
-        subCommentsPages.value[parentReviewNo] = 1; 
+        subCommentsPages.value[parentReviewNo] = 1;
     }
 
     let path = window.location.pathname;
@@ -91,7 +94,7 @@ const loadMoreSubComments = async (parentReviewNo) => {
     const subCommentsRes = await reviewApi.getReviewList({
         post_id: postId,
         parent_review_no: parentReviewNo,
-        page: subCommentsPages.value[parentReviewNo] + 1, 
+        page: subCommentsPages.value[parentReviewNo] + 1,
         size: 3
     });
 
@@ -112,7 +115,7 @@ const loadMoreSubComments = async (parentReviewNo) => {
 
 const refreshCommentList = () => {
     comments.value = [];
-    page.value = 1; 
+    page.value = 1;
     getCommentList();
 }
 
@@ -139,5 +142,9 @@ onMounted(() => {
 .load-more-subComments {
     text-align: left;
     margin-left: 10px;
+}
+
+:deep(.el-divider__text) {
+    color: #ccc;
 }
 </style>

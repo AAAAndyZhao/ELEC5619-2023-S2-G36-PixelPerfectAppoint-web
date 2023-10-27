@@ -28,6 +28,7 @@ import PhotoImage from '@/components/photo/photo-image.vue';
 import UserFollowOperation from '@/components/user/user-follow-operation.vue';
 import userApi from '@/services/user-api';
 import UserAvatar from '@/components/user/user-avatar.vue';
+import router from '@/router';
 
 const props = defineProps({
     user: {
@@ -124,7 +125,7 @@ const unfollowUser = async (userId) => {
 }
 
 const sendMessage = () => {
-    ElMessage.info('Not implemented yet')
+    router.push({ path: '/message', query: { to: props.user.id } })
 }
 
 watch(() => props.user, () => {

@@ -1,5 +1,5 @@
 <template>
-    <el-contrainer class="app-container">
+    <el-container class="app-container">
         <el-header class="app-header">
             <router-view name="header" />
         </el-header>
@@ -12,14 +12,15 @@
                 <router-view name="content" :postInfo="postInfo" />
             </el-card>
             <el-card class="app-main-post-tools">
-                <el-button type="text" @click="toggleLike">
+                <el-button link @click="toggleLike">
                     <like class="tool-icon" theme="outline" size="30" fill="#333" v-if="!isLiked" />
                     <like class="tool-icon" theme="filled" size="30" fill="#d60000" v-if="isLiked" />
+                    <el-text>{{ postInfo.likeCount }}</el-text>
                 </el-button>
-                <el-button type="text" @click="focusOnNestedChildInput">
+                <el-button link @click="focusOnNestedChildInput">
                     <comment class="tool-icon" theme="outline" size="30" fill="#333" />
                 </el-button>
-                <el-button type="text" @click="getCurrentUrl"> <share-three class="tool-icon" theme="outline" size="30"
+                <el-button link @click="getCurrentUrl"> <share-three class="tool-icon" theme="outline" size="30"
                         fill="#333" /></el-button>
             </el-card>
 
@@ -36,12 +37,12 @@
             </el-card>
 
         </el-main>
-    </el-contrainer>
+    </el-container>
 </template>
 
 <script setup>
 
-import { ElCard } from 'element-plus';
+import { ElCard, ElMessage, ElNotification } from 'element-plus';
 import router from '../router'
 import { Like, Comment, ThumbsUp, ShareThree } from '@icon-park/vue-next'
 import { ref, onMounted, watch } from 'vue';
@@ -70,12 +71,9 @@ watch(data, (newValue, oldValue) => {
 const getPostDetail = async () => {
     try {
         const res = await postApi.getPostDetail(postId);
-
         if (res.code === 0) {
             userInfo.value = res.data[0].author;
             postInfo.value = res.data[0];
-            console.log('userInfo', userInfo.value)
-            console.log('postInfo', res.data[0])
         }
 
     }
@@ -86,6 +84,9 @@ const getPostDetail = async () => {
 }
 
 const checkLiked = async () => {
+    if (!userId) {
+        return;
+    }
     try {
         const res = await postApi.checkLikePost(likeData);
         if (res.code === 0) {
@@ -105,6 +106,8 @@ const toggleLike = async () => {
             const res = await postApi.unlikePost(likeData);
             if (res.code === 0) {
                 isLiked.value = false;
+                postInfo.value.likeCount--;
+                ElMessage.success('Unliked');
             } else {
                 console.log('Error unliking post:', res.message);
             }
@@ -116,6 +119,8 @@ const toggleLike = async () => {
             const res = await postApi.likePost(likeData);
             if (res.code === 0) {
                 isLiked.value = true;
+                postInfo.value.likeCount++;
+                ElMessage.success('Liked');
             } else {
                 console.log('Error liking post:', res.message);
             }
@@ -126,13 +131,15 @@ const toggleLike = async () => {
 };
 const getCurrentUrl = () => {
     let url = window.location.href;
-    console.log(url);
     navigator.clipboard.writeText(url).then(() => {
-        alert('url copied, you can share it now');
-    })
-        .catch(err => {
-            console.log('Something went wrong', err);
+        ElNotification({
+            title: 'Success',
+            message: 'Copied to clipboard',
+            type: 'success'
         });
+    }).catch(err => {
+        console.log('Something went wrong', err);
+    });
 };
 
 
