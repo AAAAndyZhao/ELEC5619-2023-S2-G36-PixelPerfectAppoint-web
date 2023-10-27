@@ -1,5 +1,5 @@
 <template>
-    <el-avatar :size="size" :src="user.avatarUrl">
+    <el-avatar class="app-user-avatar" :size="size" :src="user.avatarUrl">
         <el-avatar :size="size" :style="{fontSize: `${size / 3}px`}">{{ nameAbbreviation }}</el-avatar>
     </el-avatar>
 </template>
@@ -24,3 +24,6 @@ const nameAbbreviation = computed(() => {
     return '';
 })
 </script>
+
+<style scoped>
+</style>
