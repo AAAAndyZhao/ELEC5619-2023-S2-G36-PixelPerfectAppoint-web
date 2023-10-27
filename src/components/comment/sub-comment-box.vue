@@ -15,7 +15,7 @@
     </div>
 </template>
 <script setup >
-import { ref, defineProps, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import reviewApi from '../../services/review-api'
 import userApi from '../../services/user-api'
 const inputContent = ref('');

@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import CommentBox from '../../components/comment/comment-box.vue';
 import CommentList from '../../components/comment/comment-item.vue';
 import reviewApi from '../../services/review-api';
