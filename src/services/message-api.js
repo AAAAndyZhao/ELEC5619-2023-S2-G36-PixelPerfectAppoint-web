@@ -20,7 +20,7 @@ const sendMessage = async ({isMedia, message, receiverId, senderId}) => {
     }
     return await axios.post('/message/send', body, {
         headers: {
-            Authorization: `Bearer ${token}`
+            authorization: token
         }
     })
 }
