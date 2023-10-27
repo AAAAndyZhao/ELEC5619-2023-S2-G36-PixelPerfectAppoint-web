@@ -90,13 +90,13 @@ const searchPhotos = async (
             sorted_by: sortedBy,
             order: order
         }
-        if (photoParamProps?.camMaker){
+        if (photoParamProps?.camMaker) {
             body.cam_maker = photoParamProps.camMaker
         }
-        if (photoParamProps?.camModel){
+        if (photoParamProps?.camModel) {
             body.cam_model = photoParamProps.camModel
         }
-        if (photoParamProps?.lens){
+        if (photoParamProps?.lens) {
             body.lens = photoParamProps.lens
         }
 
@@ -108,7 +108,7 @@ const searchPhotos = async (
 }
 
 const getPhotoByOwnerId = async () => {
-    if(!localStorage.getItem("userId")){
+    if (!localStorage.getItem("userId")) {
         throw new Error("No userId, please login first.")
     }
     try {
@@ -150,10 +150,79 @@ const getPublicPhotoByOwnerId = async ({
     }
 }
 
+const photoLike = async (photoId) => {
+    try {
+        const userId = localStorage.getItem("userId")
+        const token = localStorage.getItem("token")
+        const body = {
+            uid: userId,
+            photo_id: photoId
+        }
+        if (!userId) {
+            throw new Error("No userId, please login first.")
+        }
+        return axios.post("/photo/like", body, {
+            headers: {
+                "authorization": token
+            }
+        })
+    } catch (error) {
+        console.error("Error during liking photo: ", error.message)
+        throw error
+    }
+}
+
+const photoUnlike = async (photoId) => {
+    try {
+        const userId = localStorage.getItem("userId")
+        const token = localStorage.getItem("token")
+        const body = {
+            uid: userId,
+            photo_id: photoId
+        }
+        if (!userId) {
+            throw new Error("No userId, please login first.")
+        }
+        return axios.post("/photo/unlike", body, {
+            headers: {
+                "authorization": token
+            }
+        })
+    } catch (error) {
+        console.error("Error during unliking photo: ", error.message)
+        throw error
+    }
+}
+
+const photoCheckLike = async(photoId) => {
+    try {
+        const userId = localStorage.getItem("userId")
+        const token = localStorage.getItem("token")
+        const body = {
+            uid: userId,
+            photo_id: photoId
+        }
+        if (!userId) {
+            throw new Error("No userId, please login first.")
+        }
+        return axios.post("/photo/check_like", body, {
+            headers: {
+                "authorization": token
+            }
+        }) 
+    } catch (error) {
+        console.error("Error during checking like photo: ", error.message)
+        throw error
+    }
+}
+
 export default {
     uploadPhoto,
     uploadPhotoList,
     searchPhotos,
     getPhotoByOwnerId,
-    getPublicPhotoByOwnerId
+    getPublicPhotoByOwnerId,
+    photoLike,
+    photoUnlike,
+    photoCheckLike
 }
