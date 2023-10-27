@@ -194,7 +194,7 @@ const photoUnlike = async (photoId) => {
     }
 }
 
-const photoCheckLike = async(photoId) => {
+const photoCheckLike = async (photoId) => {
     try {
         const userId = localStorage.getItem("userId")
         const token = localStorage.getItem("token")
@@ -216,6 +216,13 @@ const photoCheckLike = async(photoId) => {
     }
 }
 
+const getPhotoById = async (photoId) => {
+    if (!photoId) {
+        throw new Error("No photoId.")
+    }
+    return axios.get(`/photo/${photoId}`);
+}
+
 export default {
     uploadPhoto,
     uploadPhotoList,
@@ -224,5 +231,6 @@ export default {
     getPublicPhotoByOwnerId,
     photoLike,
     photoUnlike,
-    photoCheckLike
+    photoCheckLike,
+    getPhotoById
 }
