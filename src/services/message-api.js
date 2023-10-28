@@ -100,9 +100,30 @@ const getChat = async (otherUserId) => {
     })
 }
 
+const getUnreadCount = async () => {
+    const userId = localStorage.getItem('userId')
+    const token = localStorage.getItem('token')
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    if (token === null
+        || token === undefined
+        || token === '') {
+        throw new Error('User token is invalid');
+    }
+    return await axios.get(`/message/get_unread_count?uid=${userId}`, {
+        headers: {
+            authorization: token
+        }
+    })
+}
+
 export default {
     sendMessage,
     getRecentChats,
     getMessages,
-    getChat
+    getChat,
+    getUnreadCount
 }
