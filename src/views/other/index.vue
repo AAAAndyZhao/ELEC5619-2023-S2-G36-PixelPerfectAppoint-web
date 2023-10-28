@@ -30,6 +30,7 @@
             </div>
             <div v-show="activeTab === 'portfolio'" class="app-tab-content-item">
                 <UserPortfolioList :data="userPortfolio.data" class="app-other-portfolio" :ownerId="userPortfolio.ownerId"></UserPortfolioList>
+                <el-empty v-if="userPortfolio.total == 0" :image-size="600" />
                 <div class="app-profile-portfolio-pagination-bar">
                     <el-pagination layout="prev, pager, next" :total="userPortfolio.total"
                         :current-page="userPortfolio.currentPage" :page-size="userPortfolio.size"
