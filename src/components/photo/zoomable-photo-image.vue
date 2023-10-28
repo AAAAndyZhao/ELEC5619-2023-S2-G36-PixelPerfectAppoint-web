@@ -1,5 +1,5 @@
 <template>
-    <div @wheel="handleWheel" @mousedown="handleMouseDown" @mouseup="handleMouseUp">
+    <div @wheel="handleWheel" @mousedown="handleMouseDown" @mouseup="handleMouseUp" class="zoomable-photo-image">
         <PhotoImage
             :style="{ transform: `scale(${scale}) translate(${x}px, ${y}px)`, cursor: dragging ? 'grabbing' : 'grab' }"
             :src="src" />
@@ -58,3 +58,8 @@ export default {
     },
 };
 </script>
+<style scoped>
+:deep(.el-image__inner) {
+    height: 100vh;
+}
+</style>

@@ -87,6 +87,29 @@ const fetchPortfolioPhotosByPortfolioId = async () => {
     }
 };
 
+const fetchingPhotosInPortfolio = async() => {
+    try {
+        const portfolioId = router.currentRoute.value.path.split('/').pop();
+        const response = await portfolioApi.getPortfolioById(portfolioId);
+        if (response.code === 0) {
+            photoList.value = response.data[0].photos;
+            console.log("photoList")
+            console.log(photoList.value)
+            ownerInfo.value = response.data[0].owner;
+            console.log("ownerInfo")
+            console.log(ownerInfo.value)
+            portfolioData.value = response.data[0];
+            console.log("portfolioData")
+            console.log(portfolioData.value)
+        } else {
+            ElMessage.error(response.msg);
+        }
+    } catch (error) {
+        ElMessage.error('Error fetching photos of portfolio.');
+        console.error(error);
+    }
+}
+
 const backToLast = () => {
     router.back();
 }
@@ -128,7 +151,16 @@ const doMasonryLayout = () => {
 }
 
 onMounted(() => {
-    fetchPortfolioPhotosByPortfolioId();
+    const ownerId = router.currentRoute.value.query.ownerId;
+    const userId = localStorage.getItem('userId');
+    if (ownerId == userId) {
+        router.push({
+            path: '/user/profile'
+        });
+        fetchPortfolioPhotosByPortfolioId();
+    } else {
+        fetchingPhotosInPortfolio();
+    }
 })
 
 </script>
@@ -165,8 +197,5 @@ onMounted(() => {
     height: 100%;
     width: 100%;
     object-position: center;
-}
-:deep(.app-profile-portfolio-viewer .el-image__inner) {
-    height: 100vh;
 }
 </style>
