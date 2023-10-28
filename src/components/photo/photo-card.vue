@@ -46,14 +46,14 @@ const props = defineProps({
 
 <style scoped>
 .app-photo-card{
-    width: 500px;
+    width: 400px;
     margin: 0;
     float: left;
     overflow: hidden;
     position: relative;
     &:hover {
         cursor: pointer;
-        width: 502px;
+        width: 402px;
     }
 }
 

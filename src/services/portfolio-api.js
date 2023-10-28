@@ -10,9 +10,6 @@ const getUserPortfolio = async (userId, token, page, size) => {
         || userId === '') {
         throw new Error('User id is invalid');
     }
-    if (!token) {
-        throw new Error('Token is invalid');
-    }
     if (isNaN(page) || page === null || page === undefined || page === ''
         || page < 1) {
         throw new Error('Page is invalid');
