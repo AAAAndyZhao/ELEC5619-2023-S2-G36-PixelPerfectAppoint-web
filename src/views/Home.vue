@@ -1,7 +1,9 @@
 <template>
-    <div id="app-home" ref="photoContainerRef" v-infinite-scroll="loadMore">
-        <photo-card v-for="photo in photos"
-        :key="photo.id" :photo="photo" />
+    <div class="app-scroll-container" @scroll="handleScroll" ref="scrollbarRef">
+        <div id="app-home" ref="photoContainerRef">
+            <photo-card v-for="photo in photos"
+            :key="photo.id" :photo="photo" />
+        </div>
     </div>
 </template>
 
@@ -13,9 +15,11 @@ import imagesLoaded from 'imagesloaded';
 import photoApi from '@/services/photo-api';
 import PhotoCard from '@/components/photo/photo-card.vue';
 
+const scrollbarRef = ref(null);
 const photoContainerRef = ref(null);
 const photos = ref([]);
 const allPhotosLoaded = ref(false);
+const isLoadingMore = ref(false);
 const pageProps = ref({
     page: 1,
     size: 20
@@ -27,15 +31,17 @@ const doMasonryLayout = () => {
         msnry.reloadItems();
         msnry.layout();
         console.log('layout reloaded')
-        return;
+    }else {
+        msnry = new Masonry(photoContainerRef.value, {
+            itemSelector: '.app-photo-card',
+            columnWidth: '.app-photo-card',
+            horizontalOrder: true,
+            gutter: 20,
+        });
     }
-    msnry = new Masonry(photoContainerRef.value, {
-        itemSelector: '.app-photo-card',
-        columnWidth: '.app-photo-card',
-        horizontalOrder: true,
-        gutter: 20,
-    });
-    console.log('layout created')
+    setTimeout(() => {
+        isLoadingMore.value = false;
+    }, 1000);
 }
 
 const fetchPhotos = async () => {
@@ -57,8 +63,15 @@ const fetchPhotos = async () => {
         ElMessage.error(res.msg)
     }
 };
+const isScrolledToBottom = () => {
+    const scrollTop = scrollbarRef.value.scrollTop;
+    const clientHeight = scrollbarRef.value.clientHeight;
+    const scrollHeight = scrollbarRef.value.scrollHeight;
+    return scrollTop + clientHeight >= scrollHeight - 5;  // Allowing a 5-pixel margin for error
+}
 const loadMore = async () => {
-    if (allPhotosLoaded.value) return;
+    if (allPhotosLoaded.value || isLoadingMore.value) return;
+    isLoadingMore.value = true;
     pageProps.value.page++;
     await fetchPhotos();
     imagesLoaded(photoContainerRef.value, doMasonryLayout);
@@ -70,6 +83,11 @@ watch(() => photos.value, () => {
         }
     })
 })
+const handleScroll = () => {
+    if (isScrolledToBottom(scrollbarRef.value)) {
+        loadMore();
+    }
+}
 onMounted(async () => {
     await fetchPhotos();
     imagesLoaded(photoContainerRef.value, doMasonryLayout);
@@ -80,13 +98,12 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+.app-scroll-container {
+    height: calc(100vh - 100px);
+    overflow-y: auto;
+}
 #app-home {
     min-height: calc(100vh - 100px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    height: 100%;
     width: 100%;
     box-sizing: border-box;
     padding: 20px;
