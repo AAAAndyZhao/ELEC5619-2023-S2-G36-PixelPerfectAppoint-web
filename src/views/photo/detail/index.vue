@@ -18,6 +18,11 @@
             <user-info-detail v-if="photoDetail" :user="photoDetail?.owner" :showMessageButton="true"
                 :showFollowOption="true" />
         </el-card>
+        <el-card shadow="never" class="app-photo-description">
+            <el-text type="info" class="app-photo-description-text">
+                {{ photoDetail?.description }}
+            </el-text>
+        </el-card>
         <photo-viewer v-if="photoViewerVisible" :visible="photoViewerVisible" :url="photoDetail?.url"
             :photo-name="photoDetail?.name" :creator="photoDetail?.owner" :displayed-photo-param="photoDetail?.photoParam"
             :photo-id="photoDetail?.id" @closeClick="photoViewerVisible = false" />
@@ -35,7 +40,7 @@
                 </div>
                 <div class="load-more-subComments">
                     <el-button v-if="comment.hasMoreSubComments" @click="loadMoreSubComments(comment.reviewNo)"
-                        class="load-more-subComments" link type="primary">Load more</el-button>
+                    link type="primary">Load more</el-button>
                 </div>
             </div>
         </el-card>
@@ -72,7 +77,6 @@ const comments = ref([]);
 const fetchPhotoDetail = async () => {
     try {
         const res = await photoApi.getPhotoById(props.photoId);
-        console.log(res)
         if (res.code === 0 && res.data.length > 0) {
             photoDetail.value = res.data[0];
         } else {
@@ -85,7 +89,7 @@ const fetchPhotoDetail = async () => {
     }
 }
 
-const fetchPhotoReviews = async (parentReviewNo, page = 1, size = 5) => {
+const fetchPhotoReviews = async (parentReviewNo, page = 1, size = 10) => {
     try {
         const res = await reviewApi.getPhotoReviewList({
             photoId: props.photoId,
@@ -93,20 +97,61 @@ const fetchPhotoReviews = async (parentReviewNo, page = 1, size = 5) => {
             page,
             size
         });
-        console.log(res)
         if (res.code === 0) {
             if (!comments.value || comments.value.length === 0) {
+                // first time, load all root comments with at most 3 sub comments
                 comments.value = res.data;
+                comments.value.forEach((comment) => {
+                    if (comment.children.length >= 3) {
+                        comment.hasMoreSubComments = true;
+                    } else {
+                        comment.hasMoreSubComments = false;
+                    }
+                });
                 return;
             }
-            // for (const comment of comments.value) {
-            //     const foundComment = res.data.find((item) => item.reviewNo === comment.reviewNo);
-            //     if (foundComment) {
-            //         comment.subComments = foundComment.subComments;
-            //         comment.hasMoreSubComments = foundComment.hasMoreSubComments;
-            //         comment.subCommentsLoaded = true;
-            //     }
-            // }
+            // not the first time, reload root comments and merge sub comments (not delete the loaded ones)
+            const newComments = res.data;
+            if (parentReviewNo === 0) {
+                // root comments
+                for (const newComment of newComments) {
+                    // in a specific photo, reviewNo is unique and large no. is newer
+                    const foundRootComment = comments.value.find((item) => item.reviewNo === newComment.reviewNo);
+                    if (foundRootComment) {
+                        // merge children, not replace
+                        for (const subComment of newComment.children) {
+                            const foundSubComment = foundRootComment.children.find((item) => item.reviewNo === subComment.reviewNo);
+                            if (!foundSubComment) {
+                                foundRootComment.children.push(subComment);
+                            }
+                        }
+                    } else {
+                        // new root comment
+                        comments.value.push(newComment);
+                    }
+                }
+
+            } else {
+                // return sub comments
+                const foundComment = comments.value.find((item) => item.reviewNo === parentReviewNo);
+                if (foundComment) {
+                    if (newComments.length < size) {
+                        foundComment.hasMoreSubComments = false;
+                    } else {
+                        foundComment.hasMoreSubComments = true;
+                    }
+                    // merge children, not replace
+                    for (const subComment of newComments) {
+                        const foundSubComment = foundComment.children.find((item) => item.reviewNo === subComment.reviewNo);
+                        if (!foundSubComment) {
+                            foundComment.children.push(subComment);
+                        }
+                    }
+                } else {
+                    // an unexpected condition which should not happen
+                    console.error('Unexpected condition: cannot find parent comment');
+                }
+            }
         } else {
             ElMessage.error(res.msg);
         }
@@ -120,7 +165,10 @@ const handleAddRootReview = async (reviewData) => {
         const res = await reviewApi.addPhotoReview(reviewData);
         if (res.code === 0) {
             ElMessage.success('Commented');
-            fetchPhotoReviews()
+            // calculate the page and size
+            const page = Math.floor(comments.value.length / 10) + 1;
+            const size = 10;
+            fetchPhotoReviews(0, page, size)
         } else {
             ElMessage.error(res.msg);
         }
@@ -129,8 +177,7 @@ const handleAddRootReview = async (reviewData) => {
     }
 }
 
-const addSubReview = async ({ content, replyTo }) => {
-    console.log(content, replyTo)
+const addSubReview = async ({ content, replyTo, parentReviewNo }) => {
     try {
         const res = await reviewApi.addPhotoReview({
             content,
@@ -140,7 +187,11 @@ const addSubReview = async ({ content, replyTo }) => {
         });
         if (res.code === 0) {
             ElMessage.success('Commented');
-            fetchPhotoReviews()
+            // calculate the page and size
+            const rootComment = comments.value.find((item) => item.reviewNo === parentReviewNo);
+            const page = Math.floor(rootComment.children.length / 10) + 1;
+            const size = 10;
+            fetchPhotoReviews(parentReviewNo, page, size)
         } else {
             ElMessage.error(res.msg);
         }
@@ -179,9 +230,11 @@ const handleUnlike = async () => {
     }
 }
 const checkUserLikeStatus = async () => {
+    if (!currentUserId) {
+        return;
+    }
     try {
         const res = await photoApi.photoCheckLike(props.photoId);
-        console.log(res)
         if (res.code === 0) {
             isUserLiked.value = true;
         } else {
@@ -191,10 +244,17 @@ const checkUserLikeStatus = async () => {
         console.error(error)
     }
 }
+const loadMoreSubComments = (parentReviewNo) => {
+    // calculate the page and size
+    const rootComment = comments.value.find((item) => item.reviewNo === parentReviewNo);
+    const page = Math.floor(rootComment.children.length / 10) + 1;
+    const size = 10;
+    fetchPhotoReviews(parentReviewNo, page, size);
+}
 onMounted(async () => {
     if (props.photoId) {
         await fetchPhotoDetail();
-        await fetchPhotoReviews(0);
+        await fetchPhotoReviews(0, 1, 10);
         await checkUserLikeStatus();
     } else {
         // 404
@@ -235,7 +295,15 @@ onMounted(async () => {
     height: auto;
     cursor: pointer;
 }
-
+.app-photo-description {
+    margin-top: 20px;
+    padding: 10px;
+    box-sizing: border-box;
+    text-align: left;
+}
+.app-photo-description-text {
+    white-space: pre-wrap;
+}
 .app-user-card {
     width: 100%;
     margin-top: 20px;
@@ -245,7 +313,13 @@ onMounted(async () => {
     width: 100%;
     margin: 20px 0;
 }
+
 .sub-comment-list-root {
     margin-left: 50px;
+}
+.load-more-subComments{
+    text-align: left;
+    box-sizing: border-box;
+    padding-left: 50px;
 }
 </style>

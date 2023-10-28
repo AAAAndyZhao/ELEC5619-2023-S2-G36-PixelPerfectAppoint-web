@@ -14,8 +14,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { Like, Comment, ThumbsUp, ShareThree } from '@icon-park/vue-next'
+import { ElNotification } from 'element-plus';
 
 const props = defineProps({
     likeCount: {
@@ -54,6 +55,9 @@ const toggleLike = () => {
         emits('unlike');
     }
 };
+watch(() => props.isUserLiked, (newValue, oldValue) => {
+    isLiked.value = newValue;
+});
 
 onMounted(() => {
     isLiked.value = props.isUserLiked;

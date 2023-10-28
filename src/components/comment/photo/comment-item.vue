@@ -60,10 +60,12 @@ const showButtons = ref(false);
 const postComment = () => {
     emits('add-sub-review', {
         content: inputContent.value,
-        replyTo: props.comment?.reviewNo
+        replyTo: props.comment?.reviewNo,
+        parentReviewNo: props.comment?.parentReviewNo
     });
     inputContent.value = '';
     showButtons.value = false;
+    showSubCommentBox.value = false;
 }
 
 const clickReply = () => {
