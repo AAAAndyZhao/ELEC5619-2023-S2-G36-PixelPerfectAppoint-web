@@ -17,7 +17,7 @@
                 <el-icon size="30px" color="#928f8f" class="app-side-message-icon" style="margin: 20px; margin-left: 50px;">
                     <Message />
                 </el-icon>
-                <el-badge :value="200" :max="99" class="item">
+                <el-badge :hidden="!unreadCount" :value="unreadCount" :max="99" class="item">
                     <span style="margin: 10px; font-weight: 600;" @click="goToMessage">Message</span>
                 </el-badge>
             </el-menu-item>
@@ -51,7 +51,7 @@
         </el-menu>
         <div id="app-side-user" v-if="!needLogIn">
             <div class="app-side-user-avatar">
-                <UserAvatar :user="user"/>
+                <UserAvatar :user="user" />
             </div>
             <h3 style="margin: auto 10px;">
                 <div class="app-user-alias">
@@ -62,7 +62,8 @@
                 <el-button type="primary" class="app-side-user-dropdown-button"
                     style="margin: auto 10px auto 10px; width: 30px; border-radius: 30px; background-color: #fff; border: #fff;">
                     <!-- <el-icon class="el-icon--right"><arrow-down /></el-icon> -->
-                    <el-icon style="transform: rotate(90deg); transition: transform 2s ease;" color="#409EFF" size="20px" v-if="!isRotated">
+                    <el-icon style="transform: rotate(90deg); transition: transform 2s ease;" color="#409EFF" size="20px"
+                        v-if="!isRotated">
                         <More />
                     </el-icon>
                     <el-icon color="#409EFF" size="20px" v-if="isRotated">
@@ -86,19 +87,22 @@
 </template>
 
 <script setup>
-import { ref, computed, watchEffect, onMounted } from 'vue'
+import { ref, computed, watchEffect, onMounted, onBeforeUnmount } from 'vue'
 import { ElMessage, ElLoading, ElMessageBox, ElDialog, ElAvatar, ElButton } from 'element-plus'
 import { ArrowDown } from '@element-plus/icons-vue'
 import { Home, Mounted, Split } from '@icon-park/vue-next'
 import router from '../router.js'
 import '@icon-park/vue-next/styles/index.css'
 import userApi from '../services/user-api'
+import messageApi from '@/services/message-api'
 import { useStore } from 'vuex'
 import UserAvatar from '@/components/user/user-avatar.vue'
 
 const needLogIn = ref(false)
 const isRotated = ref(false)
 const user = ref({})
+const unreadCount = ref(0)
+let unreadCountInterval = null
 
 const handleOpen = (key, keyPath) => {
     console.log(key, keyPath)
@@ -203,10 +207,25 @@ const clickIconTransition = () => {
     isRotated.value = !isRotated.value
 }
 
-
+const getUnreadCount = async () => {
+    try {
+        const res = await messageApi.getUnreadCount()
+        if (res.code === 0) {
+            unreadCount.value = res.data[0]
+        } else {
+            ElMessage.error(`Failed to get unread count: ${res.msg}`)
+        }
+    } catch (e) {
+        console.error(e)
+    }
+}
 
 onMounted(() => {
     getUserInfoForDisplay()
+    unreadCountInterval = setInterval(getUnreadCount, 3000)
+})
+onBeforeUnmount(() => {
+    clearInterval(unreadCountInterval)
 })
 
 </script>
@@ -243,7 +262,7 @@ onMounted(() => {
     height: 80%;
 }
 
-.app-user-alias{
+.app-user-alias {
     width: 100px;
     font-weight: 600;
     font-size: small;
@@ -252,4 +271,7 @@ onMounted(() => {
     white-space: nowrap;
 }
 
+:deep(.el-badge__content.is-fixed) {
+    top: 10px;
+}
 </style>
