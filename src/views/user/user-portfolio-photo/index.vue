@@ -23,6 +23,22 @@
                 <div class="app-container">
                     <div class="app-container-header">
                         <div class="app-container-header-title">My Photos</div>
+                        <div class="app-operations">
+                            <el-switch v-model="selectMode" active-color="#13ce66"
+                                active-text="Select" />
+                            <el-button v-if="selectMode" :icon="Delete" type="danger" :disabled="!currentSelectedNum"
+                            @click="deletePhotos">
+                                Delete{{ currentSelectedNum ? `(${currentSelectedNum})` : ''  }}
+                            </el-button>
+                            <el-button v-if="selectMode" :icon="Hide" :disabled="!currentSelectedUnhiddenNum"
+                            @click="hidePhotos">
+                                Hide{{ currentSelectedUnhiddenNum ? `(${currentSelectedUnhiddenNum})` : ''  }}
+                            </el-button>
+                            <el-button v-if="selectMode" :icon="View" :disabled="!currentSelectedHiddenNum"
+                            @click="unhidePhotos">
+                                Unhide{{ currentSelectedHiddenNum ? `(${currentSelectedHiddenNum})` : ''  }}
+                            </el-button>
+                        </div>
                         <div>
                             <el-button type="primary" @click="goToUploadPhoto">Upload
                                 <el-icon class="el-icon--right">
@@ -33,7 +49,8 @@
                     </div>
                     <div class="app-user-photos-display" ref="photoContainerRef">
                         <PhotoImage class="photo-container" v-for="photo in photosData" :src="photo.thumbnailUrl"
-                            :key="photo.id" :photo="photo" fit="cover"
+                            :key="photo.id" :photo="photo" fit="cover" :select-mode="selectMode" :selected.sync="photo.selected"
+                            show-hidden :hidden="photo.hidden"
                             @click="callThePhotoViewer(photo.url, photo.name, ownerInfo, photo.photoParam, photo.id)" @load-complete="countImageLoadComplete" />
                     </div>
                     <el-empty v-if="noAvailablePhoto" description="No Photo Available" :image-size="600"/>
@@ -47,8 +64,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { Search } from '@icon-park/vue-next';
+import { Delete, Hide, View } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox, ElPagination } from 'element-plus';
 import PortfolioCard from '@/components/photo/portfolio-card.vue';
 import UserPortfolioList from './user-portfolio-list.vue';
@@ -83,7 +101,17 @@ const photoContainerRef = ref(null);
 const noAvailablePhoto = ref(false);
 const noAvailablePortfolio = ref(false);
 let imageLoadCompleteCount = 0;
+const selectMode = ref(false);
 
+const currentSelectedNum = computed(() => {
+    return photosData.value.filter((photo) => photo.selected).length;
+});
+const currentSelectedHiddenNum = computed(() => {
+    return photosData.value.filter((photo) => photo.selected && photo.hidden).length;
+});
+const currentSelectedUnhiddenNum = computed(() => {
+    return photosData.value.filter((photo) => photo.selected && !photo.hidden).length;
+});
 
 const countImageLoadComplete = () => {
     imageLoadCompleteCount++;
@@ -213,6 +241,18 @@ const closePhotoViewer = () => {
 }
 
 const callThePhotoViewer = (photoUrl, photoName, photoOwner, photoParam, photoId) => {
+    if (selectMode.value) {
+        const photo = photosData.value.find((photo) => photo.id === photoId);
+        if (!photo) {
+            return;
+        }
+        if (photo.selected) {
+            photo.selected = false;
+        } else {
+            photo.selected = true;
+        }
+        return;
+    }
     displayedPhotoUrl.value = photoUrl;
     displayedPhotoName.value = photoName;
     displayedPhotoCreator.value = photoOwner;
@@ -245,6 +285,10 @@ const fetchOwnerPhotoData = async (isReload = false) => {
     } catch (err) {
         console.error(err);
         // ElMessage.warning('No Photo Available');
+    } finally {
+        setTimeout(() => {
+            loading.value = false;
+        }, 1000);
     }
 }
 
@@ -262,6 +306,81 @@ const doMasonryLayout = () => {
         gutter: 10,
     })
     console.log('layout created')
+}
+const deletePhotos = () => {
+    if (!currentSelectedNum) {
+        ElMessage.info('No photo selected');
+        return;
+    }
+    ElMessageBox.confirm(`Are you sure to delete the selected ${currentSelectedNum.value} photos?`, 'Warning', {
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Cancel',
+        type: 'warning',
+    }).then(() => {
+        Promise.all(photosData.value.filter((photo) => photo.selected).map((photo) => {
+            return photoApi.deletePhoto(photo.id);
+        })).then((res) => {
+            if (res.some((res) => res.code !== 0)) {
+                ElMessage.error('Failed to delete some photos');
+                return;
+            }
+            ElMessage.success('Photos deleted successfully');
+            fetchOwnerPhotoData(true);
+        }).catch((err) => {
+            console.error(err);
+            ElMessage.error('Failed to delete photos');
+        })
+    }).catch(() => {
+        // do nothing
+    })
+}
+
+const hidePhotos = () => {
+    if (!currentSelectedNum) {
+        ElMessage.info('No photo selected');
+        return;
+    }
+    ElMessageBox.confirm(`Are you sure to hide the selected ${currentSelectedNum.value} photos?`, 'Warning', {
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Cancel',
+        type: 'warning',
+    }).then(() => {
+        Promise.all(photosData.value.filter((photo) => photo.selected).map((photo) => {
+            return photoApi.changePhotoHiddenStatus(photo.id, true);
+        })).then((res) => {
+            if (res.some((res) => res.code !== 0)) {
+                ElMessage.error('Failed to hide some photos');
+                return;
+            }
+            ElMessage.success('Photos hide successfully');
+            fetchOwnerPhotoData(true);
+        }).catch((err) => {
+            console.error(err);
+            ElMessage.error('Failed to hide photos');
+        })
+    }).catch(() => {
+        // do nothing
+    })
+}
+
+const unhidePhotos = () => {
+    if (!currentSelectedNum) {
+        ElMessage.info('No photo selected');
+        return;
+    }
+    Promise.all(photosData.value.filter((photo) => photo.selected).map((photo) => {
+        return photoApi.changePhotoHiddenStatus(photo.id, false);
+    })).then((res) => {
+        if (res.some((res) => res.code !== 0)) {
+            ElMessage.error('Failed to unhide some photos');
+            return;
+        }
+        ElMessage.success('Photos unhide successfully');
+        fetchOwnerPhotoData(true);
+    }).catch((err) => {
+        console.error(err);
+        ElMessage.error('Failed to unhide photos');
+    })
 }
 
 onMounted(() => {
@@ -325,6 +444,16 @@ onMounted(() => {
 .app-container .app-container-header-title {
     font-size: 30px;
     font-weight: bold;
+}
+.app-container-header .app-operations {
+    flex: 1;
+    box-sizing: border-box;
+    gap: 20px;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 .app-container .app-container-header-search-input {
