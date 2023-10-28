@@ -1,6 +1,6 @@
 import axios from "../utils/axios.js";
 
-const addReview = async (review) => {
+const addPostReview = async (review) => {
     const userId = localStorage.getItem('userId');
     if (userId === null
         || userId === undefined
@@ -65,7 +65,7 @@ const getPhotoReviewList = async ({ photoId, parentReviewNo, page, size}) => {
 }
 
 export default {
-    addReview,
+    addPostReview,
     getPostReviewList,
     addPhotoReview,
     getPhotoReviewList
