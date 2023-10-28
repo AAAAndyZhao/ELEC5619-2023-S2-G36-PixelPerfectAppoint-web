@@ -2,7 +2,7 @@
     <el-card class="app-participant-info" body-class="app-participant-info-body" shadow="never">
         <user-avatar :user="user" :size="70" @click="goToThisProfile(user.id)"></user-avatar>
         <div class="app-participant-info-detail">
-            <div class="app-user-alias" @click="goToThisProfile(user.id)">
+            <div class="app-user-alias">
                 <el-link :underline="false">{{ user?.alias }}</el-link>
                 <el-link v-if="!isSelf" class="app-message-button" icon="ChatDotSquare" @click="sendMessage">message</el-link>
             </div>
