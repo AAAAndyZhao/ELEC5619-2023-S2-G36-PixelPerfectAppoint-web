@@ -209,7 +209,7 @@ const photoCheckLike = async (photoId) => {
             headers: {
                 "authorization": token
             }
-        }) 
+        })
     } catch (error) {
         console.error("Error during checking like photo: ", error.message)
         throw error
@@ -223,6 +223,69 @@ const getPhotoById = async (photoId) => {
     return axios.get(`/photo/${photoId}`);
 }
 
+const deletePhoto = async (photoId) => {
+    const userId = localStorage.getItem("userId")
+    const token = localStorage.getItem("token")
+    if (!userId) {
+        throw new Error("No userId, please login first.")
+    }
+    if (!token) {
+        throw new Error("No token, please login first.")
+    }
+    if (!photoId) {
+        throw new Error("No photoId.")
+    }
+    try {
+        const body = {
+            uid: userId,
+            photo_id: photoId
+        }
+        if (!userId) {
+            throw new Error("No userId, please login first.")
+        }
+        return axios.post("/photo/delete", body, {
+            headers: {
+                "authorization": token
+            }
+        })
+    } catch (error) {
+        console.error("Error during deleting photo: ", error.message)
+        throw error
+    }
+}
+
+const changePhotoHiddenStatus = async (photoId, hidden) => {
+    const userId = localStorage.getItem("userId")
+    const token = localStorage.getItem("token")
+    if (!userId) {
+        throw new Error("No userId, please login first.")
+    }
+    if (!token) {
+        throw new Error("No token, please login first.")
+    }
+    if (!photoId) {
+        throw new Error("No photoId.")
+    }
+    try {
+        const body = {
+            uid: userId,
+            photo_id: photoId
+        }
+        if (!userId) {
+            throw new Error("No userId, please login first.")
+        }
+        const url = hidden ? "/photo/hide" : "/photo/unhide"
+        return axios.post(url, body, {
+            headers: {
+                "authorization": token
+            }
+        })
+    } catch (error) {
+        console.error("Error during changing photo hidden status: ", error.message)
+        throw error
+    }
+}
+
 export default {
     uploadPhoto,
     uploadPhotoList,
@@ -232,5 +295,7 @@ export default {
     photoLike,
     photoUnlike,
     photoCheckLike,
-    getPhotoById
+    getPhotoById,
+    deletePhoto,
+    changePhotoHiddenStatus
 }
