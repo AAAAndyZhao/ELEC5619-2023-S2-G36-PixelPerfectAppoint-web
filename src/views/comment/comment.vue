@@ -44,7 +44,7 @@ const getCommentList = async (loadMore = false) => {
     };
 
     try {
-        const mainCommentsRes = await reviewApi.getReviewList(reviewData);
+        const mainCommentsRes = await reviewApi.getPostReviewList(reviewData);
         if (mainCommentsRes.code === 0) {
             if (loadMore) {
                 comments.value = [...comments.value, ...mainCommentsRes.data];
@@ -60,7 +60,7 @@ const getCommentList = async (loadMore = false) => {
 
             const subCommentsPromises = comments.value.map(async (comment) => {
                 if (comment.subCommentsLoaded) return;
-                const subCommentsRes = await reviewApi.getReviewList({
+                const subCommentsRes = await reviewApi.getPostReviewList({
                     post_id: postId,
                     parent_review_no: comment.reviewNo,
                     page: 1,
@@ -91,7 +91,7 @@ const loadMoreSubComments = async (parentReviewNo) => {
     let parts = path.split('/');
     let postId = parts[parts.length - 1];
 
-    const subCommentsRes = await reviewApi.getReviewList({
+    const subCommentsRes = await reviewApi.getPostReviewList({
         post_id: postId,
         parent_review_no: parentReviewNo,
         page: subCommentsPages.value[parentReviewNo] + 1,

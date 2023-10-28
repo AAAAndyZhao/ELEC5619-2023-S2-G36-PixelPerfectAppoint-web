@@ -170,14 +170,26 @@ const routes = [
         redirect: '/photo/upload',
         component: MainPage,
         name: 'PhotoPage',
-        meta: { requiresAuth: true },
         children: [
             {
                 path: 'upload',
+                meta: { requiresAuth: true },
                 components: {
                     header: () => import('./components/main-header.vue'),
                     content: () => import('./views/photo/upload/photo-upload.vue'),
                     side: () => import('./components/main-side.vue')
+                }
+            },
+            {
+                path: 'detail/:id',
+                components: {
+                    header: () => import('./components/main-header.vue'),
+                    content: () => import('./views/photo/detail/index.vue'),
+                },
+                props: {
+                    content: (route) => ({ 
+                        photoId: route.params.id 
+                    })
                 }
             }
         ]

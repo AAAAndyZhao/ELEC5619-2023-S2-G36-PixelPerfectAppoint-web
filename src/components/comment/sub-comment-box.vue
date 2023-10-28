@@ -36,7 +36,7 @@ const post = async () => {
             uid: userId,
             reply_to: props.replyTo
         }
-        const response = await reviewApi.addReview(reviewData);
+        const response = await reviewApi.addPostReview(reviewData);
         if (response.code === 0) {
             inputContent.value = '';
             showButtons.value = false;
