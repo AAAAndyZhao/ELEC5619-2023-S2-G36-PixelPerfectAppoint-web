@@ -11,6 +11,7 @@
                     </div>
                     <UserPortfolioList :data="portfolioData" @update-portfolio-visibility="updatePortfolioVisibility"
                         @delectPortfolio="delectPortfolio" class="app-portfolio-list" />
+                    <el-empty v-if="noAvailablePortfolio" description="No Portfolio Available" :image-size="600"/>
                     <div class="app-profile-portfolio-pagination-bar">
                         <el-pagination layout="prev, pager, next" :total="portfolioPageProps.total"
                             v-model:current-page="portfolioPageProps.currentPage" v-model:page-size="pageSize"
@@ -35,6 +36,7 @@
                             :key="photo.id" :photo="photo" fit="cover"
                             @click="callThePhotoViewer(photo.url, photo.name, ownerInfo, photo.photoParam, photo.id)" @load-complete="countImageLoadComplete" />
                     </div>
+                    <el-empty v-if="noAvailablePhoto" description="No Photo Available" :image-size="600"/>
                 </div>
                 <PhotoViewer :url="displayedPhotoUrl" :visible="photoViewerVisible" :photoName="displayedPhotoName"
                     :creator="displayedPhotoCreator" :displayedPhotoParam="displayedPhotoParam" :photoId="displayedPhotoId"
@@ -78,6 +80,8 @@ const displayedPhotoParam = ref({});
 const ownerInfo = ref({});
 const displayedPhotoId = ref('');
 const photoContainerRef = ref(null);
+const noAvailablePhoto = ref(false);
+const noAvailablePortfolio = ref(false);
 let imageLoadCompleteCount = 0;
 
 
@@ -124,6 +128,11 @@ const fetchPortfolioData = async (isReload = false) => {
         if (res.code === 0) {
             portfolioData.value = res.data;
             portfolioPageProps.value.total = res.totalCount;
+            if (res.data.length === 0) {
+                noAvailablePortfolio.value = true;
+            } else {
+                noAvailablePortfolio.value = false;
+            }
         } else {
             ElMessage.error('Failed to get portfolio data');
         }
@@ -224,13 +233,18 @@ const fetchOwnerPhotoData = async (isReload = false) => {
         const response = await photoApi.getPhotoByOwnerId();
         if (response.code === 0) {
             photosData.value = response.data;
-            ownerInfo.value = response.data[0].owner;
+            if(response.totalCount === 0) {
+                noAvailablePhoto.value = true;
+            } else {
+                noAvailablePhoto.value = false;
+                ownerInfo.value = response.data[0].owner;
+            }
         } else {
             ElMessage.error('Failed to get photo data');
         }
     } catch (err) {
         console.error(err);
-        ElMessage.error('Failed to get photo data');
+        // ElMessage.warning('No Photo Available');
     }
 }
 
