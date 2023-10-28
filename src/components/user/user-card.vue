@@ -1,10 +1,10 @@
 <template>
     <el-card class="app-user-card" body-class="app-user-card-body">
-        <div class="app-user-card-avatar">
+        <div class="app-user-card-avatar" >
             <UserAvatar :user="user" :size="60" />
         </div>
         <div class="app-user-card-info">
-            <div v-if="display.includes('alias')" class="app-user-alias">{{ user.alias }}</div>
+            <div v-if="display.includes('alias')" class="app-user-alias" @click="goToOtherProfile(user.id)">{{ user.alias }}</div>
             <div v-if="display.includes('userName')" class="app-user-username">@{{ user.userName }}</div>
         </div>
         <div v-if="display.includes('description')" class="app-user-card-introduction" ref="descRef">
@@ -16,7 +16,8 @@
         </div>
         <div class="app-user-card-operation">
             <slot name="default">
-
+                <el-button type="primary" size="small" @click="goToOtherProfile(user.id)">View Profile</el-button>
+                <el-button type="primary" size="small" @click="sendMessage(user.id)">Message</el-button>
             </slot>
         </div>
     </el-card>
@@ -25,6 +26,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import UserAvatar from '@/components/user/user-avatar.vue';
+import router from '@/router';
 defineProps({
     user: {
         type: Object,
@@ -69,6 +71,14 @@ const shortenText = (text, length) => {
 
 const shortenFollowerCount = (count) => {
     return $FUNC.shortenNumber(count);
+}
+
+const goToOtherProfile = (userId) => {
+    router.push('/other/' + userId);
+}
+
+const sendMessage = (userId) => {
+    router.push({ path: '/message', query: { to: userId } })
 }
 </script>
 
