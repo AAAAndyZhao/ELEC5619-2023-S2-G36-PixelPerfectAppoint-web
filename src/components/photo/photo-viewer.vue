@@ -1,8 +1,8 @@
 <template>
     <div v-show="visible" class="show-photo">
         <div class="app-photo-mask-layer"></div>
-        <ZoomablePhotoImage class="img" :src="url" alt="Image failed to load!" @keydown.esc="closeClick"/>
-        <PhotoViewerOperationBar class="app-photo-operation-bar" :photoName="photoName" :creator="creator"
+        <ZoomablePhotoImage :src="url" alt="Image failed to load!" @keydown.esc="closeClick"/>
+        <PhotoViewerOperationBar :photoName="photoName" :creator="creator"
             :displayedPhotoParam="displayedPhotoParam" :photoId="photoId"/>
         <el-icon class="close-btn" size="30" color="#ecf5ff" @click="closeClick">
             <CircleCloseFilled />
