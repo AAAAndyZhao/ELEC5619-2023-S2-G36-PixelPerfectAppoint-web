@@ -7,9 +7,7 @@
                 <div v-if="chat.isMedia" class="app-media-message">
                     [Media]
                 </div>
-                <div v-else class="app-text-message">
-                    {{ chat.messageText.text }}
-                </div>
+                <div v-else class="app-text-message" v-html="linkDetectedText" />
             </el-card>
             <div class="app-message-send-time">
                 {{ simplifiedSendDatetime }}
@@ -52,6 +50,16 @@ const simplifiedSendDatetime = computed(() => {
     }
     return dayjs(props.chat.sendDatetime).format('YYYY-MM-DD HH:mm:ss')
 })
+
+const linkDetectedText = computed(() => {
+    if (!props.chat) {
+        return ''
+    }
+    const text = props.chat.messageText.text
+    const linkRegex = /(https?:\/\/[^\s]+)/g
+    const linkDetectedText = text.replace(linkRegex, '<a href="$1" target="_blank">$1</a>')
+    return linkDetectedText
+})
 </script>
 
 <style scoped>
@@ -84,6 +92,7 @@ const simplifiedSendDatetime = computed(() => {
     box-sizing: border-box;
     padding: 5px;
     white-space: pre-wrap;
+    word-wrap: break-word;
     text-align: left;
     font-size: var(--el-font-size-small);
 }
