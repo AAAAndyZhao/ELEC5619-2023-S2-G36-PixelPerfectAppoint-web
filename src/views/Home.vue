@@ -1,6 +1,5 @@
 <template>
-    <div id="app-home" ref="photoContainerRef" v-infinite-scroll="loadMore"
-    :infinite-scroll-disabled="disabledInfiniteScroll">
+    <div id="app-home" ref="photoContainerRef" v-infinite-scroll="loadMore">
         <photo-card v-for="photo in photos"
         :key="photo.id" :photo="photo" />
     </div>
@@ -17,7 +16,6 @@ import PhotoCard from '@/components/photo/photo-card.vue';
 const photoContainerRef = ref(null);
 const photos = ref([]);
 const allPhotosLoaded = ref(false);
-const disabledInfiniteScroll = ref(true);
 const pageProps = ref({
     page: 1,
     size: 20
@@ -75,9 +73,6 @@ watch(() => photos.value, () => {
 onMounted(async () => {
     await fetchPhotos();
     imagesLoaded(photoContainerRef.value, doMasonryLayout);
-    setTimeout(() => {
-        disabledInfiniteScroll.value = false;
-    }, 2000);
 });
 onBeforeUnmount(() => {
     msnry && msnry.destroy();
