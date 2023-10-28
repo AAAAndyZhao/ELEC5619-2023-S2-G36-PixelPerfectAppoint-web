@@ -400,6 +400,31 @@ const getUserFollowStatus = async (targetUserId) => {
     }
 }
 
+const cancelAccount = async () => {
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
+    if (userId === null
+        || userId === undefined
+        || userId === '') {
+        throw new Error('User id is invalid');
+    }
+    if (token === null
+        || token === undefined
+        || token === '') {
+        throw new Error('User token is invalid');
+    }
+    try{
+        return await axios.get(`/user/cancel_account?uid=${userId}`, {
+            headers: {
+                authorization: token
+            },
+        });
+    }catch (error) {
+        console.error('Error during requesting cancel account: ', error.message);
+        throw error;
+    }
+}
+
 export default {
     getUserProfile,
     updateUserProfile,
@@ -420,5 +445,6 @@ export default {
     getUserInformation,
     updateAvatar,
     activateAccount,
-    getUserFollowStatus
+    getUserFollowStatus,
+    cancelAccount
 }

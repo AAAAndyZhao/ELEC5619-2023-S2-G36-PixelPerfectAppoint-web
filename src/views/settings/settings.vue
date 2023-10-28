@@ -1,5 +1,5 @@
 <template>
-    <div class="app-settings-container">
+    <div class="app-settings-container" v-loading="loading">
         <div class="app-settings-user-info">
             <UserAvatar :user="user" :size="size" />
             <div class="app-settings-user-info-name">{{ user.firstName }} {{ user.lastName }}</div>
@@ -16,17 +16,33 @@
                 </el-button>
             </div>
         </div>
+        <el-dialog v-model="showAccountCancellationConfim" width="30vw">
+            <template #header>
+                Cancel Account
+            </template>
+            <account-cancellation-confim :input="confirmInputText" @update:input="(value) => confirmInputText = value" />
+            <template #footer>
+                <el-button @click="showAccountCancellationConfim = false">Cancel</el-button>
+                <el-button type="danger" @click="confirmAccountCancellation"
+                    :disabled="confirmInputText !== 'cancel'">Confirm</el-button>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
 <script setup>
 import { ref, computed, watchEffect, onMounted } from 'vue'
+import { ElMessageBox, ElMessage } from 'element-plus'
 import userApi from '@/services/user-api'
 import UserAvatar from '@/components/user/user-avatar.vue'
 import router from '@/router'
+import AccountCancellationConfim from './account-cancellation-confim.vue'
 
 const user = ref({})
 const size = ref(120)
+const loading = ref(false)
+const showAccountCancellationConfim = ref(false)
+const confirmInputText = ref('')
 
 const fetchUserInfo = async () => {
     const userId = localStorage.getItem('userId')
@@ -51,6 +67,29 @@ const goToChangPassword = () => {
     })
 }
 
+const cancelAccount = () => {
+    showAccountCancellationConfim.value = true
+}
+
+const confirmAccountCancellation = async () => {
+    loading.value = true
+    try {
+        const res = await userApi.cancelAccount();
+        if (res.code === 0) {
+            ElMessageBox.alert('Account cancelled successfully', 'Success', {
+                confirmButtonText: 'OK',
+                callback: () => {
+                    router.push('/sign-out').then(() => {
+                        window.location.reload()
+                        openLoadingPage()
+                    })
+                }
+            })
+        }
+    } catch (error) {
+        ElMessage.error('Failed to cancel account')
+    }
+}
 
 
 onMounted(() => {
@@ -63,6 +102,7 @@ onMounted(() => {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Maven+Pro:wght@500&display=swap');
+
 .app-settings-user-info-name {
     font-size: 30px;
     font-weight: 600;

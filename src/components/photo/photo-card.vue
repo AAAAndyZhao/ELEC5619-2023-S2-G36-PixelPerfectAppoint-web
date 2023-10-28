@@ -1,13 +1,13 @@
 <template>
     <div class="app-photo-card">
-        <el-image :src="photo.thumbnailUrl" @load="handleImageLoad">
+        <el-image :src="photo.thumbnailUrl" @load="handleImageLoad" @click="toPhotoDetail">
             <template #error>
                 <div class="image-slot">
                     <el-icon><Picture /></el-icon>
                 </div>
             </template>
         </el-image>
-        <div class="app-info-bar" v-if="showInfoBar">
+        <div class="app-info-bar" v-if="showInfoBar" @click="toUserPage">
             <el-avatar class="app-owner-avatar" :src="photo.owner?.avatarUrl">
                 <template #error>
                     <div class="image-slot">
@@ -27,6 +27,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { Picture, Avatar, ArrowRightBold } from '@element-plus/icons-vue';
+import router from '@/router';
 
 const emits = defineEmits(["click"]);
 // if image is not loaded, do not show info bar
@@ -40,6 +41,13 @@ const props = defineProps({
         required: true,
     },
 });
+const toPhotoDetail = () => {
+    router.push('/photo/detail/' + props.photo.id);
+};
+
+const toUserPage = () => {
+    router.push('/other/' + props.photo.owner.id);
+};
 
 
 </script>
