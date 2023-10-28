@@ -306,6 +306,7 @@ onMounted(() => {
 })
 onUnmounted(() => {
     window.removeEventListener('resize', updateLayout);
+    clearInterval(loadNewMessageInterval)
 });
 </script>
 
