@@ -4,7 +4,8 @@
             :loading="loading" :lazy="lazy" :scroll-container="scrollContainer" :referrerpolicy="referrerpolicy"
             :preview-src-list="previewSrcList" :z-index="zIndex" :initial-index="initialIndex"
             :close-on-press-escape="closeOnPressEscape" :preview-teleported="previewTeleported" :infinite="infinite"
-            :zoom-rate="zoomRate" :min-scale="minScale" :max-scale="maxScale" v-show="showThePhoto">
+            :zoom-rate="zoomRate" :min-scale="minScale" :max-scale="maxScale" v-show="showThePhoto"
+            :class="`${selected ? 'app-selected' : ''}`">
             <!-- pass templates to el-image -->
             <template #error>
                 <slot name="error">
@@ -19,6 +20,8 @@
                 </slot>
             </template>
         </el-image>
+        <el-checkbox v-if="selectMode" :model-value="selected" class="app-photo-image-checkbox" @change="updateSelected"></el-checkbox>
+        <el-icon v-if="showHidden && hidden" class="app-hidden-icon"><Hide /></el-icon>
     </div>
 </template>
 
@@ -107,6 +110,22 @@ const props = defineProps({
         type: String,
         default: '100%',
     },
+    selectMode: {
+        type: Boolean,
+        default: false,
+    },
+    selected: {
+        type: Boolean,
+        default: false,
+    },
+    showHidden: {
+        type: Boolean,
+        default: false,
+    },
+    hidden: {
+        type: Boolean,
+        default: false,
+    },
 })
 const emits = defineEmits([
     'load',
@@ -115,7 +134,8 @@ const emits = defineEmits([
     'close',
     'show',
     // emits custom events
-    'load-complete'
+    'load-complete',
+    'update:selected'
 ]);
 // emit all el-images events
 const showThePhoto = ref(false);
@@ -157,7 +177,9 @@ const fetchImage = async () => {
         imgLoading.value = false;
     }
 }
-
+const updateSelected = (value) => {
+    emits('update:selected', value);
+}
 watch(() => props.src, () => {
     fetchImage();
 })
@@ -172,5 +194,23 @@ onMounted(() => {
 </script>
 
 <style scoped>
-
+.app-photo-image-container {
+    position: relative;
+}
+.app-photo-image-checkbox{
+    position: absolute;
+    top: 0;
+    left: 5px;
+}
+.app-hidden-icon {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    color: #409eff;
+}
+.app-selected{
+    border: 2px solid #409eff;
+    /* add a little filter */
+    filter: brightness(0.8);
+}
 </style>
