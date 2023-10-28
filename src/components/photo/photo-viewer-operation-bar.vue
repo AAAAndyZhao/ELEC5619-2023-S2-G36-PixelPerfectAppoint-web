@@ -19,7 +19,7 @@
             <span class="material-symbols-outlined photo-with-like" @click="unlikePhoto" v-if="alreadyLiked">
                 thumb_up
             </span>
-            <el-icon color="#c6e2ff" size="40" class="comment-btn" @click="commentPhoto">
+            <el-icon color="#c6e2ff" size="40" class="comment-btn" @click="commentPhoto(props.photoId)">
                 <ChatLineRound />
             </el-icon>
             <el-icon class="info-btn" size="40" color="#c6e2ff" @click="showTheParam">
@@ -42,6 +42,7 @@ import { ElMessage } from "element-plus";
 import userAvatar from "../user/user-avatar.vue";
 import userApi from "@/services/user-api.js";
 import photoApi from "@/services/photo-api.js";
+import router from "@/router";
 
 const alreadyLiked = ref(false);
 
@@ -129,8 +130,10 @@ const checkPhotoLike = async () => {
     }
 }
 
-const commentPhoto = () => {
-    console.log("Comment photo");
+const commentPhoto = (photoId) => {
+    router.push({
+        path: '/photo/detail/' + photoId
+    })
 }
 
 const showTheParam = () => {
