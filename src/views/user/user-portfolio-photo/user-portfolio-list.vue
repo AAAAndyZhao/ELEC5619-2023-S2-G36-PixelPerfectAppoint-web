@@ -1,6 +1,6 @@
 <template>
     <div class="app-user-portfolios-list">
-        <PortfolioCard v-for="portfolio in data" :key="portfolio.id" :portfolio="portfolio"
+        <PortfolioCard v-for="portfolio in data" :key="portfolio.id" :portfolio="portfolio" :ownerId="ownerId"
             @update-portfolio-visibility="updatePortfolioVisibility" 
             @delectPortfolio="handleDeletePortfolio" ></PortfolioCard>
     </div>
@@ -18,6 +18,11 @@ const props = defineProps({
         type: Array,
         required: false,
         default: () => []
+    },
+    ownerId: {
+        type: String,
+        required: false,
+        default: ''
     }
 })
 

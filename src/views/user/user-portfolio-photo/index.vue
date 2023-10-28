@@ -18,7 +18,7 @@
                     </div>
                 </div>
             </el-tab-pane>
-            <el-tab-pane label="Photos">
+            <el-tab-pane label="Photos" lazy>
                 <div class="app-container">
                     <div class="app-container-header">
                         <div class="app-container-header-title">My Photos</div>

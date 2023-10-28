@@ -1,14 +1,14 @@
 <template>
     <el-card class="app-portfolio-card" body-class="app-portfolio-card-body" shadow="hover">
         <PhotoImage class="app-portfolio-cover-img" v-if="portfolio.coverPhoto && portfolio.coverPhoto.thumbnailUrl"
-            @click="openPortfolio" :src="portfolio.coverPhoto.thumbnailUrl" alt="cover image" />
+            @click="openPortfolio(ownerId)" :src="portfolio.coverPhoto.thumbnailUrl" alt="cover image"/>
         <el-divider style="margin: 2px 0;" />
         <div class="app-portfolio-info">
-            <div class="app-portfolio-name">{{ portfolio.title }}</div>
-            <div class="app-portfolio-category" @click="openPortfolio">{{ portfolio.category.name }}</div>
+            <div class="app-portfolio-name" @click="openPortfolio(ownerId)">{{ portfolio.title }}</div>
+            <div class="app-portfolio-category">{{ portfolio.category.name }}</div>
             <div class="app-portfolio-date-button-container">
                 <div class="app-portfolio-publish-date">Created at: {{ portfolio.createDatetime }}</div>
-                <div class="app-portfolio-delete-hide-button">
+                <div class="app-portfolio-delete-hide-button" v-if="isOperationButtonVisible">
                     <el-button link @click="delectPortfolio">
                         <el-icon size="medium">
                             <Delete />
@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import { watch, computed, ref, reactive } from 'vue';
+import { watch, computed, ref, reactive, onMounted } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import PhotoImage from '@/components/photo/photo-image.vue';
 import { Windows } from '@icon-park/vue-next';
@@ -53,7 +53,14 @@ const props = defineProps({
             hidden: 'unknown',
         })
     },
-
+    ownerId: {
+        type: String,
+        required: false,
+        default: ''
+    }
+});
+const isOperationButtonVisible = computed(() => {
+    return props.portfolio.owner.id !== props.ownerId;
 });
 
 const toggleVisibility = () => {
@@ -95,15 +102,19 @@ const delectPortfolio = () => {
 
 const jumpToPortfolioEdit = () => {
     router.push({
-        path: `../portfolio/update/${props.portfolio.id}`,
+        path: `/portfolio/update/${props.portfolio.id}`,
     }).then(() => {
         Windows.location.reload();
     });
 }
 
-const openPortfolio = () => {
+const openPortfolio = (ownerId) => {
+    // push the path with query
     router.push({
-        path: `../portfolio/photos-inside/${props.portfolio.id}`,
+        path: `/portfolio/photos-inside/${props.portfolio.id}`,
+        query: {
+            ownerId: ownerId,
+        }
     });
 }
 
@@ -176,6 +187,7 @@ const openPortfolio = () => {
     box-sizing: border-box;
     padding: 2% 2%;
     gap: 3px;
+    align-items: flex-start;
 }
 
 .app-portfolio-name {
