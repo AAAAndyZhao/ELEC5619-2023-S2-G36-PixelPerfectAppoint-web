@@ -8,6 +8,12 @@
                 <span style="margin: 10px; font-weight: 600;" @click="goToHomePage">Home</span>
             </el-menu-item>
             <el-menu-item index="2">
+                <el-icon size="30px" color="#928f8f" class="app-side-search-icon" style="margin: 20px; margin-left: 50px;">
+                    <Search />
+                </el-icon>
+                <span style="margin: 10px; font-weight: 600;" @click="goToSearchPage">Search</span>
+            </el-menu-item>
+            <el-menu-item index="3">
                 <el-icon size="30px" color="#928f8f" class="app-side-message-icon" style="margin: 20px; margin-left: 50px;">
                     <Message />
                 </el-icon>
@@ -15,18 +21,12 @@
                     <span style="margin: 10px; font-weight: 600;" @click="goToMessage">Message</span>
                 </el-badge>
             </el-menu-item>
-            <el-menu-item index="3">
+            <el-menu-item index="4">
                 <el-icon size="25px" color="#928f8f" class="app-side-following-icon"
                     style="margin: 20px; margin-left: 50px;">
                     <Switch />
                 </el-icon>
                 <span style="margin: 10px; font-weight: 600;" @click="goToFollowerTab">Following</span>
-            </el-menu-item>
-            <el-menu-item index="4">
-                <el-icon size="30px" color="#928f8f" class="app-side-search-icon" style="margin: 20px; margin-left: 50px;">
-                    <Search />
-                </el-icon>
-                <span style="margin: 10px; font-weight: 600;" @click="goToSearchPage">Search</span>
             </el-menu-item>
             <el-menu-item index="5">
                 <el-icon size="30px" color="#928f8f" class="app-side-appointment-icon"
@@ -50,7 +50,7 @@
             </el-menu-item>
         </el-menu>
         <div id="app-side-user" v-if="!needLogIn">
-            <div class="app-side-user-avatar">
+            <div class="app-side-user-avatar" @click="goToProfile">
                 <UserAvatar :user="user" />
             </div>
             <h3 style="margin: auto 10px;">
