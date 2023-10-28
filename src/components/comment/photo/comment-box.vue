@@ -73,11 +73,8 @@ const post = async () => {
             reply_to: 0
         }
         emits('add-review', reviewData);
-        // const response = await reviewApi.addPhotoReview(reviewData);
-        // if (response.code === 0) {
-        //     inputContent.value = '';
-        //     showButtons.value = false;
-        // }
+        inputContent.value = '';
+        showButtons.value = false;
     } catch (e) {
         console.error(e)
         inputContent.value = '';
