@@ -16,8 +16,11 @@
         </div>
         <div class="app-user-card-operation">
             <slot name="default">
-                <el-button type="primary" size="small" @click="goToOtherProfile(user.id)">View Profile</el-button>
-                <el-button type="primary" size="small" @click="sendMessage(user.id)">Message</el-button>
+                <el-button @click="sendMessage(user.id)">
+                    <el-icon>
+                        <Message size="80px"/>
+                    </el-icon>
+                </el-button>
             </slot>
         </div>
     </el-card>
@@ -157,6 +160,7 @@ const sendMessage = (userId) => {
 .app-user-alias {
     font-size: 20px;
     font-weight: bold;
+    cursor: pointer;
 }
 .app-use-name {
     font-size: 15px;
