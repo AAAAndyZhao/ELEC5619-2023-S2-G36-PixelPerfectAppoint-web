@@ -65,13 +65,6 @@ const sortOptions = ref([{
         sortedBy: 'latest',
         order: 'asc'
     }
-}, {
-    label: 'Most liked',
-    value: 'likes',
-    sort: {
-        sortedBy: 'likes',
-        order: 'desc'
-    }
 }]);
 const dateRangeShortcuts = [{
     text: 'Last week',
