@@ -1,5 +1,6 @@
 import axios from "axios";
-axios.defaults.baseURL = "http://152.67.96.80:9090"; // dev
+axios.defaults.baseURL = "https://server.pixelperfectappoint.cc/api"; // dev
+// axios.defaults.baseURL = "http://localhost:8080/api"; // dev
 
 // CORS
 axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
