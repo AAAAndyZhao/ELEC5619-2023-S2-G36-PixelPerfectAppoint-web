@@ -1,8 +1,8 @@
 <template>
     <el-card class="app-participant-info" body-class="app-participant-info-body" shadow="never">
-        <user-avatar :user="user" :size="70"></user-avatar>
+        <user-avatar :user="user" :size="70" @click="goToThisProfile(user.id)"></user-avatar>
         <div class="app-participant-info-detail">
-            <div class="app-user-alias">
+            <div class="app-user-alias" @click="goToThisProfile(user.id)">
                 <el-link :underline="false">{{ user?.alias }}</el-link>
                 <el-link v-if="!isSelf" class="app-message-button" icon="ChatDotSquare" @click="sendMessage">message</el-link>
             </div>
@@ -89,6 +89,17 @@ const handleChangeRole = () => {
 const sendMessage = () => {
     router.push({ path: '/message', query: { to: props.user.id } })
 }
+
+const goToThisProfile = (userId) => {
+    const currentUserId = localStorage.getItem('userId');
+    if (userId === currentUserId) {
+        router.push('/user/profile');
+    } else {
+        router.push(`/other/${userId}`);
+    }
+}
+// can jump to the profile page of the user
+
 </script>
 
 <style scoped>

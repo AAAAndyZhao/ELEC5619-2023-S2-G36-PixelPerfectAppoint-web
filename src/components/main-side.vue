@@ -1,12 +1,6 @@
 <template>
     <div id="app-side">
         <el-menu default-active="1" class="app-side-functionalities" @open="handleOpen" @close="handleClose">
-            <!-- <el-menu-item index="1">
-                <el-icon size="30px" color="#928f8f" class="app-side-home-icon" style="margin: 20px; margin-left: 50px;">
-                    <House />
-                </el-icon>
-                <span style="margin: 10px; font-weight: 600;" @click="goToHomePage">Home</span>
-            </el-menu-item> -->
             <el-menu-item index="1">
                 <el-icon size="30px" color="#928f8f" class="app-side-search-icon" style="margin: 20px; margin-left: 50px;">
                     <Search />
@@ -50,7 +44,7 @@
             </el-menu-item>
         </el-menu>
         <div id="app-side-user" v-if="!needLogIn">
-            <div class="app-side-user-avatar">
+            <div class="app-side-user-avatar" @click="goToProfile">
                 <UserAvatar :user="user" />
             </div>
             <h3 style="margin: auto 10px;">
