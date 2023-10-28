@@ -115,7 +115,6 @@ const handleClose = (key, keyPath) => {
 const goToHomePage = () => {
     router.push('/').then(() => {
         window.location.reload()
-        openLoadingPage()
     })
 }
 
@@ -126,45 +125,38 @@ const goToMessage = () => {
 const goToProfile = () => {
     router.push('/user/profile').then(() => {
         window.location.reload()
-        openLoadingPage()
     })
 }
 
 const goToFollowerTab = () => {
     router.push({ path: '/user/profile', query: { tab: 'follower' } }).then(() => {
         window.location.reload()
-        openLoadingPage()
     })
 }
 
 const goToUserProfolio = () => {
     router.push({ path: '/user/profile', query: { tab: 'portfolio' } }).then(() => {
         window.location.reload()
-        openLoadingPage()
     })
 }
 
 const goToLogIn = () => {
     router.push('/sign-in')
-    openLoadingPage()
 }
 
 const goToSearchPage = () => {
     router.push('/search')
-    openLoadingPage()
 }
 
 const goToAppointmentPage = () => {
     router.push({ path: '/user/profile', query: { tab: 'appointment' } }).then(() => {
         window.location.reload()
-        openLoadingPage()
     })
 }
 
 const goToSettings = () => {
     router.push('/user/settings').then(() => {
         window.location.reload()
-        openLoadingPage()
     })
 }
 
