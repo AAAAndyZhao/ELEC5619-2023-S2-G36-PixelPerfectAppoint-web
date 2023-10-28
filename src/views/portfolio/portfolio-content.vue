@@ -80,7 +80,6 @@ const fetchPortfolioPhotosByPortfolioId = async () => {
             ElMessage.error(response.msg);
         }
     } catch (error) {
-        ElMessage.error('Error fetching photos of portfolio.');
         console.error(error);
     } finally {
         loading.value = false;

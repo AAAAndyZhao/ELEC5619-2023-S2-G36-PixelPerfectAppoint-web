@@ -2,11 +2,11 @@
     <el-card class="app-user-appointment-review" body-class="app-user-appointment-review-body">
         <div class="app-review-info">
             <div class="app-participant-target">
-                <user-avatar :user="participant" :size="20"/>
-                <span>{{ participant.alias }}</span>
+                <user-avatar :user="participant" :size="20" @click="goToThisProfile(props.targetParticipant.id)"/>
+                <span @click="goToThisProfile(props.targetParticipant.id)">{{ participant.alias }}</span>
                 <el-icon><Right /></el-icon>
-                <user-avatar :user="targetParticipant" :size="20"/>
-                <span>{{ targetParticipant.alias }}</span>
+                <user-avatar :user="targetParticipant" :size="20" @click="goToThisProfile(props.targetParticipant.id)"/>
+                <span @click="goToThisProfile(props.targetParticipant.id)">{{ targetParticipant.alias }}</span>
             </div>
             <div class="app-review-rating">
                 <el-rate :model-value="rating" size="large" disabled />
@@ -23,6 +23,7 @@
 
 <script setup>
 import UserAvatar from '@/components/user/user-avatar.vue';
+import router from '@/router.js';
 const props = defineProps({
     participant: {
         type: Object,
@@ -45,6 +46,19 @@ const props = defineProps({
         default: 0,
     }
 })
+
+const goToThisProfile = (userId) => {
+    console.log(userId);
+    const currentUserId = localStorage.getItem('userId');
+    if (userId === currentUserId) {
+        router.push('/user/profile');
+    } else if(userId) {
+        router.push(`/other/${userId}`);
+    } else if(userId === null || userId === undefined || userId === '' || userId === 0) {
+        router.push('/sign-in');
+    } 
+}
+
 </script>
 
 <style scoped>
