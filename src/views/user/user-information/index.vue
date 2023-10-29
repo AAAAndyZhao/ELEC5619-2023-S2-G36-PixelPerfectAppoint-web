@@ -5,8 +5,9 @@
         </div>
         <div class="app-info-form-container">
             <div class="app-avatar-container">
+                <div class="app-user-avatar-cover" @click="handleClickAvatar"></div>
                 <UserAvatar class="app-user-avatar"
-                :size="150" :user="profileData" @click="handleClickAvatar"/> 
+                :size="150" :user="profileData" /> 
             </div>
             <el-form ref="userFormRef" :model="profileData" :rules="rules" label-width="150px"
                 class="app-info-form" size="default"
@@ -304,11 +305,6 @@ onMounted(() => {
 .app-user-avatar{
     cursor: pointer;
 }
-.app-user-avatar:hover {
-    border: 1px solid #409eff;
-    filter: brightness(0.8);
-    transition: all 0.2s;
-}
 
 .app-info-form{
     width: 30%;
@@ -334,4 +330,17 @@ onMounted(() => {
     flex-direction: row;
     align-items: flex-start;
 }
+.app-user-avatar-cover{
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1;
+}
+.app-user-avatar-cover:hover {
+    border: 1px solid #409eff;
+    transition: all 0.2s;
+}
+
 </style>
