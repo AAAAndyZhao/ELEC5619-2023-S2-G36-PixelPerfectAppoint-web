@@ -189,6 +189,9 @@ const addSubReview = async ({ content, replyTo, parentReviewNo }) => {
             ElMessage.success('Commented');
             // calculate the page and size
             const rootComment = comments.value.find((item) => item.reviewNo === parentReviewNo);
+            if (!rootComment.children) {
+                rootComment.children = [];
+            }
             const page = Math.floor(rootComment.children.length / 10) + 1;
             const size = 10;
             fetchPhotoReviews(parentReviewNo, page, size)
