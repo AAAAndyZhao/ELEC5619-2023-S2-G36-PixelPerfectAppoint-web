@@ -1,6 +1,6 @@
 <template>
     <div class="app-sign-in">
-        <img src="../../assets/images/sign-in.png" alt="app-sign-in-image">
+        <img width="500" src="https://objectstorage.ap-sydney-1.oraclecloud.com/p/vgdgWWIJTQhf1Pg8edVg3VY2f3l049xabq6AONJYm0Pd21d730L85UInxTqGMG8g/n/sdhdhqcmzyxg/b/ppa-assets/o/logo-large-transparent.png" alt="app-sign-in-image">
         <div class="app-sign-in-form-container">
             <h1>Welcome to Pixel Perfect Appoint!</h1>
             <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="100px"
