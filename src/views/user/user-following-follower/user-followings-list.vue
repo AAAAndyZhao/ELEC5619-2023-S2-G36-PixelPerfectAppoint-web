@@ -1,6 +1,7 @@
 <template>
     <div class="app-user-followings-list">
         <UserCard v-for="user in data" :key="user.id" :user="user" v-if="hasData">
+            <el-button @click="sendMessage(user.id)" size="large">Message</el-button>
             <el-dropdown v-if="user.following && user.followed">
                 <el-button
                 class="app-mutual-followed-button"
@@ -28,6 +29,7 @@
 import { computed } from 'vue';
 import { Empty, Switch, Close } from '@icon-park/vue-next';
 import UserCard from '@/components/user/user-card.vue';
+import router from '@/router';
 const props = defineProps({
     data: {
         type: Array,
@@ -45,6 +47,10 @@ const handleUnfollowButtonClick = (user) => {
 const handleFollowButtonClick = (user) => {
     emits('followUser', user);
 }
+
+const sendMessage = (userId) => {
+    router.push({ path: '/message', query: { to: userId } })
+}
 </script>
 
 <style scoped>
@@ -60,5 +66,9 @@ const handleFollowButtonClick = (user) => {
     color: #999;
     text-align: center;
     margin-top: 20px;
+}
+.app-mutual-followed-button {
+    width: 160px;
+    margin-left: 12px;
 }
 </style>

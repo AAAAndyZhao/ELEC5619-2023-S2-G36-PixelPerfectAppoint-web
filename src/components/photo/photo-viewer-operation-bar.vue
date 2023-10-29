@@ -9,7 +9,7 @@
             <userAvatar :user="creator" :size="40" />
             <el-text>{{ creator.alias }}</el-text>
         </div>
-        <div class="photo-info">
+        <div class="photo-info" @click="toDetailPage(props.photoId)">
             <span>{{ photoName }}</span>
         </div>
         <div class="like-button">
@@ -141,6 +141,12 @@ const showTheParam = () => {
     console.log("showTheParam");
 };
 
+const toDetailPage = (photoId) => {
+    router.push({
+        path: '/photo/detail/' + photoId
+    })
+}
+
 onMounted(async () => {
     checkPhotoLike();
 })
@@ -181,6 +187,7 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     margin-left: 30px;
+    cursor: pointer;
 }
 
 .photo-info span {

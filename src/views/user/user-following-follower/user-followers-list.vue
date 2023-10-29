@@ -1,6 +1,7 @@
 <template>
     <div class="app-user-followers-list">
         <UserCard v-for="user in data" :key="user.id" :user="user" v-if="hasData">
+            <el-button @click="sendMessage(user.id)" size="large">Message</el-button>
             <el-dropdown v-if="user.following && user.followed">
                 <el-button
                 class="app-mutual-followed-button"
@@ -16,7 +17,7 @@
                     </el-dropdown-menu>
                 </template>
             </el-dropdown>
-            <el-button v-else type="primary" @click="handleFollowButtonClick(user)" size="large">Follow Back</el-button>
+            <el-button v-else type="primary" @click="handleFollowButtonClick(user)" size="large" class="app-follow-back-button">Follow Back</el-button>
         </UserCard>
         <div v-else class="app-no-data-text">
             No followers found
@@ -29,6 +30,7 @@ import { computed } from 'vue';
 import { Empty, Switch, Close } from '@icon-park/vue-next';
 import UserCard from '@/components/user/user-card.vue';
 import { ElMessage } from 'element-plus';
+import router from '@/router';
 const props = defineProps({
     data: {
         type: Array,
@@ -47,6 +49,10 @@ const handleFollowButtonClick = (user) => {
 
 const handleUnfollowButtonClick = (user) => {
     emits('unfollowUser', user);
+}
+
+const sendMessage = (userId) => {
+    router.push({ path: '/message', query: { to: userId } })
 }
 </script>
 
@@ -67,6 +73,7 @@ const handleUnfollowButtonClick = (user) => {
 .app-mutual-followed-button,
 :deep(.app-unfollow-dropdown-item) {
     width: 160px;
+    margin-left: 12px;
 }
 :deep(.app-unfollow-dropdown-item) {
     width: 160px;
@@ -74,5 +81,9 @@ const handleUnfollowButtonClick = (user) => {
     padding: 7px 19px;
     box-sizing: border-box;
     height: 30px;
+}
+
+.app-follow-back-button{
+    width: 160px;
 }
 </style>
