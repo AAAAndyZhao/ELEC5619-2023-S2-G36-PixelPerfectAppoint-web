@@ -1,6 +1,6 @@
 <template>
     <div class="app-sign-in">
-        <img src="../../assets/images/sign-in.png" alt="app-sign-in-image">
+        <img width="500" src="https://objectstorage.ap-sydney-1.oraclecloud.com/p/vgdgWWIJTQhf1Pg8edVg3VY2f3l049xabq6AONJYm0Pd21d730L85UInxTqGMG8g/n/sdhdhqcmzyxg/b/ppa-assets/o/logo-large-transparent.png" alt="app-sign-in-image">
         <div class="app-sign-in-form-container">
             <h1>Welcome to Pixel Perfect Appoint!</h1>
             <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="100px"
@@ -22,7 +22,7 @@
                 </el-form-item>
             </el-form>
             <el-divider class="app-divider" border-style="dashed"> OR </el-divider>
-            <img class="app-google-login-button" src="/img/google/2x/btn_google_signin_dark_normal_web@2x.png" @click="signInByGoogle"/>
+            <!-- <img class="app-google-login-button" src="/img/google/2x/btn_google_signin_dark_normal_web@2x.png" @click="signInByGoogle"/> -->
             <p class="app-note">Don't have an account? <router-link to="/sign-up">Sign up</router-link></p>
         </div>
     </div>
@@ -117,13 +117,13 @@ const submitForm = async () => {
     }
 }
 
-const signInByGoogle = async () => {
-    try {
+// const signInByGoogle = async () => {
+//     try {
         
-    } catch (error) {
-        console.error(error);
-    }
-}
+//     } catch (error) {
+//         console.error(error);
+//     }
+// }
 
 const checkRedirect = () => {
     if (!props.redirect) return;
