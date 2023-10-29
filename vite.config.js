@@ -5,10 +5,13 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), rewriteAllPlugin()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, 'src'),
+    plugins: [vue(), rewriteAllPlugin()],
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, 'src'),
+        }
+    },
+    server: {
+        port: 5173
     }
-  }
 })
