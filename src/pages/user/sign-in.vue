@@ -22,7 +22,7 @@
                 </el-form-item>
             </el-form>
             <el-divider class="app-divider" border-style="dashed"> OR </el-divider>
-            <img class="app-google-login-button" src="/img/google/2x/btn_google_signin_dark_normal_web@2x.png" @click="signInByGoogle"/>
+            <!-- <img class="app-google-login-button" src="/img/google/2x/btn_google_signin_dark_normal_web@2x.png" @click="signInByGoogle"/> -->
             <p class="app-note">Don't have an account? <router-link to="/sign-up">Sign up</router-link></p>
         </div>
     </div>
@@ -117,13 +117,13 @@ const submitForm = async () => {
     }
 }
 
-const signInByGoogle = async () => {
-    try {
+// const signInByGoogle = async () => {
+//     try {
         
-    } catch (error) {
-        console.error(error);
-    }
-}
+//     } catch (error) {
+//         console.error(error);
+//     }
+// }
 
 const checkRedirect = () => {
     if (!props.redirect) return;
