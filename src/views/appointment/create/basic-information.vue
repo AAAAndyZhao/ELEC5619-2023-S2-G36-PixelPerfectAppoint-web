@@ -175,9 +175,6 @@ watchEffect(() => {
         box-sizing: border-box;
         padding: 0;
         text-align: left;
-        h3{
-            margin-block-start: 0;
-        }
     }
     .app-content {
         height: calc(100vh - 196px);
@@ -204,6 +201,9 @@ watchEffect(() => {
             }
         }
     }
+}
+.app-appointment-create-basic-info .app-title h3 {
+    margin-block-start: 0;
 }
 :deep(.app-content>.app-form-card>.el-card__body) {
     height: calc(100% - 64px);
