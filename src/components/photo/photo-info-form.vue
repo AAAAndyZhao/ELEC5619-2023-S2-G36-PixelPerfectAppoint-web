@@ -19,7 +19,7 @@
                 </el-select>
             </el-form-item>
             <el-divider content-position="left">Advanced</el-divider>
-            <el-form-item label="Resolution" prop="camMaker">
+            <!-- <el-form-item label="Resolution" prop="camMaker">
                 <el-input disabled v-model="photoForm.resolutionX" size="large">
                     <template #prefix>
                         W- 
@@ -30,7 +30,7 @@
                         H- 
                     </template>
                 </el-input>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="Camera Maker" prop="camMaker">
                 <el-input :disabled="!props.photo" v-model="photoForm.camMaker" size="large"></el-input>
             </el-form-item>
