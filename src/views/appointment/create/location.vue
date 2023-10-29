@@ -155,9 +155,7 @@ onMounted(async () => {
         padding: 0;
         text-align: left;
 
-        h3 {
-            margin-block-start: 0;
-        }
+        
     }
 
     .app-content {
@@ -185,7 +183,9 @@ onMounted(async () => {
         }
     }
 }
-
+.app-appointment-create-location h3 {
+    margin-block-start: 0;
+}
 .app-map {
     height: 100%;
     width: 100%;

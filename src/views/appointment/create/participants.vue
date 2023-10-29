@@ -136,9 +136,6 @@ watchEffect(() => {
         box-sizing: border-box;
         padding: 0;
         text-align: left;
-        h3{
-            margin-block-start: 0;
-        }
     }
 
     .app-content {
@@ -156,6 +153,9 @@ watchEffect(() => {
             box-sizing: border-box;
         }
     }
+}
+.app-appointment-create-participants .app-title h3 {
+    margin-block-start: 0;
 }
 .app-user-card-wrapper{
     height: calc(100% - 93px);
